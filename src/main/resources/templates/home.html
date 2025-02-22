@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+
+<main>
+    <div>
+        <p th:text="'Welcome ' + ${user.username} + '!'"></p>
+
+        <label for="search">Search:</label>
+        <input type="text" id="search" placeholder="Usernames">
+        <button>Search</button>
+        <br><br>
+
+        <a th:href="@{'/users/' + ${user.id} + '/profile'}"><button>View Profile</button></a>
+        <a th:href="@{'/users/' + ${user.id} + '/workouts'}"><button>Your Workouts</button></a>
+        <a th:href="@{'/users/' + ${user.id} + '/exercises'}"><button>Your Exercises</button></a>
+
+        <br><br>
+
+        <a th:href="@{/programs}"><button>Browse Programs</button></a>
+        <a th:href="@{/exercises}"><button>Browse Exercises</button></a>
+        <br><br>
+
+<!--        <div th:if="${user.isAdmin}">-->
+            <strong>Admin only:</strong>
+            <a th:href="@{/review}"><button>Review Exercises</button></a>
+<!--        </div>-->
+
+        <br>
+
+        <strong>User only:</strong>
+        <div>
+            <p><strong>Current Program:</strong></p>
+            <p>Mon / Tues / Wed / Thur / Fri / Sat / Sun</p>
+
+            <ul>
+                <li>Day 1 - [Different Exercises] <button>✔</button></li>
+                <li>Day 2 - [Different Exercises] <button>✔</button></li>
+                <li>Day 3 - [Different Exercises] <button>✔</button></li>
+                <li>Day 4 - [Different Exercises] <button>✔</button></li>
+                <li>Day 5 - [Different Exercises] <button>✔</button></li>
+            </ul>
+
+            <p>Click the ✔ button to mark exercises as completed.</p>
+        </div>
+
+        <section>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">Logout</button>
+            </form>
+        </section>
+</main>
+
+</body>
+</html>

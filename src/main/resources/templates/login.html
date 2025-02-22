@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+
+<main>
+    <section>
+
+        <form class="form" th:action="@{/login}" th:method="POST" th:object="${loginRequest}">
+
+            <h3>Login Here</h3>
+
+            <label for="username"></label>
+            <input type="text" placeholder="Username" id="username" th:field="*{username}" required>
+            <p class="alert-warning" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+
+            <label for="password"></label>
+            <input type="password" placeholder="Password" id="password" th:field="*{password}" required>
+            <p class="alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+
+            <button type="submit">Log In</button>
+
+            <p>Don't have an account? <a href="/register">Register now</a>!</p>
+
+        </form>
+
+    </section>
+</main>
+
+</body>
+</html>

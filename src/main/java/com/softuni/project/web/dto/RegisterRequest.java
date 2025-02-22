@@ -15,6 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequest {
+    //за по-лесно тестване са коментирани
 //    @Size(min = 6, message = "Username must be at least 6 symbols.")
     private String username;
 

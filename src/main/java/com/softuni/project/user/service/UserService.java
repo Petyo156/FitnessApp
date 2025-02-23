@@ -1,24 +1,27 @@
 package com.softuni.project.user.service;
 
 import com.softuni.project.exception.DomainException;
+import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.properties.UserProperties;
 import com.softuni.project.user.repository.UserRepository;
-import com.softuni.project.web.dto.LoginRequest;
 import com.softuni.project.web.dto.RegisterRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 @Slf4j
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserProperties userProperties;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -31,7 +34,7 @@ public class UserService {
     }
 
     @Transactional
-    public User register(RegisterRequest registerRequest) {
+    public void register(RegisterRequest registerRequest) {
         log.info("Registering user...");
 
         if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
@@ -47,27 +50,7 @@ public class UserService {
         User user = initializeUser(registerRequest);
 
         log.info("Registered user: {}", user.getUsername());
-        return userRepository.save(user);
-    }
-
-    public User login(LoginRequest loginRequest) {
-        log.info("Logging user...");
-
-        Optional<User> userOptional = userRepository.findByUsername(loginRequest.getUsername());
-
-        if (userOptional.isEmpty()) {
-            log.info("Failed to login user.");
-            throw new DomainException("User with this username does not exist");
-        }
-
-        User user = userOptional.get();
-        if(!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            log.info("Failed to login user.");
-            throw new DomainException("Wrong password");
-        }
-
-        log.info("Logged in user: {}", user.getUsername());
-        return user;
+        userRepository.save(user);
     }
 
     private User initializeUser(RegisterRequest registerRequest) {
@@ -81,11 +64,32 @@ public class UserService {
                 .updatedOn(LocalDateTime.now())
                 .isActive(userProperties.isDefaultAccountState())
                 .level(registerRequest.getLevel())
-                .points(userProperties.getPoints().longValue())
                 .build();
     }
 
     public User getById(UUID userId) {
-        return userRepository.findById(userId).orElse(null);
+        return userRepository.findById(userId).orElseThrow(() -> new DomainException("User with this id does not exist"));
+    }
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new DomainException("User with this username does not exist."));
+
+        return new AuthenticationMetadata(user.getId(), username, user.getPassword(), user.getUserRole(), user.isActive());
+    }
+
+
+    public List<User> getAllUsersExceptGiven(UUID userId) {
+        return userRepository.findAllByIdIsNot(userId);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public boolean userCountMoreThanZero() {
+        return userRepository.count() > 0;
     }
 }

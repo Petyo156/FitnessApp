@@ -26,13 +26,15 @@
         <a th:href="@{/exercises}"><button>Browse Exercises</button></a>
         <br><br>
 
-<!--        <div th:if="${user.isAdmin}">-->
+        <div th:if="${user.userRole.name() == 'ADMIN'}">
             <strong>Admin only:</strong>
             <a th:href="@{/review}"><button>Review Exercises</button></a>
-<!--        </div>-->
+            <a th:href="@{/admin/users}"><button>Manage Users</button></a>
+        </div>
 
         <br>
 
+        <div th:if="${user.userRole.name() == 'USER'}">
         <strong>User only:</strong>
         <div>
             <p><strong>Current Program:</strong></p>
@@ -50,10 +52,11 @@
         </div>
 
         <section>
-            <form th:action="@{/logout}" method="post">
+            <form th:action="@{/logout}">
                 <button type="submit">Logout</button>
             </form>
         </section>
+        </div>
 </main>
 
 </body>

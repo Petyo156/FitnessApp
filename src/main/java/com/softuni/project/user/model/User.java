@@ -50,9 +50,6 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime updatedOn;
 
-    @Column(nullable = false)
-    private Long points = 0L;
-
     private boolean isActive;
 
     private String firstName;

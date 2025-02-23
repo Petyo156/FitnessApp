@@ -10,17 +10,16 @@
 <main>
     <section>
 
-        <form class="form" th:action="@{/login}" th:method="POST" th:object="${loginRequest}">
+        <form class="form" th:action="@{/login}" th:method="POST">
 
             <h3>Login Here</h3>
 
             <label for="username"></label>
-            <input type="text" placeholder="Username" id="username" th:field="*{username}" required>
-            <p class="alert-warning" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+            <input type="text" placeholder="Username" id="username" required>
 
             <label for="password"></label>
-            <input type="password" placeholder="Password" id="password" th:field="*{password}" required>
-            <p class="alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+            <input type="password" placeholder="Password" id="password" required>
+            <p class="alert-warning" th:if="${errorMessage}" th:text="${errorMessage}"></p>
 
             <button type="submit">Log In</button>
 

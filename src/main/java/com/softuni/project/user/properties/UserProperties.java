@@ -12,6 +12,5 @@ public class UserProperties {
 
     private UserRole userDefaultRole;
     private boolean defaultAccountState;
-    private Integer points;
 
 }

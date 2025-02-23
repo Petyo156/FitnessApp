@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Manage Users</title>
+</head>
+<body>
+
+<h2>Admin Panel - Manage Users</h2>
+
+<div>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.firstName} + ' ' + ${user.lastName}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.active ? 'Active' : 'Inactive'}"></td>
+            <td>
+                <form th:action="@{/admin/users/{id}/activate}" th:if="${!user.active}">
+                    <button type="submit">Activate</button>
+                </form>
+                <form th:action="@{/admin/users/{id}/deactivate}" th:if="${user.active}">
+                    <button type="submit">Deactivate</button>
+                </form>
+                <form th:action="@{/admin/users/{id}/delete}">
+                    <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<a href="/static">Back to Home</a>
+
+</body>
+</html>

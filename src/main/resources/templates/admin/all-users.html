@@ -27,13 +27,14 @@
             <td th:text="${user.email}"></td>
             <td th:text="${user.active ? 'Active' : 'Inactive'}"></td>
             <td>
-                <form th:action="@{/admin/users/{id}/activate}" th:if="${!user.active}">
+                <form th:action="@{'/admin/users/' + ${user.id} + '/activate'}" th:if="${!user.active}" th:method="POST">
                     <button type="submit">Activate</button>
                 </form>
-                <form th:action="@{/admin/users/{id}/deactivate}" th:if="${user.active}">
+                <form th:action="@{'/admin/users/' + ${user.id} + '/deactivate'}" th:if="${user.active}" th:method="POST">
                     <button type="submit">Deactivate</button>
                 </form>
-                <form th:action="@{/admin/users/{id}/delete}">
+                <form th:action="@{'/admin/users/' + ${user.id} + '/delete'}" method="post">
+                    <input type="hidden" name="_method" value="delete"/>
                     <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
                 </form>
             </td>
@@ -42,7 +43,7 @@
     </table>
 </div>
 
-<a href="/static">Back to Home</a>
+<a th:href="@{/home}">Back to Home</a>
 
 </body>
 </html>

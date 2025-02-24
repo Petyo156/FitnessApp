@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Exercise</title>
+    <link rel="stylesheet" href="/css/style.css"> <!-- Optional: Link to CSS -->
+</head>
+<body>
+
+<h2>Submit a New Exercise</h2>
+
+<form th:action="@{/exercises/submit}" th:object="${submitExerciseRequest}" method="post">
+    <!-- Exercise Name -->
+    <label for="name">Exercise Name:</label>
+    <input type="text" id="name" th:field="*{name}" required>
+    <p class="text-warning" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+    <br>
+
+    <!-- Description -->
+    <label for="description">Description:</label>
+    <textarea id="description" th:field="*{description}" required></textarea>
+    <p class="text-warning" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+    <br>
+
+    <!-- Difficulty -->
+    <label for="difficulty">Difficulty:</label>
+    <select id="difficulty" th:field="*{difficulty}" required>
+        <option th:each="d : ${T(com.softuni.project.excersise.model.Difficulty).values()}"
+                th:value="${d}" th:text="${d}"></option>
+    </select>
+    <p class="text-warning" th:if="${#fields.hasErrors('difficulty')}" th:errors="*{difficulty}"></p>
+    <br>
+
+    <!-- Muscle Groups (Multi-select) -->
+    <label for="muscleGroups">Muscle Groups:</label>
+    <select id="muscleGroups" th:field="*{muscleGroups}" multiple>
+        <option th:each="m : ${T(com.softuni.project.excersise.model.MuscleGroup).values()}"
+                th:value="${m}" th:text="${m}"></option>
+    </select>
+    <p class="text-warning" th:if="${#fields.hasErrors('muscleGroups')}" th:errors="*{muscleGroups}"></p>
+    <br>
+
+    <!-- Media URL -->
+    <label for="mediaUrl">Media URL (Optional):</label>
+    <input type="url" id="mediaUrl" th:field="*{mediaUrl}">
+    <br>
+    <p class="text-warning" th:if="${#fields.hasErrors('mediaUrl')}" th:errors="*{mediaUrl}"></p>
+
+    <!-- Submit Button -->
+    <button type="submit">Submit Exercise</button>
+</form>
+
+</body>
+</html>

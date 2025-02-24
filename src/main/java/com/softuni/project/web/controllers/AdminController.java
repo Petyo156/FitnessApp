@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/admin")
@@ -36,6 +36,36 @@ public class AdminController {
         modelAndView.addObject("users", users);
         modelAndView.setViewName("admin/all-users");
         return modelAndView;
+    }
+
+    @DeleteMapping("/users/{id}/delete")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String deleteUser(@PathVariable String id) {
+
+        userService.deleteUserById(UUID.fromString(id));
+
+        log.info("User with id {} was deleted", id);
+        return "redirect:/admin/users";
+    }
+
+    @PostMapping("/users/{id}/activate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String activateUser(@PathVariable String id) {
+
+        userService.changeUserStatus(UUID.fromString(id));
+
+        log.info("User with id {} was activated", id);
+        return "redirect:/admin/users";
+    }
+
+    @PostMapping("/users/{id}/deactivate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String deactivateUser(@PathVariable String id) {
+
+        userService.changeUserStatus(UUID.fromString(id));
+
+        log.info("User with id {} was deactivated", id);
+        return "redirect:/admin/users";
     }
 
 }

@@ -2,25 +2,20 @@ package com.softuni.project.web.dto;
 
 import com.softuni.project.user.model.Country;
 import com.softuni.project.user.model.Level;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class RegisterRequest {
-    //за по-лесно тестване са коментирани
-//    @Size(min = 6, message = "Username must be at least 6 symbols.")
+    @Size(min = 3, message = "Username must be at least 3 symbols.")
     private String username;
 
-//    @Size(min = 6, message = "Password must be at least 6 symbols.")
+    @Size(min = 3, message = "Password must be at least 3 symbols.")
     private String password;
 
-//    @Email(message = "Invalid email address.")
+    @Email(message = "Invalid email address.")
     @NotNull
     private String email;
 

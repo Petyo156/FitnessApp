@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>User Profile</title>
+    </head>
+    <body>
+
+    <section>
+        <img th:src="${user.profilePicture}" alt="Profile Picture" width="150" height="150">
+    </section>
+    <section>
+        <h2 th:text="${user.username}">Username</h2>
+        <p><strong>Full Name:</strong> <span th:text="${user.firstName} + ' ' +  ${user.lastName}"></span></p>
+        <p><strong>Country:</strong> <span th:text="${user.country}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+        <p><strong>Joined Date:</strong> <span th:text="${#temporals.format(user.getCreatedOn(), 'yyyy-MM-dd')}"></span></p>
+    </section>
+
+<!--    if in own profile-->
+    <section th:if="${loggedUserId == user.id}">
+        <a th:href="@{/profile/edit}">
+            <button>Edit Profile</button>
+        </a>
+    </section>
+
+
+<!--    if in another user's profile-->
+    <section th:if="${loggedUserId != user.id}">
+        <ul>
+            <li th:each="program : ${user.programs}">
+                <a th:if="${program.sharedWithOthers == true}" th:href="'@{/program/' + program.id'}" th:text="${program.name}"></a>
+            </li>
+        </ul>
+    </section>
+
+
+<!--    home button-->
+    <a th:href="@{/home}">
+        <button>Home</button>
+    </a>
+
+</body>
+</html>

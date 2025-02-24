@@ -3,6 +3,7 @@ package com.softuni.project.web.controllers;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
+import com.softuni.project.web.dto.LoginRequest;
 import com.softuni.project.web.dto.RegisterRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -31,14 +32,14 @@ public class IndexController {
     @GetMapping("/")
     public String index() {
 
-        return "index";
+        return "index/index";
     }
 
     @GetMapping("/register")
     public ModelAndView register() {
         ModelAndView modelAndView = new ModelAndView();
 
-        modelAndView.setViewName("register");
+        modelAndView.setViewName("index/register");
         modelAndView.addObject("registerRequest", new RegisterRequest());
 
         return modelAndView;
@@ -48,7 +49,7 @@ public class IndexController {
     public ModelAndView register(@Valid RegisterRequest registerRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info("Failed registration request");
-            return new ModelAndView("register");
+            return new ModelAndView("index/register");
         }
 
         userService.register(registerRequest);
@@ -56,11 +57,14 @@ public class IndexController {
     }
 
     @GetMapping("/login")
-    public ModelAndView login(@RequestParam(value = "error", required = false) String errorParam) {
+    public ModelAndView login(@RequestParam(value = "error", required = false) String errorParam, @Valid LoginRequest loginRequest, BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("login");
+        modelAndView.setViewName("index/login");
 
-        if(errorParam != null) {
+        modelAndView.addObject("error", errorParam);
+        modelAndView.addObject("loginRequest", loginRequest);
+
+        if(errorParam != null || bindingResult.hasErrors()) {
             modelAndView.addObject("errorMessage", "Incorrect username or password!");
         }
 
@@ -69,7 +73,7 @@ public class IndexController {
 
     @GetMapping("/home")
     public ModelAndView home(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
-        ModelAndView modelAndView = new ModelAndView("home");
+        ModelAndView modelAndView = new ModelAndView("user/home");
 
         User user = userService.getById(authenticationMetadata.getId());
 

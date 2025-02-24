@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.UUID;
@@ -31,9 +32,18 @@ public class UserController {
 
         User user = userService.getById(id);
 
-        modelAndView.setViewName("profile");
+        modelAndView.setViewName("user/profile");
         modelAndView.addObject("user", user);
         modelAndView.addObject("loggedUserId", authenticationMetadata.getId());
+
+        log.info("View user profile with username {}", user.getUsername());
         return modelAndView;
+    }
+
+    @GetMapping("/search")
+    public String search(@RequestParam("username") String username) {
+        User user = userService.getByUsername(username);
+
+        return "redirect:/users/" + user.getId() + "/profile";
     }
 }

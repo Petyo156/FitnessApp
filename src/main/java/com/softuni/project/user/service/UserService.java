@@ -92,4 +92,20 @@ public class UserService implements UserDetailsService {
     public boolean userCountMoreThanZero() {
         return userRepository.count() > 0;
     }
+
+    public void deleteUserById(UUID id) {
+        userRepository.deleteById(id);
+    }
+
+    public void changeUserStatus(UUID id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new DomainException("User with this id does not exist"));
+
+        user.setActive(!user.isActive());
+
+        userRepository.save(user);
+    }
+
+    public User getByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new DomainException("User with this username does not exist"));
+    }
 }

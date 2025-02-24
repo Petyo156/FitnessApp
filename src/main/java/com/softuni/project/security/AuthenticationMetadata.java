@@ -19,13 +19,13 @@ public class AuthenticationMetadata implements UserDetails {
     private UUID id;
     private String username;
     private String password;
-    private UserRole userRole;
+    private UserRole role;
     private boolean isActive;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + userRole.name());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.name());
 
         return List.of(authority);
     }

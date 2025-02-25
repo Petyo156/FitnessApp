@@ -10,10 +10,10 @@ import java.util.List;
 
 @Data
 public class SubmitExerciseRequest {
-    @NotNull
+    @NotEmpty(message = "Name must not be empty")
     private String name;
 
-    @NotEmpty
+    @NotEmpty(message = "Description must not be empty")
     private String description;
 
     @NotNull

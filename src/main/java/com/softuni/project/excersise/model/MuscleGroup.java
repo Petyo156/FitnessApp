@@ -35,6 +35,6 @@ public enum MuscleGroup {
 
     @Override
     public String toString() {
-        return displayName;
+        return name();
     }
 }

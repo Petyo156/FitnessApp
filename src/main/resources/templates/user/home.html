@@ -28,7 +28,7 @@
 
 <!--        ADMIN-->
         <div th:if="${user.userRole.name() == 'ADMIN'}">
-            <a th:href="@{/review}"><button>Review Exercises</button></a>
+            <a th:href="@{/admin/exercises/review}"><button>Review Exercises</button></a>
             <a th:href="@{/admin/users}"><button>Manage Users</button></a>
             <br><br>
         </div>

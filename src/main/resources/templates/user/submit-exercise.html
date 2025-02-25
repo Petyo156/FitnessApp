@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/css/style.css"> <!-- Optional: Link to CSS -->
 </head>
 <body>
+<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
 
 <h2>Submit a New Exercise</h2>
 
@@ -35,7 +36,7 @@
     <label for="muscleGroups">Muscle Groups:</label>
     <select id="muscleGroups" th:field="*{muscleGroups}" multiple>
         <option th:each="m : ${T(com.softuni.project.excersise.model.MuscleGroup).values()}"
-                th:value="${m}" th:text="${m}"></option>
+                th:value="${m}" th:text="${m.name()}"></option>
     </select>
     <p class="text-warning" th:if="${#fields.hasErrors('muscleGroups')}" th:errors="*{muscleGroups}"></p>
     <br>

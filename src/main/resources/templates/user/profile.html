@@ -4,6 +4,7 @@
         <title>User Profile</title>
     </head>
     <body>
+    <th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
 
     <section>
         <img th:src="${user.profilePicture}" alt="Profile Picture" width="150" height="150">
@@ -32,12 +33,6 @@
             </li>
         </ul>
     </section>
-
-
-<!--    home button-->
-    <a th:href="@{/home}">
-        <button>Home</button>
-    </a>
 
 </body>
 </html>

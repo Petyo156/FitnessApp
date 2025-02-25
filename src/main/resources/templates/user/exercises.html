@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Exercises</title>
+</head>
+<body>
+<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
+
+<h1>Exercises</h1>
+
+<ul>
+    <li th:each="exercise : ${exercises}">
+        <a th:href="@{/exercises/{id}(id=${exercise.id})}" th:text="${exercise.name}"></a>
+    </li>
+</ul>
+
+<div th:if="${selectedExercise}">
+    <section>
+        <img th:src="${selectedExercise.mediaUrl}" alt="Exercise picture" width="150" height="150">
+    </section>
+    <h2 th:text="${selectedExercise.name}"></h2>
+    <h2 th:text="${selectedExercise.description}"></h2>
+    <h2 th:text="${selectedExercise.difficulty.name()}"></h2>
+    <ul th:each="muscleGroup : ${selectedExercise.muscleGroups}">
+        <li th:text="${muscleGroup.getDisplayName()}"></li>
+    </ul>
+    <h2 th:text="${selectedExercise.createdBy.username}"></h2>
+
+<!--    <form th:action="@{/exercise/doNow}" method="post">-->
+<!--        <input type="hidden" name="exerciseId" th:value="${selectedExercise.id}">-->
+<!--        <button type="submit">DO NOW</button>-->
+<!--    </form>-->
+</div>
+
+</body>
+</html>

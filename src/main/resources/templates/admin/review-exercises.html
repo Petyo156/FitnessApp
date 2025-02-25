@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Exercise Review</title>
+</head>
+<body>
+<div class="container">
+    <th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
+
+    <!-- Pending Exercises -->
+    <h2 class="mt-4">Pending Exercises</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Difficulty</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="exercise : ${pendingExercises}">
+            <td th:text="${exercise.name}"></td>
+            <td th:text="${exercise.description}"></td>
+            <td th:text="${exercise.difficulty}"></td>
+            <td>
+                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/approve'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-success">Approve</button>
+                </form>
+                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/reject'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Reject</button>
+                </form>
+                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/delete'}"  method="post" style="display:inline;">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Approved Exercises -->
+    <h2 class="mt-4">Approved Exercises</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Difficulty</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="exercise : ${approvedExercises}">
+            <td th:text="${exercise.name}"></td>
+            <td th:text="${exercise.description}"></td>
+            <td th:text="${exercise.difficulty}"></td>
+            <td>
+                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/reject'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-warning">Move to Rejected</button>
+                </form>
+                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/delete'}" method="post" style="display:inline;">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Rejected Exercises -->
+    <h2 class="mt-4">Rejected Exercises</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Difficulty</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="exercise : ${rejectedExercises}">
+            <td th:text="${exercise.name}"></td>
+            <td th:text="${exercise.description}"></td>
+            <td th:text="${exercise.difficulty}"></td>
+            <td>
+                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/approve'}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-warning">Move to Approved</button>
+                </form>
+<!--                "@{'/admin/users/' + ${user.id} + '/delete'}"-->
+                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/delete'}"  method="post" style="display:inline;">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

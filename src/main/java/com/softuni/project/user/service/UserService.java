@@ -3,6 +3,7 @@ package com.softuni.project.user.service;
 import com.softuni.project.exception.DomainException;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
+import com.softuni.project.user.model.UserRole;
 import com.softuni.project.user.properties.UserProperties;
 import com.softuni.project.user.repository.UserRepository;
 import com.softuni.project.web.dto.RegisterRequest;
@@ -35,22 +36,22 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void register(RegisterRequest registerRequest) {
-        log.info("Registering user...");
+        log.info("Attempting to register user: {}", registerRequest.getUsername());
 
         if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
-            log.info("Failed to register user.");
+            log.warn("Registration failed for user '{}': Username already exists", registerRequest.getUsername());
             throw new DomainException("User with this username already exists");
         }
 
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-            log.info("Failed to register user.");
+            log.warn("Registration failed for user '{}': Email already exists", registerRequest.getEmail());
             throw new DomainException("User with this email address already exists");
         }
 
         User user = initializeUser(registerRequest);
-
-        log.info("Registered user: {}", user.getUsername());
         userRepository.save(user);
+
+        log.info("Successfully registered user: {}", user.getUsername());
     }
 
     private User initializeUser(RegisterRequest registerRequest) {
@@ -68,44 +69,87 @@ public class UserService implements UserDetailsService {
     }
 
     public User getById(UUID userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new DomainException("User with this id does not exist"));
-    }
+        return userRepository.findById(userId).orElseThrow(() -> {
 
+            log.error("User with ID '{}' does not exist", userId);
+            return new DomainException("User with this id does not exist");
+        });
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new DomainException("User with this username does not exist."));
+        log.info("Loading user by username: {}", username);
+        User user = getByUsername(username);
 
         return new AuthenticationMetadata(user.getId(), username, user.getPassword(), user.getUserRole(), user.isActive());
     }
 
-
     public List<User> getAllUsersExceptGiven(UUID userId) {
+        log.info("Fetching all users except for logged user");
+
         return userRepository.findAllByIdIsNot(userId);
     }
 
     public List<User> getAllUsers() {
+        log.info("Fetching all users");
+
         return userRepository.findAll();
     }
 
     public boolean userCountMoreThanZero() {
-        return userRepository.count() > 0;
+        boolean hasUsers = userRepository.count() > 0;
+
+        log.info("Checking if user count is greater than zero: {}", hasUsers);
+        return hasUsers;
     }
 
     public void deleteUserById(UUID id) {
+        log.info("Attempting to delete user with ID: {}", id);
+
+        if (!userRepository.existsById(id)) {
+            log.warn("Attempted to delete non-existent user with ID: {}", id);
+
+            throw new DomainException("User with this id does not exist");
+        }
+
         userRepository.deleteById(id);
+
+        log.info("User with ID {} was deleted successfully", id);
     }
 
     public void changeUserStatus(UUID id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new DomainException("User with this id does not exist"));
+        log.info("Changing status for user with ID: {}", id);
 
-        user.setActive(!user.isActive());
+        User user = getById(id);
 
+        boolean newStatus = !user.isActive();
+        user.setActive(newStatus);
         userRepository.save(user);
+
+        log.info("User's activity status changed for ID {}: now {}", id, newStatus ? "Active" : "Inactive");
     }
 
     public User getByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new DomainException("User with this username does not exist"));
+        log.info("Fetching user by username: {}", username);
+
+        return userRepository.findByUsername(username).orElseThrow(() -> {
+
+            log.error("User with username '{}' does not exist", username);
+
+            return new DomainException("User with this username does not exist");
+        });
+    }
+
+    public void changeUserRole(UUID id) {
+        User user = getById(id);
+
+        if (user.getUserRole() == UserRole.ADMIN) {
+            user.setUserRole(UserRole.USER);
+        } else {
+            user.setUserRole(UserRole.ADMIN);
+        }
+
+        userRepository.save(user);
+        log.info("User with ID {} 's role was changed successfully", id);
     }
 }

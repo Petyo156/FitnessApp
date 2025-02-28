@@ -27,7 +27,7 @@ public class ExercisesController {
         this.exercisesService = exercisesService;
     }
 
-    @GetMapping("/")
+    @GetMapping()
     public ModelAndView exercises() {
         ModelAndView modelAndView = new ModelAndView("user/exercises");
 
@@ -60,6 +60,22 @@ public class ExercisesController {
         return modelAndView;
     }
 
+    @GetMapping("/your-exercises")
+    public ModelAndView yourExercises(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+        ModelAndView modelAndView = new ModelAndView("user/your-exercises");
+
+        List<Exercise> approvedExercises = exercisesService.findAllApprovedExercisesByUserId(authenticationMetadata.getId());
+        List<Exercise> pendingExercises = exercisesService.findAllPendingExercisesByUserId(authenticationMetadata.getId());
+        List<Exercise> rejectedExercises = exercisesService.findAllRejectedExercisesByUserId(authenticationMetadata.getId());
+        log.info("Retrieved all of user's exercises");
+
+        modelAndView.addObject("approvedExercises", approvedExercises);
+        modelAndView.addObject("pendingExercises", pendingExercises);
+        modelAndView.addObject("rejectedExercises", rejectedExercises);
+
+        return modelAndView;
+    }
+
     @PostMapping("/submit")
     public String submitExercise(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata, @Valid SubmitExerciseRequest submitExerciseRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -68,7 +84,7 @@ public class ExercisesController {
 
         exercisesService.submitExercise(submitExerciseRequest, authenticationMetadata);
 
-        return "redirect:/exercises";
+        return "redirect:/home";
     }
 
 }

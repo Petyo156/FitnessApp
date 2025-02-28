@@ -3,14 +3,14 @@ package com.softuni.project.web.controllers;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
+import com.softuni.project.web.dto.EditProfileRequest;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.UUID;
@@ -39,6 +39,35 @@ public class UserController {
         log.info("View user profile with username {}", user.getUsername());
         return modelAndView;
     }
+
+    @GetMapping("/profile/edit")
+    public ModelAndView editProfile(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+        ModelAndView modelAndView = new ModelAndView("user/edit-profile");
+
+        User user = userService.getById(authenticationMetadata.getId());
+
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("editProfileRequest", new EditProfileRequest());
+
+        return modelAndView;
+    }
+
+    @PutMapping("/profile/edit")
+    public ModelAndView editProfile(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata, @Valid EditProfileRequest editProfileRequest, BindingResult bindingResult) {
+        User user = userService.getById(authenticationMetadata.getId());
+
+        if (bindingResult.hasErrors()) {
+            ModelAndView modelAndView = new ModelAndView("user/edit-profile");
+            modelAndView.addObject("user", user);
+            modelAndView.addObject("editProfileRequest", editProfileRequest);
+            return modelAndView;
+        }
+
+        userService.editUserProfile(user, editProfileRequest);
+
+        return new ModelAndView("redirect:/home");
+    }
+
 
     @GetMapping("/search")
     public String search(@RequestParam("username") String username) {

@@ -5,7 +5,7 @@
     </head>
     <body>
     <th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
-
+    <th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
     <section>
         <img th:src="${user.profilePicture}" alt="Profile Picture" width="150" height="150">
     </section>
@@ -19,7 +19,7 @@
 
 <!--    if in own profile-->
     <section th:if="${loggedUserId == user.id}">
-        <a th:href="@{/profile/edit}">
+        <a th:href="@{/users/profile/edit}">
             <button>Edit Profile</button>
         </a>
     </section>

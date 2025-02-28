@@ -15,4 +15,6 @@ public interface ExercisesRepository extends JpaRepository<Exercise, UUID> {
     Optional<Exercise> findByName(String name);
 
     List<Exercise> findByStatus(ExerciseStatus exerciseStatus);
+
+    List<Exercise> findByStatusAndCreatedBy_Id(ExerciseStatus exerciseStatus, UUID id);
 }

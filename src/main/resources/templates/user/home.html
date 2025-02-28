@@ -35,9 +35,11 @@
 
 <!--        USER-->
         <div th:if="${user.userRole.name() == 'USER'}">
-            <a th:href="@{'/users/' + ${user.id} + '/workouts'}"><button>Your Workouts</button></a>
-            <a th:href="@{'/users/' + ${user.id} + '/exercises'}"><button>Your Exercises</button></a>
+            <a th:href="@{/programs/create}"><button>Create Program</button></a>
+            <a th:href="@{'/programs/your-programs'}"><button>Your programs</button></a>
+            <br>
             <a th:href="@{/exercises/submit}"><button>Submit Exercise</button></a>
+            <a th:href="@{'/exercises/your-exercises'}"><button>Your Exercises</button></a>
             <div>
                 <p><strong>Current Program:</strong></p>
                 <p>Mon / Tues / Wed / Thur / Fri / Sat / Sun</p>
@@ -56,12 +58,7 @@
         </div>
 
 
-<!--        logout-->
-        <section>
-            <form th:action="@{/logout}">
-                <button type="submit">Logout</button>
-            </form>
-        </section>
+        <th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
 
 </main>
 

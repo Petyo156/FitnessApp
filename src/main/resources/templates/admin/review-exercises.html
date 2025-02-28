@@ -7,7 +7,7 @@
 <body>
 <div class="container">
     <th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
-
+    <th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
     <!-- Pending Exercises -->
     <h2 class="mt-4">Pending Exercises</h2>
     <table class="table table-bordered">
@@ -89,7 +89,6 @@
                 <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/approve'}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-warning">Move to Approved</button>
                 </form>
-<!--                "@{'/admin/users/' + ${user.id} + '/delete'}"-->
                 <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/delete'}"  method="post" style="display:inline;">
                     <input type="hidden" name="_method" value="delete"/>
                     <button type="submit" class="btn btn-danger">Delete</button>

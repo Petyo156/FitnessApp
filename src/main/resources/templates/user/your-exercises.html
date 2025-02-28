@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Exercises</title>
+</head>
+<body>
+<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
+<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
+<div class="container">
+    <h1>Your Exercises</h1>
+
+    <!-- Approved Exercises -->
+    <section>
+        <h2>✅ Approved Exercises</h2>
+        <table th:if="${not #lists.isEmpty(approvedExercises)}">
+            <thead>
+            <tr>
+                <th>Picture</th>
+                <th>Name</th>
+                <th>Difficulty</th>
+                <th>Muscle Groups</th>
+                <th>Created On</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="exercise : ${approvedExercises}">
+                <td><img th:src="${exercise.mediaUrl}" alt="Exercise picture" width="150" height="150"></td>
+                <td th:text="${exercise.name}"></td>
+                <td th:text="${exercise.difficulty}"></td>
+                <td th:text="${exercise.muscleGroups}"></td>
+                <td th:text="${#temporals.format(exercise.createdOn, 'yyyy-MM-dd')}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${#lists.isEmpty(approvedExercises)}">No approved exercises yet.</p>
+    </section>
+
+    <!-- Pending Exercises -->
+    <section>
+        <h2>⏳ Pending Exercises</h2>
+        <table th:if="${not #lists.isEmpty(pendingExercises)}">
+            <thead>
+            <tr>
+                <th>Picture</th>
+                <th>Name</th>
+                <th>Difficulty</th>
+                <th>Muscle Groups</th>
+                <th>Created On</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="exercise : ${pendingExercises}">
+                <td><img th:src="${exercise.mediaUrl}" alt="Exercise picture" width="150" height="150"></td>
+                <td th:text="${exercise.name}"></td>
+                <td th:text="${exercise.difficulty}"></td>
+                <td th:text="${exercise.muscleGroups}"></td>
+                <td th:text="${#temporals.format(exercise.createdOn, 'yyyy-MM-dd')}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${#lists.isEmpty(pendingExercises)}">No pending exercises.</p>
+    </section>
+
+    <!-- Rejected Exercises -->
+    <section>
+        <h2>❌ Rejected Exercises</h2>
+        <table th:if="${not #lists.isEmpty(rejectedExercises)}">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="exercise : ${rejectedExercises}">
+                <td th:text="${exercise.name}"></td>
+                <td th:text="${exercise.status}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${#lists.isEmpty(rejectedExercises)}">No rejected exercises.</p>
+    </section>
+
+</div>
+
+</body>
+</html>

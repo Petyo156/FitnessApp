@@ -122,5 +122,18 @@ public class ExercisesService {
 
         log.info("Rejected exercise with ID: {}", uuid);
     }
+
+    public List<Exercise> findAllApprovedExercisesByUserId(UUID id) {
+        return exercisesRepository.findByStatusAndCreatedBy_Id(ExerciseStatus.APPROVED, id);
+    }
+
+    public List<Exercise> findAllPendingExercisesByUserId(UUID id) {
+        return exercisesRepository.findByStatusAndCreatedBy_Id(ExerciseStatus.PENDING, id);
+    }
+
+    public List<Exercise> findAllRejectedExercisesByUserId(UUID id) {
+        return exercisesRepository.findByStatusAndCreatedBy_Id(ExerciseStatus.REJECTED, id);
+    }
+
 }
 

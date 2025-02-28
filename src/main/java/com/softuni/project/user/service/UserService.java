@@ -6,8 +6,10 @@ import com.softuni.project.user.model.User;
 import com.softuni.project.user.model.UserRole;
 import com.softuni.project.user.properties.UserProperties;
 import com.softuni.project.user.repository.UserRepository;
+import com.softuni.project.web.dto.EditProfileRequest;
 import com.softuni.project.web.dto.RegisterRequest;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -151,5 +153,16 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(user);
         log.info("User with ID {} 's role was changed successfully", id);
+    }
+
+    public void editUserProfile(User user, EditProfileRequest editProfileRequest) {
+        user.setFirstName(editProfileRequest.getFirstName());
+        user.setLastName(editProfileRequest.getLastName());
+        user.setProfilePicture(editProfileRequest.getProfilePicture());
+        user.setCountry(editProfileRequest.getCountry());
+        user.setBio(editProfileRequest.getBio());
+
+        userRepository.save(user);
+        log.info("Overwritten logged user's personal information");
     }
 }

@@ -35,10 +35,13 @@
 
 <!--        USER-->
         <div th:if="${user.userRole.name() == 'USER'}">
+            <a th:href="@{/workouts/create}"><button>Create Workout</button></a>
+            <a th:href="@{'/workouts/your-workouts'}"><button>Your Workouts</button></a>
+            <br><br>
             <a th:href="@{/programs/create}"><button>Create Program</button></a>
-            <a th:href="@{'/programs/your-programs'}"><button>Your programs</button></a>
-            <br>
-            <a th:href="@{/exercises/submit}"><button>Submit Exercise</button></a>
+            <a th:href="@{'/programs/your-programs'}"><button>Your Programs</button></a>
+            <br><br>
+            <a th:href="@{/exercises/create}"><button>Create Exercise</button></a>
             <a th:href="@{'/exercises/your-exercises'}"><button>Your Exercises</button></a>
             <div>
                 <p><strong>Current Program:</strong></p>

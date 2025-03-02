@@ -2,6 +2,7 @@ package com.softuni.project.workout.model;
 
 import com.softuni.project.log.model.Log;
 import com.softuni.project.program.model.Status;
+import com.softuni.project.user.model.User;
 import com.softuni.project.workoutschedule.model.WorkoutSchedule;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,5 +33,8 @@ public class Workout {
 
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL)
     private List<Log> logs = new ArrayList<>();
+
+    @ManyToOne
+    private User addedBy;
 
 }

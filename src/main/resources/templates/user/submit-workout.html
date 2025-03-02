@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Submit Workout</title>
+</head>
+<body>
+<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
+<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
+
+<h2>Submit Your Workout</h2>
+
+<!-- Form submission -->
+<form th:action="@{/workouts/submit}" method="post" th:object="${submitWorkoutRequest}">
+
+    <!-- 🔍 Search/Select Exercise -->
+    <label>Select an Exercise:</label>
+    <select id="exerciseSelect">
+        <option value="" selected disabled>Choose an exercise</option>
+        <option th:each="exercise : ${allExercises}" th:value="${exercise}" th:text="${exercise}"></option>
+    </select>
+
+    <button type="button" onclick="addExercise()">Add Exercise</button>
+
+    <br><br>
+
+    <!-- 📋 List of Added Exercises -->
+    <div id="exerciseList">
+        <div th:each="exercise, index : *{exercises}">
+            <label>Exercise Name:</label>
+            <input type="text" th:field="*{exercises[__${index.index}__].exerciseName}" readonly />
+
+            <label>Sets:</label>
+            <input type="number" th:field="*{exercises[__${index.index}__].sets}" min="1" required />
+
+            <label>Reps:</label>
+            <input type="number" th:field="*{exercises[__${index.index}__].reps}" min="1" required />
+
+            <label>Added Weight:</label>
+            <input type="number" th:field="*{exercises[__${index.index}__].addedWeight}" step="0.1" />
+
+            <button type="button" onclick="removeExercise(this)">Remove</button>
+        </div>
+    </div>
+
+    <br>
+
+    <label>Additional Info: (optional)</label>
+    <textarea th:field="*{additionalInfo}"></textarea>
+
+    <label>Approximate Duration in minutes: (optional)</label>
+    <input type="number" th:field="*{approximateDuration}"/>
+
+    <br><br>
+
+    <button type="submit">Submit Workout</button>
+</form>
+
+<!-- Basic JavaScript for Form Manipulation -->
+<script>
+    function addExercise() {
+        const select = document.getElementById("exerciseSelect");
+        const selectedExercise = select.options[select.selectedIndex].value;
+
+        if (!selectedExercise) return;
+
+        const exerciseList = document.getElementById("exerciseList");
+        const index = exerciseList.children.length; // Get the next index
+
+        const div = document.createElement("div");
+        div.innerHTML = `
+        <label>Exercise Name:</label>
+        <input type="text" name="exercises[${index}].exerciseName" value="${selectedExercise}" readonly />
+
+        <label>Sets:</label>
+        <input type="number" name="exercises[${index}].sets" min="1" required value="1" />
+
+        <label>Reps:</label>
+        <input type="number" name="exercises[${index}].reps" min="1" required value="1" />
+
+        <label>Added Weight:</label>
+        <input type="number" name="exercises[${index}].addedWeight" step="0.1" value="0" />
+
+        <button type="button" onclick="removeExercise(this)">Remove</button>
+    `;
+        exerciseList.appendChild(div);
+    }
+
+
+    function removeExercise(button) {
+        button.parentElement.remove();
+    }
+</script>
+
+</body>
+</html>

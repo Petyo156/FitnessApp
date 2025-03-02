@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Your Workouts</title>
+</head>
+<body>
+<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
+<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
+
+<h2>Your Workouts</h2>
+
+<div th:if="${workouts.empty}">
+    <p>No workouts found. Start logging your workouts now!</p>
+</div>
+
+<div th:each="workout : ${workouts}" class="workout-container">
+    <h3>-----------------------------------------------------------------------------------------------------</h3>
+
+    <p class="info"><strong>Approximate Duration:</strong> <span th:text="${workout.approximateDuration}"></span> min</p>
+    <p class="info"><strong>Additional Info:</strong> <span th:text="${workout.additionalInfo}"></span></p>
+
+    <h4>Exercises:</h4>
+    <ul class="exercise-list">
+        <li th:each="exercise : ${workout.exercises}">
+            <img th:src="${exercise.mediaUrl}" alt="Media Url" width="30" height="30">
+            <strong th:text="${exercise.exerciseName}"></strong>
+            - <span th:text="${exercise.sets}"></span> sets,
+            <span th:text="${exercise.reps}"></span> reps,
+            <span th:text="${exercise.addedWeight}"></span> kg added weight
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

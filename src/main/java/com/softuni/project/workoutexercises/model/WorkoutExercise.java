@@ -1,7 +1,6 @@
 package com.softuni.project.workoutexercises.model;
 
 import com.softuni.project.excersise.model.Exercise;
-import com.softuni.project.program.model.Program;
 import com.softuni.project.workout.model.Workout;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,5 +31,5 @@ public class WorkoutExercise {
 
     @ManyToOne
     @JoinColumn(name = "exercise_id", nullable = false)
-    private Exercise program;
+    private Exercise exercise;
 }

@@ -90,7 +90,7 @@ public class ExercisesService {
         return exercisesRepository.findByStatus(ExerciseStatus.PENDING);
     }
 
-    public List<Exercise> findAllRejectedExercises(){
+    public List<Exercise> findAllRejectedExercises() {
 
         return exercisesRepository.findByStatus(ExerciseStatus.REJECTED);
     }
@@ -135,5 +135,14 @@ public class ExercisesService {
         return exercisesRepository.findByStatusAndCreatedBy_Id(ExerciseStatus.REJECTED, id);
     }
 
+    public Exercise findByName(String name) {
+        return exercisesRepository.findByName(name).orElseThrow(
+                () -> new DomainException("Exercise with name '" + name + "' does not exist")
+        );
+    }
+
+    public List<String> findAllApprovedExercisesNames() {
+        return exercisesRepository.findAllExercisesNamesByStatus(ExerciseStatus.APPROVED);
+    }
 }
 

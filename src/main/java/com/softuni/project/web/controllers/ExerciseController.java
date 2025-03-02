@@ -19,11 +19,11 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/exercises")
 @Slf4j
-public class ExercisesController {
+public class ExerciseController {
     private final ExercisesService exercisesService;
 
     @Autowired
-    public ExercisesController(ExercisesService exercisesService) {
+    public ExerciseController(ExercisesService exercisesService) {
         this.exercisesService = exercisesService;
     }
 
@@ -52,7 +52,7 @@ public class ExercisesController {
         return modelAndView;
     }
 
-    @GetMapping("/submit")
+    @GetMapping("/create")
     public ModelAndView submitExercise() {
         ModelAndView modelAndView = new ModelAndView("user/submit-exercise");
         modelAndView.addObject("submitExerciseRequest", new SubmitExerciseRequest());

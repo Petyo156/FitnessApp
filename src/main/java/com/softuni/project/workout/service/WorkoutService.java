@@ -1,8 +1,10 @@
 package com.softuni.project.workout.service;
 
+import com.softuni.project.exception.DomainException;
 import com.softuni.project.excersise.model.Exercise;
-import com.softuni.project.excersise.service.ExercisesService;
+import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.user.model.User;
+import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.dto.SubmitWorkoutRequest;
 import com.softuni.project.web.dto.ViewWorkoutResponse;
 import com.softuni.project.web.dto.WorkoutExerciseEntry;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.softuni.project.workout.model.Workout.*;
 
@@ -25,13 +28,15 @@ import static com.softuni.project.workout.model.Workout.*;
 public class WorkoutService {
     private final WorkoutRepository workoutRepository;
     private final WorkoutExerciseService workoutExerciseService;
-    private final ExercisesService exercisesService;
+    private final ExerciseService exerciseService;
+    private final UserService userService;
 
     @Autowired
-    public WorkoutService(WorkoutRepository workoutRepository, WorkoutExerciseService workoutExerciseService, ExercisesService exercisesService) {
+    public WorkoutService(WorkoutRepository workoutRepository, WorkoutExerciseService workoutExerciseService, ExerciseService exerciseService, UserService userService) {
         this.workoutRepository = workoutRepository;
         this.workoutExerciseService = workoutExerciseService;
-        this.exercisesService = exercisesService;
+        this.exerciseService = exerciseService;
+        this.userService = userService;
     }
 
     @Transactional
@@ -43,7 +48,7 @@ public class WorkoutService {
         log.info("Workout entity saved");
 
         for (WorkoutExerciseEntry enteredExercise : enteredExercises) {
-            Exercise exercise = exercisesService.findByName(enteredExercise.getExerciseName());
+            Exercise exercise = exerciseService.findByName(enteredExercise.getExerciseName());
 
             workoutExerciseService.saveEntry(enteredExercise.getReps(), enteredExercise.getSets(), enteredExercise.getAddedWeight(), exercise, workout);
             log.info("Given exercise info saved");
@@ -58,6 +63,10 @@ public class WorkoutService {
                 .duration(submitWorkoutRequest.getApproximateDuration())
                 .addedBy(user)
                 .build();
+    }
+
+    public List<ViewWorkoutResponse> viewYourWorkouts(UUID userId){
+        return viewYourWorkouts(userService.getById(userId));
     }
 
     public List<ViewWorkoutResponse> viewYourWorkouts(User user) {
@@ -87,11 +96,22 @@ public class WorkoutService {
         return responses;
     }
 
+    public Workout findById(UUID uuid) {
+        log.info("Fetching workout with ID: {}", uuid);
+
+        return workoutRepository.findById(uuid).orElseThrow(() -> {
+            log.error("Workout with ID '{}' does not exist", uuid);
+
+            return new DomainException("Workout with this id does not exist");
+        });
+    }
+
     private ViewWorkoutResponse initializeViewWorkoutResponse(Workout workout, List<WorkoutExerciseEntry> workoutExerciseEntries) {
         return ViewWorkoutResponse.builder()
                 .additionalInfo(workout.getAdditionalInfo())
                 .approximateDuration(workout.getDuration())
                 .exercises(workoutExerciseEntries)
+                .workoutId(workout.getId())
                 .build();
     }
 

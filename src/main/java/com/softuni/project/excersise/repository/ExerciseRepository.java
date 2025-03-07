@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ExercisesRepository extends JpaRepository<Exercise, UUID> {
+public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
 
     Optional<Exercise> findByName(String name);
 

@@ -28,14 +28,16 @@ public class Program {
     private String name;
 
     @Column(nullable = false)
-    private Boolean sharedWithOthers = false;
+    private Boolean sharedWithOthers;
 
     @Column(nullable = false)
-    private LocalDateTime createdOn = LocalDateTime.now();
-
-    private LocalDateTime updatedOn;
+    private LocalDateTime createdOn;
 
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Difficulty difficulty;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -46,5 +48,5 @@ public class Program {
     private User user;
 
     @OneToMany(mappedBy = "program", cascade = CascadeType.ALL)
-    private List<WorkoutSchedule> workoutSchedules = new ArrayList<>();
+    private List<WorkoutSchedule> workoutSchedules;
 }

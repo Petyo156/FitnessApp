@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Workout Program</title>
+    <script>
+        function toggleWorkout(id) {
+            const x = document.getElementById(id);
+            if (x.style.display === "none" || x.style.display === "") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+    <style>
+        .day-section {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .workout-container {
+            display: none; /* Hidden by default */
+            margin-top: 10px;
+            padding-right: 5em;
+        }
+
+        .workout-card {
+            border: 1px solid #eee;
+            display: flex;
+        }
+
+        .exercise {
+            margin-left: 1em;
+            color: #555;
+        }
+
+        button {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
+<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
+
+<form th:action="@{/programs/submit}" th:object="${programFormRequest}" method="post">
+    <h2>Create New Program</h2>
+
+    <label for="difficulty">Difficulty</label>
+    <select id="difficulty" th:field="*{difficulty}" required>
+        <option th:each="d : ${T(com.softuni.project.program.model.Difficulty).values()}"
+                th:value="${d}" th:text="${d}"></option>
+    </select>
+    <br>
+
+    <label for="name">Program name:</label>
+    <input type="text" id="name" th:field="*{name}" required>
+    <p class="text-warning" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+    <br>
+
+    <label for="name">Program description:</label>
+    <input type="text" id="description" th:field="*{description}" required>
+    <p class="text-warning" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+    <br>
+
+    <label for="shared">
+        <input type="checkbox" id="shared" th:field="*{shared}">
+        Share with other users
+    </label>
+    <br>
+
+    <div class="day-section">
+        <h3>MONDAY</h3>
+        <button type="button" onclick="toggleWorkout('monday-workout')">Show/Hide Workouts</button>
+        <div id="monday-workout" class="workout-container">
+            <div th:replace="~{fragments/workout-card :: workout-card('monday')}"></div>
+        </div>
+    </div>
+
+    <div class="day-section">
+        <h3>TUESDAY</h3>
+        <button type="button" onclick="toggleWorkout('tuesday-workout')">Show/Hide Workouts</button>
+        <div id="tuesday-workout" class="workout-container">
+            <div th:replace="~{fragments/workout-card :: workout-card('tuesday')}"></div>
+        </div>
+    </div>
+
+    <div class="day-section">
+        <h3>WEDNESDAY</h3>
+        <button type="button" onclick="toggleWorkout('wednesday-workout')">Show/Hide Workouts</button>
+        <div id="wednesday-workout" class="workout-container">
+            <div th:replace="~{fragments/workout-card :: workout-card('wednesday')}"></div>
+        </div>
+    </div>
+
+    <div class="day-section">
+        <h3>THURSDAY</h3>
+        <button type="button" onclick="toggleWorkout('thursday-workout')">Show/Hide Workouts</button>
+        <div id="thursday-workout" class="workout-container">
+            <div th:replace="~{fragments/workout-card :: workout-card('thursday')}"></div>
+        </div>
+    </div>
+
+    <div class="day-section">
+        <h3>FRIDAY</h3>
+        <button type="button" onclick="toggleWorkout('friday-workout')">Show/Hide Workouts</button>
+        <div id="friday-workout" class="workout-container">
+            <div th:replace="~{fragments/workout-card :: workout-card('friday')}"></div>
+        </div>
+    </div>
+
+    <div class="day-section">
+        <h3>SATURDAY</h3>
+        <button type="button" onclick="toggleWorkout('saturday-workout')">Show/Hide Workouts</button>
+        <div id="saturday-workout" class="workout-container">
+            <div th:replace="~{fragments/workout-card :: workout-card('saturday')}"></div>
+        </div>
+    </div>
+
+    <div class="day-section">
+        <h3>SUNDAY</h3>
+        <button type="button" onclick="toggleWorkout('sunday-workout')">Show/Hide Workouts</button>
+        <div id="sunday-workout" class="workout-container">
+            <div th:replace="~{fragments/workout-card :: workout-card('sunday')}"></div>
+        </div>
+    </div>
+
+    <br><br>
+    <button type="submit">Save Program</button>
+</form>
+</body>
+</html>

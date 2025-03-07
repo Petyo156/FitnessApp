@@ -1,7 +1,7 @@
 package com.softuni.project.web.controllers;
 
 import com.softuni.project.excersise.model.Exercise;
-import com.softuni.project.excersise.service.ExercisesService;
+import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,12 +22,12 @@ import java.util.UUID;
 public class AdminController {
 
     private final UserService userService;
-    private final ExercisesService exercisesService;
+    private final ExerciseService exerciseService;
 
     @Autowired
-    public AdminController(UserService userService, ExercisesService exercisesService) {
+    public AdminController(UserService userService, ExerciseService exerciseService) {
         this.userService = userService;
-        this.exercisesService = exercisesService;
+        this.exerciseService = exerciseService;
     }
 
     @GetMapping("/users")
@@ -41,15 +40,6 @@ public class AdminController {
         modelAndView.addObject("users", users);
         modelAndView.setViewName("admin/all-users");
         return modelAndView;
-    }
-
-    @DeleteMapping("/users/{id}/delete")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String deleteUser(@PathVariable String id) {
-
-        userService.deleteUserById(UUID.fromString(id));
-
-        return "redirect:/admin/users";
     }
 
     @PostMapping("/users/{id}/activate")
@@ -85,9 +75,9 @@ public class AdminController {
 
         ModelAndView modelAndView = new ModelAndView("admin/review-exercises");
 
-        List<Exercise> pendingExercises = exercisesService.findAllPendingExercises();
-        List<Exercise> rejectedExercises = exercisesService.findAllRejectedExercises();
-        List<Exercise> approvedExercises = exercisesService.findAllApprovedExercises();
+        List<Exercise> pendingExercises = exerciseService.findAllPendingExercises();
+        List<Exercise> rejectedExercises = exerciseService.findAllRejectedExercises();
+        List<Exercise> approvedExercises = exerciseService.findAllApprovedExercises();
         log.info("Retrieved all exercises");
 
         modelAndView.addObject("pendingExercises", pendingExercises);
@@ -97,18 +87,10 @@ public class AdminController {
         return modelAndView;
     }
 
-    @DeleteMapping("/exercises/{id}/delete")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String deleteExercise(@PathVariable String id) {
-        exercisesService.deleteById(UUID.fromString(id));
-
-        return "redirect:/admin/exercises/review";
-    }
-
     @PostMapping("/exercises/{id}/approve")
     @PreAuthorize("hasRole('ADMIN')")
     public String approveExercise(@PathVariable String id) {
-        exercisesService.approveById(UUID.fromString(id));
+        exerciseService.approveById(UUID.fromString(id));
 
         return "redirect:/admin/exercises/review";
     }
@@ -116,7 +98,7 @@ public class AdminController {
     @PostMapping("/exercises/{id}/reject")
     @PreAuthorize("hasRole('ADMIN')")
     public String rejectExercise(@PathVariable String id) {
-        exercisesService.rejectById(UUID.fromString(id));
+        exerciseService.rejectById(UUID.fromString(id));
 
         return "redirect:/admin/exercises/review";
     }

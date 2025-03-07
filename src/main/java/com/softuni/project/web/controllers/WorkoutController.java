@@ -1,10 +1,9 @@
 package com.softuni.project.web.controllers;
 
-import com.softuni.project.excersise.service.ExercisesService;
+import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
-import com.softuni.project.web.dto.SubmitExerciseRequest;
 import com.softuni.project.web.dto.SubmitWorkoutRequest;
 import com.softuni.project.web.dto.ViewWorkoutResponse;
 import com.softuni.project.workout.service.WorkoutService;
@@ -27,13 +26,13 @@ import java.util.List;
 public class WorkoutController {
     private final WorkoutService workoutService;
     private final UserService userService;
-    private final ExercisesService exercisesService;
+    private final ExerciseService exerciseService;
 
     @Autowired
-    public WorkoutController(WorkoutService workoutService, UserService userService, ExercisesService exercisesService) {
+    public WorkoutController(WorkoutService workoutService, UserService userService, ExerciseService exerciseService) {
         this.workoutService = workoutService;
         this.userService = userService;
-        this.exercisesService = exercisesService;
+        this.exerciseService = exerciseService;
     }
 
     @GetMapping("/your-workouts")
@@ -52,7 +51,7 @@ public class WorkoutController {
     public ModelAndView submitWorkout() {
         ModelAndView modelAndView = new ModelAndView("user/submit-workout");
 
-        List<String> allExercises = exercisesService.findAllApprovedExercisesNames();
+        List<String> allExercises = exerciseService.findAllApprovedExercisesNames();
 
         modelAndView.addObject("submitWorkoutRequest", new SubmitWorkoutRequest());
         modelAndView.addObject("allExercises", allExercises);

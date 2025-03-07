@@ -3,7 +3,7 @@ package com.softuni.project.excersise.service;
 import com.softuni.project.exception.DomainException;
 import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.model.ExerciseStatus;
-import com.softuni.project.excersise.repository.ExercisesRepository;
+import com.softuni.project.excersise.repository.ExerciseRepository;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
@@ -19,20 +19,20 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class ExercisesService {
-    private final ExercisesRepository exercisesRepository;
+public class ExerciseService {
+    private final ExerciseRepository exerciseRepository;
     private final UserService userService;
 
     @Autowired
-    public ExercisesService(ExercisesRepository exercisesRepository, UserService userService) {
-        this.exercisesRepository = exercisesRepository;
+    public ExerciseService(ExerciseRepository exerciseRepository, UserService userService) {
+        this.exerciseRepository = exerciseRepository;
         this.userService = userService;
     }
 
     public void submitExercise(SubmitExerciseRequest submitExerciseRequest, AuthenticationMetadata authenticationMetadata) {
         log.info("Attempting to submit exercise: {}", submitExerciseRequest.getName());
 
-        Optional<Exercise> exerciseOptional = exercisesRepository.findByName(submitExerciseRequest.getName());
+        Optional<Exercise> exerciseOptional = exerciseRepository.findByName(submitExerciseRequest.getName());
         if (exerciseOptional.isPresent()) {
             log.warn("Exercise with name '{}' already exists", submitExerciseRequest.getName());
 
@@ -41,7 +41,7 @@ public class ExercisesService {
 
         User user = userService.getById(authenticationMetadata.getId());
         Exercise exercise = initializeExercise(submitExerciseRequest, user);
-        exercisesRepository.save(exercise);
+        exerciseRepository.save(exercise);
 
         log.info("Successfully submitted exercise: {}", submitExerciseRequest.getName());
     }
@@ -62,13 +62,13 @@ public class ExercisesService {
     public List<Exercise> findAll() {
         log.info("Retrieving all exercises");
 
-        return exercisesRepository.findAll();
+        return exerciseRepository.findAll();
     }
 
     public Exercise findById(UUID uuid) {
         log.info("Fetching exercise with ID: {}", uuid);
 
-        return exercisesRepository.findById(uuid).orElseThrow(() -> {
+        return exerciseRepository.findById(uuid).orElseThrow(() -> {
             log.error("Exercise with ID '{}' does not exist", uuid);
 
             return new DomainException("Exercise with this id does not exist");
@@ -87,30 +87,23 @@ public class ExercisesService {
 
     public List<Exercise> findAllPendingExercises() {
 
-        return exercisesRepository.findByStatus(ExerciseStatus.PENDING);
+        return exerciseRepository.findByStatus(ExerciseStatus.PENDING);
     }
 
     public List<Exercise> findAllRejectedExercises() {
 
-        return exercisesRepository.findByStatus(ExerciseStatus.REJECTED);
+        return exerciseRepository.findByStatus(ExerciseStatus.REJECTED);
     }
 
     public List<Exercise> findAllApprovedExercises() {
 
-        return exercisesRepository.findByStatus(ExerciseStatus.APPROVED);
-    }
-
-
-    public void deleteById(UUID uuid) {
-        exercisesRepository.deleteById(uuid);
-
-        log.info("Deleted exercise with ID: {}", uuid);
+        return exerciseRepository.findByStatus(ExerciseStatus.APPROVED);
     }
 
     public void approveById(UUID uuid) {
         Exercise exercise = findById(uuid);
         exercise.setStatus(ExerciseStatus.APPROVED);
-        exercisesRepository.save(exercise);
+        exerciseRepository.save(exercise);
 
         log.info("Approved exercise with ID: {}", uuid);
     }
@@ -118,31 +111,31 @@ public class ExercisesService {
     public void rejectById(UUID uuid) {
         Exercise exercise = findById(uuid);
         exercise.setStatus(ExerciseStatus.REJECTED);
-        exercisesRepository.save(exercise);
+        exerciseRepository.save(exercise);
 
         log.info("Rejected exercise with ID: {}", uuid);
     }
 
     public List<Exercise> findAllApprovedExercisesByUserId(UUID id) {
-        return exercisesRepository.findByStatusAndCreatedBy_Id(ExerciseStatus.APPROVED, id);
+        return exerciseRepository.findByStatusAndCreatedBy_Id(ExerciseStatus.APPROVED, id);
     }
 
     public List<Exercise> findAllPendingExercisesByUserId(UUID id) {
-        return exercisesRepository.findByStatusAndCreatedBy_Id(ExerciseStatus.PENDING, id);
+        return exerciseRepository.findByStatusAndCreatedBy_Id(ExerciseStatus.PENDING, id);
     }
 
     public List<Exercise> findAllRejectedExercisesByUserId(UUID id) {
-        return exercisesRepository.findByStatusAndCreatedBy_Id(ExerciseStatus.REJECTED, id);
+        return exerciseRepository.findByStatusAndCreatedBy_Id(ExerciseStatus.REJECTED, id);
     }
 
     public Exercise findByName(String name) {
-        return exercisesRepository.findByName(name).orElseThrow(
+        return exerciseRepository.findByName(name).orElseThrow(
                 () -> new DomainException("Exercise with name '" + name + "' does not exist")
         );
     }
 
     public List<String> findAllApprovedExercisesNames() {
-        return exercisesRepository.findAllExercisesNamesByStatus(ExerciseStatus.APPROVED);
+        return exerciseRepository.findAllExercisesNamesByStatus(ExerciseStatus.APPROVED);
     }
 }
 

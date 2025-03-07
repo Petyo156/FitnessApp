@@ -31,10 +31,6 @@
                 <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/reject'}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-danger">Reject</button>
                 </form>
-                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/delete'}"  method="post" style="display:inline;">
-                    <input type="hidden" name="_method" value="delete"/>
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
             </td>
         </tr>
         </tbody>
@@ -60,10 +56,6 @@
                 <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/reject'}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-warning">Move to Rejected</button>
                 </form>
-                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/delete'}" method="post" style="display:inline;">
-                    <input type="hidden" name="_method" value="delete"/>
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
             </td>
         </tr>
         </tbody>
@@ -88,10 +80,6 @@
             <td>
                 <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/approve'}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-warning">Move to Approved</button>
-                </form>
-                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/delete'}"  method="post" style="display:inline;">
-                    <input type="hidden" name="_method" value="delete"/>
-                    <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </td>
         </tr>

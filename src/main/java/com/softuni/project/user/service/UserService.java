@@ -105,20 +105,6 @@ public class UserService implements UserDetailsService {
         return hasUsers;
     }
 
-    public void deleteUserById(UUID id) {
-        log.info("Attempting to delete user with ID: {}", id);
-
-        if (!userRepository.existsById(id)) {
-            log.warn("Attempted to delete non-existent user with ID: {}", id);
-
-            throw new DomainException("User with this id does not exist");
-        }
-
-        userRepository.deleteById(id);
-
-        log.info("User with ID {} was deleted successfully", id);
-    }
-
     public void changeUserStatus(UUID id) {
         log.info("Changing status for user with ID: {}", id);
 

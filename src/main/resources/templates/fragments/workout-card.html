@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div th:fragment="workout-card(day)" class="workout-card">
+    <div th:each="workout : ${workouts}">
+        <input type="radio" th:name="${day + 'WorkoutId'}" th:value="${workout.workoutId}" />
+        <p><strong>Duration:</strong> <span th:text="${workout.approximateDuration}"></span> mins</p>
+        <p><strong>Info:</strong> <span th:text="${workout.additionalInfo}"></span></p>
+
+        <div th:each="exercise : ${workout.exercises}" class="exercise">
+            <p><strong>Exercise:</strong> <span th:text="${exercise.exerciseName}"></span></p>
+            <p>Sets: <span th:text="${exercise.sets}"></span></p>
+            <p>Reps: <span th:text="${exercise.reps}"></span></p>
+            <p>Weight: <span th:text="${exercise.addedWeight}"></span> kg</p>
+        </div>
+    </div>
+    <p th:if="${#lists.isEmpty(workouts)}">No workouts assigned yet.</p>
+</div>
+
+</body>
+</html>

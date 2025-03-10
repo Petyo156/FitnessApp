@@ -8,11 +8,6 @@
 <th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
 
 <h2>Your Workouts</h2>
-
-<div th:if="${workouts.empty}">
-    <p>No workouts found. Start logging your workouts now!</p>
-</div>
-
 <div th:each="workout : ${workouts}" class="workout-container">
     <h3>-----------------------------------------------------------------------------------------------------</h3>
 

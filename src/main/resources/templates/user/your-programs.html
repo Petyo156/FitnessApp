@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Programs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .program-container {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .accordion {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            transition: 0.4s;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .accordion:hover, .active {
+            background-color: #0056b3;
+        }
+        .panel {
+            padding: 0 15px;
+            display: none;
+            background-color: white;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .workout-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .workout-card {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33.333% - 20px);
+            min-width: 250px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        h1, h2, h3, h4, h5 {
+            color: #333;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
+<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
+
+<h1>Your Programs</h1>
+
+<div th:each="program : ${programs}" class="program-container">
+    <h2 th:text="${program.name}"></h2>
+    <p><strong>Description:</strong> <span th:text="${program.description}"></span></p>
+    <p><strong>Difficulty:</strong> <span th:text="${program.difficulty}"></span></p>
+    <p><strong>Status:</strong> <span th:text="${program.status}"></span></p>
+    <p><strong>Created On:</strong> <span th:text="${#temporals.format(program.createdOn, 'yyyy-MM-dd HH:mm')}"></span></p>
+    <p><strong>Shared with Others:</strong> <span th:text="${program.sharedWithOthers ? 'Yes' : 'No'}"></span></p>
+
+    <button class="accordion">Show Workouts</button>
+    <div class="panel">
+        <div class="workout-container">
+            <div th:each="workout : ${program.workouts}" class="workout-card">
+                <h4>Workout for <span th:text="${workout.dayOfWeek}"></span></h4>
+                <p><strong>Approximate Duration:</strong> <span th:text="${workout.approximateDuration}"></span> minutes</p>
+                <p><strong>Additional Info:</strong> <span th:text="${workout.additionalInfo}"></span></p>
+
+                <h5>Exercises</h5>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Exercise Name</th>
+                        <th>Sets</th>
+                        <th>Reps</th>
+                        <th>Added Weight (kg)</th>
+                        <th>Media</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="exercise : ${workout.exercises}">
+                        <td th:text="${exercise.exerciseName}"></td>
+                        <td th:text="${exercise.sets}"></td>
+                        <td th:text="${exercise.reps}"></td>
+                        <td th:text="${exercise.addedWeight}"></td>
+                        <td>
+                            <a th:if="${exercise.mediaUrl}" th:href="${exercise.mediaUrl}" target="_blank">View</a>
+                            <span th:unless="${exercise.mediaUrl}">No media</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let accordions = document.querySelectorAll(".accordion");
+        accordions.forEach(function(accordion) {
+            accordion.addEventListener("click", function() {
+                this.classList.toggle("active");
+                let panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.softuni.project.web.dto;
 
+import com.softuni.project.common.DayOfWeek;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,4 +17,6 @@ public class ViewWorkoutResponse {
     private String additionalInfo;
 
     private Integer approximateDuration;
+
+    private DayOfWeek dayOfWeek;
 }

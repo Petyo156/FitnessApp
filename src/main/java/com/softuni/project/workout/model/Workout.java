@@ -29,7 +29,7 @@ public class Workout {
     private String additionalInfo;
 
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL)
-    private List<WorkoutSchedule> workoutSchedules = new ArrayList<>();
+    private List<WorkoutSchedule> workoutSchedules;
 
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL)
     private List<Log> logs = new ArrayList<>();

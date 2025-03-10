@@ -10,10 +10,7 @@ import com.softuni.project.workoutschedule.repository.WorkoutScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class WorkoutScheduleService {
@@ -70,5 +67,9 @@ public class WorkoutScheduleService {
                 .workout(workout)
                 .program(program)
                 .build();
+    }
+
+    public List<WorkoutSchedule> getAllByProgramId(UUID id) {
+        return workoutScheduleRepository.findAllByProgram_Id(id);
     }
 }

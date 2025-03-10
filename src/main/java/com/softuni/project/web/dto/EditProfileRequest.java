@@ -1,8 +1,7 @@
 package com.softuni.project.web.dto;
 
 import com.softuni.project.user.model.Country;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
+import com.softuni.project.user.model.Level;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
@@ -18,5 +17,7 @@ public class EditProfileRequest {
     private String bio;
 
     private Country country;
+
+    private Level level;
 
 }

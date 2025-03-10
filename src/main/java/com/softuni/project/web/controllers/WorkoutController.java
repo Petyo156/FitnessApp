@@ -40,7 +40,7 @@ public class WorkoutController {
         ModelAndView modelAndView = new ModelAndView("user/your-workouts");
 
         User user = userService.getById(authenticationMetadata.getId());
-        List<ViewWorkoutResponse> workouts = workoutService.viewYourWorkouts(user);
+        List<ViewWorkoutResponse> workouts = workoutService.getYourWorkouts(user);
 
         modelAndView.addObject("workouts", workouts);
 

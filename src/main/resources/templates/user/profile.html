@@ -11,9 +11,15 @@
     </section>
     <section>
         <h2 th:text="${user.username}">Username</h2>
-        <p><strong>Full Name:</strong> <span th:text="${user.firstName} + ' ' +  ${user.lastName}"></span></p>
+
+        <p th:if="${user.firstName != null and user.lastName != null and user.firstName != '' and user.lastName != ''}">
+            <strong>Full Name:</strong> <span th:text="${user.firstName} + ' ' + ${user.lastName}"></span>
+        </p>
+        <p><strong>Level:</strong> <span th:text="${user.level}"></span></p>
+        <p><strong>Bio:</strong> <span th:text="${user.bio}"></span></p>
         <p><strong>Country:</strong> <span th:text="${user.country}"></span></p>
-        <p><strong>Email:</strong> <span th:text="${user.email}"></span></p>
+        <p><strong>Contact Email:</strong> <span th:text="${user.email}"></span></p>
+
         <p><strong>Joined Date:</strong> <span th:text="${#temporals.format(user.getCreatedOn(), 'yyyy-MM-dd')}"></span></p>
     </section>
 
@@ -27,11 +33,32 @@
 
 <!--    if in another user's profile-->
     <section th:if="${loggedUserId != user.id}">
-        <ul>
-            <li th:each="program : ${user.programs}">
-                <a th:if="${program.sharedWithOthers == true}" th:href="'@{/program/' + program.id'}" th:text="${program.name}"></a>
-            </li>
-        </ul>
+        <h2>Shared Programs</h2>
+
+        <div th:each="program : ${programs}" class="program-card" th:onclick="toggleWorkouts([[${program.name}]])">
+            <h3 th:text="${program.name}"></h3>
+            <p th:text="${program.description}"></p>
+            <p><strong>Difficulty:</strong> <span th:text="${program.difficulty}"></span></p>
+            <p><strong>Created On:</strong> <span th:text="${#temporals.format(program.createdOn, 'yyyy-MM-dd')}"></span></p>
+            <p><strong>Created By:</strong> <span th:text="${program.addedByUsername}"></span></p>
+
+            <div class="workouts-container" th:id="'workouts-' + ${program.name}">
+                <div th:each="workout : ${program.workouts}" class="workout-card">
+                    <h4 th:text="${workout.dayOfWeek}"></h4>
+                    <p><strong>Duration:</strong> <span th:text="${workout.approximateDuration} + ' min'"></span></p>
+                    <p><strong>Info:</strong> <span th:text="${workout.additionalInfo}"></span></p>
+
+                    <ul>
+                        <li th:each="exercise : ${workout.exercises}">
+                            <strong th:text="${exercise.exerciseName}"></strong>
+                            (<span th:text="${exercise.sets}"></span> sets x
+                            <span th:text="${exercise.reps}"></span> reps,
+                            <span th:text="${exercise.addedWeight}"></span> kg)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </section>
 
 </body>

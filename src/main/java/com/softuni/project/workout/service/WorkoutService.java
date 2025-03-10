@@ -4,7 +4,6 @@ import com.softuni.project.exception.DomainException;
 import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.user.model.User;
-import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.dto.SubmitWorkoutRequest;
 import com.softuni.project.web.dto.ViewWorkoutResponse;
 import com.softuni.project.web.dto.WorkoutExerciseEntry;
@@ -29,14 +28,12 @@ public class WorkoutService {
     private final WorkoutRepository workoutRepository;
     private final WorkoutExerciseService workoutExerciseService;
     private final ExerciseService exerciseService;
-    private final UserService userService;
 
     @Autowired
-    public WorkoutService(WorkoutRepository workoutRepository, WorkoutExerciseService workoutExerciseService, ExerciseService exerciseService, UserService userService) {
+    public WorkoutService(WorkoutRepository workoutRepository, WorkoutExerciseService workoutExerciseService, ExerciseService exerciseService) {
         this.workoutRepository = workoutRepository;
         this.workoutExerciseService = workoutExerciseService;
         this.exerciseService = exerciseService;
-        this.userService = userService;
     }
 
     @Transactional
@@ -65,11 +62,7 @@ public class WorkoutService {
                 .build();
     }
 
-    public List<ViewWorkoutResponse> viewYourWorkouts(UUID userId){
-        return viewYourWorkouts(userService.getById(userId));
-    }
-
-    public List<ViewWorkoutResponse> viewYourWorkouts(User user) {
+    public List<ViewWorkoutResponse> getYourWorkouts(User user) {
         List<Workout> workoutsAddedBy = workoutRepository.findAllByAddedBy(user);
         log.info("Fetched workouts added by logged in user");
 
@@ -77,16 +70,7 @@ public class WorkoutService {
 
         for (Workout workout : workoutsAddedBy) {
 
-            List<WorkoutExerciseEntry> workoutExerciseEntries = new ArrayList<>();
-
-            List<WorkoutExercise> allWorkoutExerciseByWorkoutId =
-                    workoutExerciseService.findAllByWorkoutId(workout.getId());
-
-            for (WorkoutExercise workoutExercise : allWorkoutExerciseByWorkoutId) {
-                WorkoutExerciseEntry workoutExerciseEntry = initializeWorkoutExerciseEntry(workoutExercise);
-                workoutExerciseEntries.add(workoutExerciseEntry);
-            }
-
+            List<WorkoutExerciseEntry> workoutExerciseEntries = getWorkoutExerciseEntries(workout);
             ViewWorkoutResponse viewWorkoutResponse = initializeViewWorkoutResponse(workout, workoutExerciseEntries);
 
             responses.add(viewWorkoutResponse);
@@ -94,6 +78,19 @@ public class WorkoutService {
         log.info("Responses for every workout retrieved");
 
         return responses;
+    }
+
+    public List<WorkoutExerciseEntry> getWorkoutExerciseEntries(Workout workout) {
+        List<WorkoutExerciseEntry> workoutExerciseEntries = new ArrayList<>();
+
+        List<WorkoutExercise> allWorkoutExerciseByWorkoutId =
+                workoutExerciseService.findAllByWorkoutId(workout.getId());
+
+        for (WorkoutExercise workoutExercise : allWorkoutExerciseByWorkoutId) {
+            WorkoutExerciseEntry workoutExerciseEntry = initializeWorkoutExerciseEntry(workoutExercise);
+            workoutExerciseEntries.add(workoutExerciseEntry);
+        }
+        return workoutExerciseEntries;
     }
 
     public Workout findById(UUID uuid) {

@@ -1,7 +1,7 @@
-package com.softuni.project.workoutexercises.model;
+package com.softuni.project.logexercise.model;
 
 import com.softuni.project.excersise.model.Exercise;
-import com.softuni.project.workout.model.Workout;
+import com.softuni.project.log.model.Log;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,23 +13,25 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "workout_exercises")
-public class WorkoutExercise {
+@Table(name = "logs_exercises")
+public class LogExercise {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private Integer reps;
+    @Column(nullable = false)
+    private Integer completedReps;
 
-    private Integer sets;
+    @Column(nullable = false)
+    private Integer completedSets;
 
     private Double addedWeight;
 
     @ManyToOne
-    @JoinColumn(name = "workout_id", nullable = false)
-    private Workout workout;
-
-    @ManyToOne
     @JoinColumn(name = "exercise_id", nullable = false)
     private Exercise exercise;
+
+    @ManyToOne
+    @JoinColumn(name = "log_id", nullable = false)
+    private Log log;
 }

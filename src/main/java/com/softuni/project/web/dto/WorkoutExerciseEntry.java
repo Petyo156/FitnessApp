@@ -23,4 +23,7 @@ public class WorkoutExerciseEntry {
 
     @Min(value = 0, message = "Added weight cannot be negative")
     private Double addedWeight;
+
+    private String exerciseId;
+
 }

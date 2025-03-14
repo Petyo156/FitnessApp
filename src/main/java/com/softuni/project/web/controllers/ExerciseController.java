@@ -43,7 +43,7 @@ public class ExerciseController {
         ModelAndView modelAndView = new ModelAndView("user/exercises");
 
         List<Exercise> exercises = exerciseService.findAllApprovedExercises();
-        Exercise selectedExercise = exerciseService.findById(UUID.fromString(id));
+        Exercise selectedExercise = exerciseService.getById(UUID.fromString(id));
         exerciseService.throwIfNotApproved(selectedExercise);
 
         modelAndView.addObject("selectedExercise", selectedExercise);

@@ -1,15 +1,12 @@
 package com.softuni.project.program.model;
 
-import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.user.model.User;
 import com.softuni.project.workoutschedule.model.WorkoutSchedule;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Builder
@@ -39,14 +36,11 @@ public class Program {
     @Column(nullable = false)
     private Difficulty difficulty;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Status status;
-
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "program", cascade = CascadeType.ALL)
     private List<WorkoutSchedule> workoutSchedules;
+
 }

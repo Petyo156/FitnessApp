@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Log Workout</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        .workout-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .exercise-card {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: white;
+        }
+        .exercise-card img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-top: 10px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
+<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
+
+<div class="workout-container">
+    <h2 th:text="'Log Workout - ' + ${dayOfWeek}"></h2>
+    <p th:if="${workoutResponse.additionalInfo != null}">
+        <strong>Additional Info:</strong> <span th:text="${workoutResponse.additionalInfo}"></span>
+    </p>
+    <p th:if="${workoutResponse.approximateDuration != null}">
+        <strong>Approximate Duration:</strong> <span th:text="${workoutResponse.approximateDuration + ' min'}"></span>
+    </p>
+
+    <!-- Bind the form to workoutLogRequest -->
+    <form th:action="@{'/logs/' + ${workoutResponse.workoutId}}" method="post" th:object="${workoutLogRequest}">
+        <div th:each="exercise, iterStat : ${workoutResponse.exercises}" class="exercise-card">
+            <h3 th:text="${exercise.exerciseName}"></h3>
+            <img th:if="${exercise.mediaUrl != null}" th:src="${exercise.mediaUrl}" alt="Exercise Image">
+
+            <p><strong>Target:</strong>
+                <span th:text="'Sets: ' + ${exercise.sets} + ', Reps: ' + ${exercise.reps} + ', Weight: ' + ${exercise.addedWeight} + 'kg'"></span>
+            </p>
+
+            <!-- Bind fields to loggedExercises -->
+            <div class="form-group">
+                <label>Completed Sets:</label>
+                <input type="number" th:field="*{loggedExercises[__${iterStat.index}__].sets}" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label>Completed Reps:</label>
+                <input type="number" th:field="*{loggedExercises[__${iterStat.index}__].reps}" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label>Added Weight (kg):</label>
+                <input type="number" th:field="*{loggedExercises[__${iterStat.index}__].addedWeight}" min="0" step="0.1">
+            </div>
+
+            <!-- Hidden field for exerciseId -->
+            <input type="hidden" th:field="*{loggedExercises[__${iterStat.index}__].exerciseId}" th:value="${exercise.exerciseId}">
+        </div>
+
+        <button type="submit">Log Workout</button>
+    </form>
+</div>
+
+</body>
+</html>

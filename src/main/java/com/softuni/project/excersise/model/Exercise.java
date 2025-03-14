@@ -54,9 +54,4 @@ public class Exercise {
 
     @Enumerated(EnumType.STRING)
     private ExerciseStatus status = ExerciseStatus.PENDING;
-
-
-//    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL)
-//    private List<Log> logs = new ArrayList<>();
-
 }

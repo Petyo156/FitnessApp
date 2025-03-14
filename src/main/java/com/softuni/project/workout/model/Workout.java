@@ -1,7 +1,6 @@
 package com.softuni.project.workout.model;
 
 import com.softuni.project.log.model.Log;
-import com.softuni.project.program.model.Status;
 import com.softuni.project.user.model.User;
 import com.softuni.project.workoutschedule.model.WorkoutSchedule;
 import jakarta.persistence.*;
@@ -25,7 +24,6 @@ public class Workout {
 
     private Integer duration;
 
-    @Column
     private String additionalInfo;
 
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL)

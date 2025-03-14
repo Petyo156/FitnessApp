@@ -87,10 +87,12 @@
 
 
 <div th:each="program : ${programs}" class="program-container">
+    <form th:action="@{/programs/activate/{id}(id=${program.id})}" method="post">
+        <button type="submit">Make active</button>
+    </form>
     <h2 th:text="${program.name}"></h2>
     <p><strong>Description:</strong> <span th:text="${program.description}"></span></p>
     <p><strong>Difficulty:</strong> <span th:text="${program.difficulty}"></span></p>
-    <p><strong>Status:</strong> <span th:text="${program.status}"></span></p>
     <p><strong>Created On:</strong> <span th:text="${#temporals.format(program.createdOn, 'yyyy-MM-dd HH:mm')}"></span></p>
     <p><strong>Created By:</strong> <span th:text="${program.addedByUsername}"></span></p>
 

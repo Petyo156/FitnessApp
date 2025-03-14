@@ -8,6 +8,7 @@ import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.dto.SubmitExerciseRequest;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -135,6 +136,11 @@ public class ExerciseService {
 
     public List<String> findAllApprovedExercisesNames() {
         return exerciseRepository.findAllExercisesNamesByStatus(ExerciseStatus.APPROVED);
+    }
+
+    @Transactional
+    public void deleteAllRejectedExercises() {
+        exerciseRepository.deleteAllByStatus(ExerciseStatus.REJECTED);
     }
 }
 

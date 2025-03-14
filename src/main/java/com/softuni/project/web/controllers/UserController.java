@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/profile")
-    public ModelAndView viewProfile(@PathVariable UUID id, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView getProfile(@PathVariable UUID id, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView();
 
         User user = userService.getById(id);
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @GetMapping("/profile/edit")
-    public ModelAndView editProfile(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView showEditProfileForm(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("user/edit-profile");
 
         User user = userService.getById(authenticationMetadata.getId());

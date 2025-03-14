@@ -33,8 +33,8 @@ public class ProgramController {
         this.workoutService = workoutService;
     }
 
-    @GetMapping("/create")
-    public ModelAndView submitProgram(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    @GetMapping("/new")
+    public ModelAndView showProgramForm(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         User user = userService.getById(authenticationMetadata.getId());
 
         ModelAndView modelAndView = new ModelAndView("user/submit-program");
@@ -46,8 +46,8 @@ public class ProgramController {
         return modelAndView;
     }
 
-    @PostMapping("/submit")
-    public String submitProgram(
+    @PostMapping()
+    public String createProgram(
             @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
             @ModelAttribute ProgramFormRequest programFormRequest) {
 
@@ -57,38 +57,35 @@ public class ProgramController {
         programService.createProgram(user, programFormRequest);
 
         log.info("New program created successfully!");
-        return "redirect:/programs/create";
+        return "redirect:/programs/personal";
     }
 
-    @GetMapping("/your-programs")
-    public ModelAndView yourPrograms(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
-        User user = userService.getById(authenticationMetadata.getId());
-
-        List<ViewProgramResponse> programs = programService.getAllProgramsByUser(user);
-        log.info("Fetching all programs by logged user");
-
+    @GetMapping("/personal")
+    public ModelAndView getUserPrograms(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("user/your-programs");
+        modelAndView.addObject("user", userService.getById(authenticationMetadata.getId()));
+        modelAndView.addObject("programs", programService.getAllProgramsByUser
+                (userService.getById(authenticationMetadata.getId())));
 
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("programs", programs);
-
+        log.info("Fetching all programs by logged user");
         return modelAndView;
     }
 
-    @GetMapping("/browse-programs")
-    public ModelAndView browsePrograms(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    @GetMapping("/browse")
+    public ModelAndView browseSharedPrograms(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         User user = userService.getById(authenticationMetadata.getId());
         List<ViewProgramResponse> programs = programService.getAllSharedProgramsByAllOtherUsers(user);
         log.info("Fetching all programs shared by all other users");
 
         ModelAndView modelAndView = new ModelAndView("user/browse-programs");
         modelAndView.addObject("programs", programs);
+        modelAndView.addObject("user", user);
 
         return modelAndView;
     }
 
-    @PostMapping("/activate/{id}")
-    public String activateProgram(@PathVariable("id") UUID programId, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    @PostMapping("/{programId}/activate")
+    public String activateProgram(@PathVariable("programId") UUID programId, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         User user = userService.getById(authenticationMetadata.getId());
         Program program = programService.getProgramById(programId);
 

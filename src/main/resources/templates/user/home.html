@@ -23,31 +23,31 @@
         <br><br>
 
         <a th:href="@{/exercises}"><button>Browse Exercises</button></a>
-        <a th:href="@{/programs/browse-programs}"><button>Browse Programs</button></a>
+        <a th:href="@{/programs/browse}"><button>Browse Programs</button></a>
         <br><br>
 
 <!--        ADMIN-->
         <div th:if="${user.userRole.name() == 'ADMIN'}">
-            <a th:href="@{/admin/exercises/review}"><button>Review Exercises</button></a>
+            <a th:href="@{/admin/exercises/moderation}"><button>Review Exercises</button></a>
             <a th:href="@{/admin/users}"><button>Manage Users</button></a>
             <br><br>
         </div>
 
 <!--        USER-->
         <div th:if="${user.userRole.name() == 'USER'}">
-            <a th:href="@{/exercises/create}"><button>Create Exercise</button></a>
-            <a th:href="@{'/exercises/your-exercises'}"><button>Your Exercises</button></a>
+            <a th:href="@{/exercises/new}"><button>Create Exercise</button></a>
+            <a th:href="@{'/exercises/personal'}"><button>Your Exercises</button></a>
             <br><br>
 
-            <a th:href="@{/workouts/create}"><button>Create Workout</button></a>
-            <a th:href="@{'/workouts/your-workouts'}"><button>Your Workouts</button></a>
+            <a th:href="@{/workouts/new}"><button>Create Workout</button></a>
+            <a th:href="@{'/workouts/personal'}"><button>Your Workouts</button></a>
             <br><br>
 
-            <a th:href="@{/programs/create}"><button>Create Program</button></a>
-            <a th:href="@{'/programs/your-programs'}"><button>Your Programs</button></a>
+            <a th:href="@{/programs/new}"><button>Create Program</button></a>
+            <a th:href="@{'/programs/personal'}"><button>Your Programs</button></a>
             <br><br>
 
-            <form th:action="@{/logs/view}" method="get">
+            <form th:action="@{/logs}" method="get">
                 <button type="submit">View logs</button>
             </form>
 

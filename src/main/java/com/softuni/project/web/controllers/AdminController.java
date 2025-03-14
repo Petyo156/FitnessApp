@@ -42,65 +42,47 @@ public class AdminController {
         return modelAndView;
     }
 
-    @PostMapping("/users/{id}/activate")
+    @PostMapping("/users/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
-    public String activateUser(@PathVariable String id) {
-
+    public String updateUserStatus(@PathVariable String id) {
         userService.changeUserStatus(UUID.fromString(id));
-
         return "redirect:/admin/users";
     }
 
-    @PostMapping("/users/{id}/deactivate")
+    @PostMapping("/users/{id}/role")
     @PreAuthorize("hasRole('ADMIN')")
-    public String deactivateUser(@PathVariable String id) {
-
-        userService.changeUserStatus(UUID.fromString(id));
-
-        return "redirect:/admin/users";
-    }
-
-    @PostMapping("/users/{id}/reprioritize")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String reprioritizeUser(@PathVariable String id) {
-
+    public String updateUserRole(@PathVariable String id) {
         userService.changeUserRole(UUID.fromString(id));
-
         return "redirect:/admin/users";
     }
 
-    @GetMapping("/exercises/review")
+    @GetMapping("/exercises/moderation")
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView review() {
-
+    public ModelAndView reviewExercises() {
         ModelAndView modelAndView = new ModelAndView("admin/review-exercises");
+        modelAndView.addObject("pendingExercises", exerciseService.findAllPendingExercises());
+        modelAndView.addObject("rejectedExercises", exerciseService.findAllRejectedExercises());
+        modelAndView.addObject("approvedExercises", exerciseService.findAllApprovedExercises());
 
-        List<Exercise> pendingExercises = exerciseService.findAllPendingExercises();
-        List<Exercise> rejectedExercises = exerciseService.findAllRejectedExercises();
-        List<Exercise> approvedExercises = exerciseService.findAllApprovedExercises();
         log.info("Retrieved all exercises");
-
-        modelAndView.addObject("pendingExercises", pendingExercises);
-        modelAndView.addObject("rejectedExercises", rejectedExercises);
-        modelAndView.addObject("approvedExercises", approvedExercises);
-
         return modelAndView;
     }
 
-    @PostMapping("/exercises/{id}/approve")
+
+    @PostMapping("/exercises/{id}/approval")
     @PreAuthorize("hasRole('ADMIN')")
     public String approveExercise(@PathVariable String id) {
         exerciseService.approveById(UUID.fromString(id));
 
-        return "redirect:/admin/exercises/review";
+        return "redirect:/admin/exercises/moderation";
     }
 
-    @PostMapping("/exercises/{id}/reject")
+    @PostMapping("/exercises/{id}/rejection")
     @PreAuthorize("hasRole('ADMIN')")
     public String rejectExercise(@PathVariable String id) {
         exerciseService.rejectById(UUID.fromString(id));
 
-        return "redirect:/admin/exercises/review";
+        return "redirect:/admin/exercises/moderation";
     }
 
 }

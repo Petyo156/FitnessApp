@@ -28,13 +28,12 @@
             <td th:text="${user.email}"></td>
             <td th:text="${user.active ? 'Active' : 'Inactive'}"></td>
             <td>
-                <form th:action="@{'/admin/users/' + ${user.id} + '/activate'}" th:if="${!user.active}" th:method="POST">
-                    <button type="submit">Activate</button>
+                <form th:action="@{'/admin/users/' + ${user.id} + '/status'}" th:method="POST">
+                    <input type="hidden" name="status" th:value="${user.active} ? 'deactivate' : 'activate'">
+                    <button type="submit" th:text="${user.active} ? 'Deactivate' : 'Activate'"></button>
                 </form>
-                <form th:action="@{'/admin/users/' + ${user.id} + '/deactivate'}" th:if="${user.active}" th:method="POST">
-                    <button type="submit">Deactivate</button>
-                </form>
-                <form th:action="@{'/admin/users/' + ${user.id} + '/reprioritize'}"  th:method="POST">
+
+                <form th:action="@{'/admin/users/' + ${user.id} + '/role'}"  th:method="POST">
                     <button type="submit" th:if="${user.userRole.name() == 'ADMIN' && user.username != 'admin'}">Demote</button>
                     <button type="submit" th:if="${user.userRole.name() != 'ADMIN' && user.username != 'admin'}">Promote</button>
                 </form>

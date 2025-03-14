@@ -23,4 +23,5 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
     @Query("SELECT e.name FROM Exercise e WHERE e.status = :status ORDER BY e.name")
     List<String> findAllExercisesNamesByStatus(@Param("status") ExerciseStatus status);
 
+    void deleteAllByStatus(ExerciseStatus exerciseStatus);
 }

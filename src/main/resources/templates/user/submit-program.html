@@ -45,7 +45,7 @@
 <th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
 <th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
 
-<form th:action="@{/programs/submit}" th:object="${programFormRequest}" method="post">
+<form th:action="@{/programs}" th:object="${programFormRequest}" method="post">
     <h2>Create New Program</h2>
 
     <label for="difficulty">Difficulty</label>

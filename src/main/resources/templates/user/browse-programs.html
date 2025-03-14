@@ -87,7 +87,8 @@
 
 
 <div th:each="program : ${programs}" class="program-container">
-    <form th:action="@{/programs/activate/{id}(id=${program.id})}" method="post">
+    <form th:action="@{/programs/{programId}/activate(programId=${program.id})}" method="post"
+          th:if="*{user.userRole.name() != 'ADMIN'}">
         <button type="submit">Make active</button>
     </form>
     <h2 th:text="${program.name}"></h2>

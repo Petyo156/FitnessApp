@@ -25,10 +25,10 @@
             <td th:text="${exercise.description}"></td>
             <td th:text="${exercise.difficulty}"></td>
             <td>
-                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/approve'}" method="post" style="display:inline;">
+                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/approval'}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-success">Approve</button>
                 </form>
-                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/reject'}" method="post" style="display:inline;">
+                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/rejection'}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-danger">Reject</button>
                 </form>
             </td>
@@ -53,7 +53,7 @@
             <td th:text="${exercise.description}"></td>
             <td th:text="${exercise.difficulty}"></td>
             <td>
-                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/reject'}" method="post" style="display:inline;">
+                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/rejection'}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-warning">Move to Rejected</button>
                 </form>
             </td>
@@ -78,7 +78,7 @@
             <td th:text="${exercise.description}"></td>
             <td th:text="${exercise.difficulty}"></td>
             <td>
-                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/approve'}" method="post" style="display:inline;">
+                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/approval'}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-warning">Move to Approved</button>
                 </form>
             </td>

@@ -35,10 +35,10 @@ public class LogController {
         this.logService = logService;
     }
 
-    @PostMapping("/{id}")
-    public String logWorkout(
+    @PostMapping("/{workoutId}")
+    public String createWorkoutLog(
             @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-            @PathVariable String id,
+            @PathVariable String workoutId,
             @Valid WorkoutLogRequest workoutLogRequest,
             BindingResult bindingResult) {
 
@@ -47,7 +47,7 @@ public class LogController {
         }
 
         User user = userService.getById(authenticationMetadata.getId());
-        Workout workout = workoutService.getById(UUID.fromString(id));
+        Workout workout = workoutService.getById(UUID.fromString(workoutId));
 
         logService.createLog(user, workout, workoutLogRequest);
 
@@ -55,7 +55,7 @@ public class LogController {
     }
 
     @GetMapping("/{dayOfWeek}/{workoutId}")
-    public ModelAndView logWorkoutPage(@PathVariable String dayOfWeek, @PathVariable String workoutId) {
+    public ModelAndView showLogWorkoutPage(@PathVariable String dayOfWeek, @PathVariable String workoutId) {
         ModelAndView modelAndView = new ModelAndView("user/log-workout");
         Workout workout = workoutService.getById(UUID.fromString(workoutId));
         ViewWorkoutResponse workoutResponse = workoutService.getViewWorkoutResponse(workout);
@@ -68,8 +68,8 @@ public class LogController {
         return modelAndView;
     }
 
-    @GetMapping("/view")
-    public ModelAndView viewLogs(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    @GetMapping()
+    public ModelAndView getUserLogs(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("user/your-logs");
         UUID userId = authenticationMetadata.getId();
 
@@ -84,6 +84,6 @@ public class LogController {
         logService.deleteLogById(UUID.fromString(id));
 
         log.info("Log deleted successfully");
-        return "redirect:/logs/view";
+        return "redirect:/logs";
     }
 }

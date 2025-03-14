@@ -52,31 +52,26 @@ public class ExerciseController {
         return modelAndView;
     }
 
-    @GetMapping("/create")
-    public ModelAndView submitExercise() {
+    @GetMapping("/new")
+    public ModelAndView showSubmitExerciseForm() {
         ModelAndView modelAndView = new ModelAndView("user/submit-exercise");
         modelAndView.addObject("submitExerciseRequest", new SubmitExerciseRequest());
 
         return modelAndView;
     }
 
-    @GetMapping("/your-exercises")
-    public ModelAndView yourExercises(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    @GetMapping("/personal")
+    public ModelAndView getUserExercises(@AuthenticationPrincipal AuthenticationMetadata auth) {
         ModelAndView modelAndView = new ModelAndView("user/your-exercises");
+        modelAndView.addObject("approvedExercises", exerciseService.findAllApprovedExercisesByUserId(auth.getId()));
+        modelAndView.addObject("pendingExercises", exerciseService.findAllPendingExercisesByUserId(auth.getId()));
+        modelAndView.addObject("rejectedExercises", exerciseService.findAllRejectedExercisesByUserId(auth.getId()));
 
-        List<Exercise> approvedExercises = exerciseService.findAllApprovedExercisesByUserId(authenticationMetadata.getId());
-        List<Exercise> pendingExercises = exerciseService.findAllPendingExercisesByUserId(authenticationMetadata.getId());
-        List<Exercise> rejectedExercises = exerciseService.findAllRejectedExercisesByUserId(authenticationMetadata.getId());
-        log.info("Retrieved all of user's exercises");
-
-        modelAndView.addObject("approvedExercises", approvedExercises);
-        modelAndView.addObject("pendingExercises", pendingExercises);
-        modelAndView.addObject("rejectedExercises", rejectedExercises);
-
+        log.info("Retrieved all user's exercises");
         return modelAndView;
     }
 
-    @PostMapping("/submit")
+    @PostMapping()
     public String submitExercise(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata, @Valid SubmitExerciseRequest submitExerciseRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "user/submit-exercise";

@@ -35,8 +35,8 @@ public class WorkoutController {
         this.exerciseService = exerciseService;
     }
 
-    @GetMapping("/your-workouts")
-    public ModelAndView yourWorkouts(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    @GetMapping("/personal")
+    public ModelAndView getYourWorkouts(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("user/your-workouts");
 
         User user = userService.getById(authenticationMetadata.getId());
@@ -47,8 +47,8 @@ public class WorkoutController {
         return modelAndView;
     }
 
-    @GetMapping("/create")
-    public ModelAndView submitWorkout() {
+    @GetMapping("/new")
+    public ModelAndView showCreateWorkoutForm() {
         ModelAndView modelAndView = new ModelAndView("user/submit-workout");
 
         List<String> allExercises = exerciseService.findAllApprovedExercisesNames();
@@ -59,8 +59,8 @@ public class WorkoutController {
         return modelAndView;
     }
 
-    @PostMapping("/submit")
-    public String submitWorkout(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata, @Valid SubmitWorkoutRequest submitWorkoutRequest, BindingResult bindingResult) {
+    @PostMapping()
+    public String createWorkout(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata, @Valid SubmitWorkoutRequest submitWorkoutRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "user/submit-workout";
         }

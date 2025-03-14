@@ -1,9 +1,9 @@
-package com.softuni.project.workoutexercises.service;
+package com.softuni.project.workoutexercise.service;
 
 import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.workout.model.Workout;
-import com.softuni.project.workoutexercises.model.WorkoutExercise;
-import com.softuni.project.workoutexercises.repository.WorkoutExerciseRepository;
+import com.softuni.project.workoutexercise.model.WorkoutExercise;
+import com.softuni.project.workoutexercise.repository.WorkoutExerciseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

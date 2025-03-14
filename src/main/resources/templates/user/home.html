@@ -47,26 +47,52 @@
             <a th:href="@{'/programs/your-programs'}"><button>Your Programs</button></a>
             <br><br>
 
+            <form th:action="@{/logs/view}" method="get">
+                <button type="submit">View logs</button>
+            </form>
+
             <div>
-                <p><strong>Current Program:</strong></p>
-                <p>Mon / Tues / Wed / Thur / Fri / Sat / Sun</p>
+                <p><strong>Active Program:</strong></p>
 
-                <ul>
-                    <li>Day 1 - [Different Exercises] <button>✔</button></li>
-                    <li>Day 2 - [Different Exercises] <button>✔</button></li>
-                    <li>Day 3 - [Different Exercises] <button>✔</button></li>
-                    <li>Day 4 - [Different Exercises] <button>✔</button></li>
-                    <li>Day 5 - [Different Exercises] <button>✔</button></li>
-                </ul>
+                <!-- Check if activeProgram is null -->
+                <div th:if="${activeProgram == null}">
+                    <p>No active program found. Please activate a program.</p>
+                </div>
 
-                <p>Click the ✔ button to mark exercises as completed.</p>
+                <!-- If activeProgram exists, display the workouts -->
+                <div th:unless="${activeProgram == null}">
+                    <p><strong>Program Name:</strong> <span th:text="${activeProgram.name}"></span></p>
+                    <p>Mon / Tues / Wed / Thur / Fri / Sat / Sun</p>
+
+                    <ul>
+                        <li th:each="workout : ${activeProgram.workouts}">
+                            <p><strong>Day:</strong> <span th:text="${workout.dayOfWeek}"></span></p>
+
+                            <ul>
+                                <li th:each="exercise : ${workout.exercises}">
+                                    <p>
+                                        <strong>Exercise:</strong> <span th:text="${exercise.exerciseName}"></span> |
+                                        <strong>Sets:</strong> <span th:text="${exercise.sets}"></span> |
+                                        <strong>Reps:</strong> <span th:text="${exercise.reps}"></span> |
+                                        <strong>Weight:</strong> <span th:text="${exercise.addedWeight}"></span> kg
+                                    </p>
+                                </li>
+                            </ul>
+
+                            <form th:action="@{'/logs/' + ${workout.dayOfWeek.getDisplayName()} + '/' + ${workout.workoutId}}" method="get">
+                                <button type="submit">✔</button>
+                            </form>
+                        </li>
+                    </ul>
+
+                    <p>Click the ✔ button to mark workouts as completed.</p>
+                    <form th:action="@{/programs/deactivate}" method="post">
+                        <button type="submit">Remove program</button>
+                    </form>
+
+                </div>
             </div>
-        </div>
-
-
-        <th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
-
 </main>
-
+<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
 </body>
 </html>

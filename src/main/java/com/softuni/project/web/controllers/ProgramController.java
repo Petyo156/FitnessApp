@@ -1,5 +1,6 @@
 package com.softuni.project.web.controllers;
 
+import com.softuni.project.program.model.Program;
 import com.softuni.project.program.service.ProgramService;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/programs")
@@ -83,5 +85,23 @@ public class ProgramController {
         modelAndView.addObject("programs", programs);
 
         return modelAndView;
+    }
+
+    @PostMapping("/activate/{id}")
+    public String activateProgram(@PathVariable("id") UUID programId, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+        User user = userService.getById(authenticationMetadata.getId());
+        Program program = programService.getProgramById(programId);
+
+        userService.setActiveProgramForUser(user, program);
+
+        return "redirect:/home";
+    }
+
+    @PostMapping("/deactivate")
+    public String deactivateProgram(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+        User user = userService.getById(authenticationMetadata.getId());
+        userService.deactivateProgramForUser(user);
+
+        return "redirect:/home";
     }
 }

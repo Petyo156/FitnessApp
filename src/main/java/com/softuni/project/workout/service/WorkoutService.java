@@ -4,13 +4,11 @@ import com.softuni.project.exception.DomainException;
 import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.user.model.User;
-import com.softuni.project.web.dto.SubmitWorkoutRequest;
-import com.softuni.project.web.dto.ViewWorkoutResponse;
-import com.softuni.project.web.dto.WorkoutExerciseEntry;
+import com.softuni.project.web.dto.*;
 import com.softuni.project.workout.model.Workout;
 import com.softuni.project.workout.repository.WorkoutRepository;
-import com.softuni.project.workoutexercises.model.WorkoutExercise;
-import com.softuni.project.workoutexercises.service.WorkoutExerciseService;
+import com.softuni.project.workoutexercise.model.WorkoutExercise;
+import com.softuni.project.workoutexercise.service.WorkoutExerciseService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +20,8 @@ import java.util.UUID;
 
 import static com.softuni.project.workout.model.Workout.*;
 
-@Slf4j
 @Service
+@Slf4j
 public class WorkoutService {
     private final WorkoutRepository workoutRepository;
     private final WorkoutExerciseService workoutExerciseService;
@@ -70,14 +68,17 @@ public class WorkoutService {
 
         for (Workout workout : workoutsAddedBy) {
 
-            List<WorkoutExerciseEntry> workoutExerciseEntries = getWorkoutExerciseEntries(workout);
-            ViewWorkoutResponse viewWorkoutResponse = initializeViewWorkoutResponse(workout, workoutExerciseEntries);
-
+            ViewWorkoutResponse viewWorkoutResponse = getViewWorkoutResponse(workout);
             responses.add(viewWorkoutResponse);
         }
         log.info("Responses for every workout retrieved");
 
         return responses;
+    }
+
+    public ViewWorkoutResponse getViewWorkoutResponse(Workout workout) {
+        List<WorkoutExerciseEntry> workoutExerciseEntries = getWorkoutExerciseEntries(workout);
+        return initializeViewWorkoutResponse(workout, workoutExerciseEntries);
     }
 
     public List<WorkoutExerciseEntry> getWorkoutExerciseEntries(Workout workout) {
@@ -93,8 +94,7 @@ public class WorkoutService {
         return workoutExerciseEntries;
     }
 
-    public Workout findById(UUID uuid) {
-        log.info("Fetching workout with ID: {}", uuid);
+    public Workout getById(UUID uuid) {
 
         return workoutRepository.findById(uuid).orElseThrow(() -> {
             log.error("Workout with ID '{}' does not exist", uuid);
@@ -108,7 +108,9 @@ public class WorkoutService {
                 .additionalInfo(workout.getAdditionalInfo())
                 .approximateDuration(workout.getDuration())
                 .exercises(workoutExerciseEntries)
-                .workoutId(workout.getId())
+                .workoutId(workout.getId().toString())
+                .additionalInfo(workout.getAdditionalInfo())
+                .approximateDuration(workout.getDuration())
                 .build();
     }
 
@@ -119,6 +121,22 @@ public class WorkoutService {
                 .reps(workoutExercise.getReps())
                 .addedWeight(workoutExercise.getAddedWeight())
                 .mediaUrl(workoutExercise.getExercise().getMediaUrl())
+                .exerciseId(workoutExercise.getExercise().getId().toString())
                 .build();
+    }
+
+    public WorkoutLogRequest initializeWorkoutLogRequest(ViewWorkoutResponse workoutResponse) {
+        WorkoutLogRequest workoutLogRequest = new WorkoutLogRequest();
+        List<LogExerciseRequest> loggedExercises = new ArrayList<>();
+
+        workoutResponse.getExercises().forEach(exercise -> {
+            LogExerciseRequest logExerciseRequest = new LogExerciseRequest();
+            logExerciseRequest.setExerciseId(exercise.getExerciseId());
+            loggedExercises.add(logExerciseRequest);
+        });
+        workoutLogRequest.setLoggedExercises(loggedExercises);
+
+        log.info("WorkoutLogRequest created");
+        return workoutLogRequest;
     }
 }

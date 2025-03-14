@@ -1,6 +1,7 @@
 package com.softuni.project.user.service;
 
 import com.softuni.project.exception.DomainException;
+import com.softuni.project.program.model.Program;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.model.UserRole;
@@ -9,7 +10,6 @@ import com.softuni.project.user.repository.UserRepository;
 import com.softuni.project.web.dto.EditProfileRequest;
 import com.softuni.project.web.dto.RegisterRequest;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -151,5 +151,28 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(user);
         log.info("Overwritten logged user's personal information");
+    }
+
+    public void setActiveProgramForUser(User user, Program program) {
+        user.setActiveProgram(program);
+
+        userRepository.save(user);
+        log.info("Set new active program for logged user");
+    }
+
+    public Program getActiveProgramForUser(User user) {
+        if(null == user.getActiveProgram()) {
+            log.info("Active program not found for logged user");
+            return null;
+        }
+
+        return user.getActiveProgram();
+    }
+
+    public void deactivateProgramForUser(User user) {
+        user.setActiveProgram(null);
+
+        userRepository.save(user);
+        log.info("Removed active program for logged user");
     }
 }

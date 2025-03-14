@@ -1,6 +1,6 @@
-package com.softuni.project.workoutexercises.repository;
+package com.softuni.project.workoutexercise.repository;
 
-import com.softuni.project.workoutexercises.model.WorkoutExercise;
+import com.softuni.project.workoutexercise.model.WorkoutExercise;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

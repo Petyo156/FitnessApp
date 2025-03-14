@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Logs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        .log-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .log-card {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: white;
+        }
+        .log-card h3 {
+            margin-top: 0;
+        }
+        .exercise-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .exercise-table th, .exercise-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .exercise-table th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
+<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
+
+<div class="log-container">
+    <h2>My Workout Logs</h2>
+
+    <div th:each="log : ${logs}" class="log-card">
+        <h3 th:text="'Workout - ' + ${log.completionDate} + ' - ' + ${log.completionDate.getDayOfWeek().name()}"></h3>
+
+        <table class="exercise-table">
+            <thead>
+            <tr>
+                <th>Exercise</th>
+                <th>Sets</th>
+                <th>Reps</th>
+                <th>Weight (kg)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="exercise : ${log.loggedExercises}">
+                <td th:text="${exercise.exerciseName}"></td>
+                <td th:text="${exercise.completedSets}"></td>
+                <td th:text="${exercise.completedReps}"></td>
+                <td th:text="${exercise.addedWeight}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+        <form th:action="@{'/logs/' + ${log.logId}}" method="post">
+            <input type="hidden" name="_method" value="delete" />
+            <button type="submit">Delete log</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

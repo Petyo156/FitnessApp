@@ -65,8 +65,7 @@ public class ExerciseService {
         return exerciseRepository.findAll();
     }
 
-    public Exercise findById(UUID uuid) {
-        log.info("Fetching exercise with ID: {}", uuid);
+    public Exercise getById(UUID uuid) {
 
         return exerciseRepository.findById(uuid).orElseThrow(() -> {
             log.error("Exercise with ID '{}' does not exist", uuid);
@@ -101,7 +100,7 @@ public class ExerciseService {
     }
 
     public void approveById(UUID uuid) {
-        Exercise exercise = findById(uuid);
+        Exercise exercise = getById(uuid);
         exercise.setStatus(ExerciseStatus.APPROVED);
         exerciseRepository.save(exercise);
 
@@ -109,7 +108,7 @@ public class ExerciseService {
     }
 
     public void rejectById(UUID uuid) {
-        Exercise exercise = findById(uuid);
+        Exercise exercise = getById(uuid);
         exercise.setStatus(ExerciseStatus.REJECTED);
         exerciseRepository.save(exercise);
 

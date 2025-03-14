@@ -33,7 +33,7 @@ public class WorkoutScheduleService {
             String workoutId = entry.getValue();
 
             if (workoutId != null) {
-                Workout workout = workoutService.findById(UUID.fromString(workoutId));
+                Workout workout = workoutService.getById(UUID.fromString(workoutId));
                 createScheduleForDay(day, workout, program);
                 countCreatedSchedules++;
             }

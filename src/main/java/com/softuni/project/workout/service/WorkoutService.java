@@ -4,6 +4,7 @@ import com.softuni.project.exception.ExceptionMessages;
 import com.softuni.project.exception.WorkoutDoesntExistException;
 import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.service.ExerciseService;
+import com.softuni.project.mapper.Mapper;
 import com.softuni.project.user.model.User;
 import com.softuni.project.web.dto.*;
 import com.softuni.project.workout.model.Workout;
@@ -28,18 +29,26 @@ public class WorkoutService {
     private final WorkoutExerciseService workoutExerciseService;
     private final ExerciseService exerciseService;
 
+    private final Mapper<SubmitWorkoutRequest, Workout> workoutMapper;
+    private final Mapper<Workout, ViewWorkoutResponse> workoutResponseMapper;
+    private final Mapper<WorkoutExercise, WorkoutExerciseEntry> workoutExerciseEntryMapper;
+
     @Autowired
-    public WorkoutService(WorkoutRepository workoutRepository, WorkoutExerciseService workoutExerciseService, ExerciseService exerciseService) {
+    public WorkoutService(WorkoutRepository workoutRepository, WorkoutExerciseService workoutExerciseService, ExerciseService exerciseService, Mapper<SubmitWorkoutRequest, Workout> workoutMapper, Mapper<Workout, ViewWorkoutResponse> workoutResponseMapper, Mapper<WorkoutExercise, WorkoutExerciseEntry> workoutExerciseEntryMapper) {
         this.workoutRepository = workoutRepository;
         this.workoutExerciseService = workoutExerciseService;
         this.exerciseService = exerciseService;
+        this.workoutMapper = workoutMapper;
+        this.workoutResponseMapper = workoutResponseMapper;
+        this.workoutExerciseEntryMapper = workoutExerciseEntryMapper;
     }
 
     @Transactional
     public void submitWorkout(SubmitWorkoutRequest submitWorkoutRequest, User user) {
         List<WorkoutExerciseEntry> enteredExercises = submitWorkoutRequest.getExercises();
 
-        Workout workout = initializeWorkout(submitWorkoutRequest, user);
+        Workout workout = workoutMapper.map(submitWorkoutRequest);
+        workout.setAddedBy(user);
         workoutRepository.save(workout);
         log.info("Workout entity saved");
 
@@ -51,14 +60,6 @@ public class WorkoutService {
         }
 
         log.info("Workout submitted successfully");
-    }
-
-    private Workout initializeWorkout(SubmitWorkoutRequest submitWorkoutRequest, User user) {
-        return builder()
-                .additionalInfo(submitWorkoutRequest.getAdditionalInfo())
-                .duration(submitWorkoutRequest.getApproximateDuration())
-                .addedBy(user)
-                .build();
     }
 
     public List<ViewWorkoutResponse> getWorkoutsForUser(User user) {
@@ -79,7 +80,10 @@ public class WorkoutService {
 
     public ViewWorkoutResponse getViewWorkoutResponseByWorkout(Workout workout) {
         List<WorkoutExerciseEntry> workoutExerciseEntries = getWorkoutExerciseEntries(workout);
-        return initializeViewWorkoutResponse(workout, workoutExerciseEntries);
+        ViewWorkoutResponse viewWorkoutResponse = workoutResponseMapper.map(workout);
+        viewWorkoutResponse.setExercises(workoutExerciseEntries);
+
+        return viewWorkoutResponse;
     }
 
     public List<WorkoutExerciseEntry> getWorkoutExerciseEntries(Workout workout) {
@@ -89,7 +93,7 @@ public class WorkoutService {
                 workoutExerciseService.findAllByWorkoutId(workout.getId());
 
         for (WorkoutExercise workoutExercise : allWorkoutExerciseByWorkoutId) {
-            WorkoutExerciseEntry workoutExerciseEntry = initializeWorkoutExerciseEntry(workoutExercise);
+            WorkoutExerciseEntry workoutExerciseEntry = workoutExerciseEntryMapper.map(workoutExercise);
             workoutExerciseEntries.add(workoutExerciseEntry);
         }
         return workoutExerciseEntries;
@@ -102,28 +106,6 @@ public class WorkoutService {
 
             return new WorkoutDoesntExistException(ExceptionMessages.WORKOUT_DOESNT_EXIST);
         });
-    }
-
-    private ViewWorkoutResponse initializeViewWorkoutResponse(Workout workout, List<WorkoutExerciseEntry> workoutExerciseEntries) {
-        return ViewWorkoutResponse.builder()
-                .additionalInfo(workout.getAdditionalInfo())
-                .approximateDuration(workout.getDuration())
-                .exercises(workoutExerciseEntries)
-                .workoutId(workout.getId().toString())
-                .additionalInfo(workout.getAdditionalInfo())
-                .approximateDuration(workout.getDuration())
-                .build();
-    }
-
-    private WorkoutExerciseEntry initializeWorkoutExerciseEntry(WorkoutExercise workoutExercise) {
-        return WorkoutExerciseEntry.builder()
-                .exerciseName(workoutExercise.getExercise().getName())
-                .sets(workoutExercise.getSets())
-                .reps(workoutExercise.getReps())
-                .addedWeight(workoutExercise.getAddedWeight())
-                .mediaUrl(workoutExercise.getExercise().getMediaUrl())
-                .exerciseId(workoutExercise.getExercise().getId().toString())
-                .build();
     }
 
     public WorkoutLogRequest initializeWorkoutLogRequest(ViewWorkoutResponse workoutResponse) {

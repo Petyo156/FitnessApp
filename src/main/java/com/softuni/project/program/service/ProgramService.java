@@ -2,6 +2,7 @@ package com.softuni.project.program.service;
 
 import com.softuni.project.exception.ExceptionMessages;
 import com.softuni.project.exception.ProgramDoesntExistException;
+import com.softuni.project.mapper.Mapper;
 import com.softuni.project.program.model.Program;
 import com.softuni.project.program.repository.ProgramRepository;
 import com.softuni.project.user.model.User;
@@ -30,34 +31,26 @@ public class ProgramService {
     private final ProgramRepository programRepository;
     private final WorkoutScheduleService workoutScheduleService;
     private final WorkoutService workoutService;
+    private final Mapper<Program, ViewProgramResponse> programMapper;
+    private final Mapper<ProgramFormRequest, Program> requestProgramMapper;
 
     @Autowired
-    public ProgramService(ProgramRepository programRepository, WorkoutScheduleService workoutScheduleService, WorkoutService workoutService) {
+    public ProgramService(ProgramRepository programRepository, WorkoutScheduleService workoutScheduleService, WorkoutService workoutService, Mapper<Program, ViewProgramResponse> programMapper, Mapper<ProgramFormRequest, Program> requestProgramMapper) {
         this.programRepository = programRepository;
         this.workoutScheduleService = workoutScheduleService;
         this.workoutService = workoutService;
+        this.programMapper = programMapper;
+        this.requestProgramMapper = requestProgramMapper;
     }
 
     @Transactional
     public void createProgram(User user, ProgramFormRequest programFormRequest) {
-        Program program = initializeProgram(user, programFormRequest);
-
+        Program program = requestProgramMapper.map(programFormRequest);
+        program.setUser(user);
         programRepository.save(program);
 
         workoutScheduleService.createWorkoutSchedules(programFormRequest, program);
         log.info("New program created successfully");
-    }
-
-    private Program initializeProgram(User user, ProgramFormRequest programFormRequest) {
-        return Program.builder()
-                .createdOn(LocalDateTime.now())
-                .name(programFormRequest.getName())
-                .description(programFormRequest.getDescription())
-                .difficulty(programFormRequest.getDifficulty())
-                .createdOn(LocalDateTime.now())
-                .sharedWithOthers(programFormRequest.getShared())
-                .user(user)
-                .build();
     }
 
     public List<ViewProgramResponse> getAllProgramsByUser(User user) {
@@ -79,11 +72,28 @@ public class ProgramService {
         return getPrograms(programs);
     }
 
+    public Program getProgramById(UUID id) {
+        return programRepository.findById(id).orElseThrow(() -> {
+
+            log.error("Program with ID '{}' does not exist", id);
+            return new ProgramDoesntExistException(ExceptionMessages.PROGRAM_DOESNT_EXIST);
+        });
+    }
+
+    public ViewProgramResponse getProgramResponseByProgram(Program program) {
+        if(null == program){
+            return null;
+        }
+        ViewProgramResponse viewProgramResponse = programMapper.map(program);
+        setWorkoutsAndExercisesForProgramResponse(program, viewProgramResponse);
+        return viewProgramResponse;
+    }
+
     private List<ViewProgramResponse> getPrograms(List<Program> programs) {
         List<ViewProgramResponse> responses = new ArrayList<>();
 
         for (Program program : programs) {
-            ViewProgramResponse programResponse = initializeProgramResponse(program);
+            ViewProgramResponse programResponse = programMapper.map(program);
             setWorkoutsAndExercisesForProgramResponse(program, programResponse);
             responses.add(programResponse);
         }
@@ -116,36 +126,6 @@ public class ProgramService {
                 .dayOfWeek(workoutSchedule.getDayOfWeek())
                 .exercises(workoutExerciseEntries)
                 .build();
-    }
-
-    private ViewProgramResponse initializeProgramResponse(Program program) {
-        return ViewProgramResponse.builder()
-                .name(program.getName())
-                .description(program.getDescription())
-                .difficulty(program.getDifficulty())
-                .createdOn(program.getCreatedOn())
-                .sharedWithOthers(program.getSharedWithOthers())
-                .workouts(new ArrayList<>())
-                .addedByUsername(program.getUser().getUsername())
-                .id(program.getId().toString())
-                .build();
-    }
-
-    public Program getProgramById(UUID id) {
-        return programRepository.findById(id).orElseThrow(() -> {
-
-            log.error("Program with ID '{}' does not exist", id);
-            return new ProgramDoesntExistException(ExceptionMessages.PROGRAM_DOESNT_EXIST);
-        });
-    }
-
-    public ViewProgramResponse getProgramResponseByProgram(Program program) {
-        if(null == program){
-            return null;
-        }
-        ViewProgramResponse viewProgramResponse = initializeProgramResponse(program);
-        setWorkoutsAndExercisesForProgramResponse(program, viewProgramResponse);
-        return viewProgramResponse;
     }
 
 }

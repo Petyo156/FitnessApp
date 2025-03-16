@@ -7,6 +7,7 @@ import com.softuni.project.exception.ExerciseNotApprovedException;
 import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.model.ExerciseStatus;
 import com.softuni.project.excersise.repository.ExerciseRepository;
+import com.softuni.project.mapper.Mapper;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
@@ -26,11 +27,13 @@ import java.util.UUID;
 public class ExerciseService {
     private final ExerciseRepository exerciseRepository;
     private final UserService userService;
+    private final Mapper<SubmitExerciseRequest, Exercise> exerciseMapper;
 
     @Autowired
-    public ExerciseService(ExerciseRepository exerciseRepository, UserService userService) {
+    public ExerciseService(ExerciseRepository exerciseRepository, UserService userService, Mapper<SubmitExerciseRequest, Exercise> exerciseMapper) {
         this.exerciseRepository = exerciseRepository;
         this.userService = userService;
+        this.exerciseMapper = exerciseMapper;
     }
 
     public void submitExercise(SubmitExerciseRequest submitExerciseRequest, AuthenticationMetadata authenticationMetadata) {
@@ -42,23 +45,11 @@ public class ExerciseService {
         }
 
         User user = userService.getById(authenticationMetadata.getId());
-        Exercise exercise = initializeExercise(submitExerciseRequest, user);
+        Exercise exercise = exerciseMapper.map(submitExerciseRequest);
+        exercise.setCreatedBy(user);
         exerciseRepository.save(exercise);
 
         log.info("Successfully submitted exercise: {}", submitExerciseRequest.getName());
-    }
-
-    private Exercise initializeExercise(SubmitExerciseRequest submitExerciseRequest, User user) {
-        return Exercise.builder()
-                .name(submitExerciseRequest.getName())
-                .description(submitExerciseRequest.getDescription())
-                .muscleGroups(submitExerciseRequest.getMuscleGroups())
-                .mediaUrl(submitExerciseRequest.getMediaUrl())
-                .difficulty(submitExerciseRequest.getDifficulty())
-                .createdBy(user)
-                .status(ExerciseStatus.PENDING)
-                .createdOn(LocalDateTime.now())
-                .build();
     }
 
     public Exercise getById(UUID uuid) {

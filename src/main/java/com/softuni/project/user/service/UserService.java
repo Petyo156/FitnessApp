@@ -52,34 +52,6 @@ public class UserService implements UserDetailsService {
         log.info("Successfully registered user: {}", user.getUsername());
     }
 
-    private void checkIfEmailAlreadyExists(RegisterRequest registerRequest) {
-        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-            log.warn("Registration failed for user '{}': Email already exists", registerRequest.getEmail());
-            throw new UserAlreadyExistsException(ExceptionMessages.USER_ALREADY_EXISTS);
-        }
-    }
-
-    private void checkIfUsernameAlreadyExists(RegisterRequest registerRequest) {
-        if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
-            log.warn("Registration failed for user '{}': Username already exists", registerRequest.getUsername());
-            throw new UserAlreadyExistsException(ExceptionMessages.USER_ALREADY_EXISTS);
-        }
-    }
-
-    private User initializeUser(RegisterRequest registerRequest) {
-        return User.builder()
-                .username(registerRequest.getUsername())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .country(registerRequest.getCountry())
-                .email(registerRequest.getEmail())
-                .userRole(userProperties.getUserDefaultRole())
-                .createdOn(LocalDateTime.now())
-                .updatedOn(LocalDateTime.now())
-                .isActive(userProperties.isDefaultAccountState())
-                .level(registerRequest.getLevel())
-                .build();
-    }
-
     public User getById(UUID userId) {
         return userRepository.findById(userId).orElseThrow(() -> {
 
@@ -182,5 +154,33 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(user);
         log.info("Removed active program for logged user");
+    }
+
+    private void checkIfEmailAlreadyExists(RegisterRequest registerRequest) {
+        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
+            log.warn("Registration failed for user '{}': Email already exists", registerRequest.getEmail());
+            throw new UserAlreadyExistsException(ExceptionMessages.USER_ALREADY_EXISTS);
+        }
+    }
+
+    private void checkIfUsernameAlreadyExists(RegisterRequest registerRequest) {
+        if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
+            log.warn("Registration failed for user '{}': Username already exists", registerRequest.getUsername());
+            throw new UserAlreadyExistsException(ExceptionMessages.USER_ALREADY_EXISTS);
+        }
+    }
+
+    private User initializeUser(RegisterRequest registerRequest) {
+        return User.builder()
+                .username(registerRequest.getUsername())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .country(registerRequest.getCountry())
+                .email(registerRequest.getEmail())
+                .userRole(userProperties.getUserDefaultRole())
+                .createdOn(LocalDateTime.now())
+                .updatedOn(LocalDateTime.now())
+                .isActive(userProperties.isDefaultAccountState())
+                .level(registerRequest.getLevel())
+                .build();
     }
 }

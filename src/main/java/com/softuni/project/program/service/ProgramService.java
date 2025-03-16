@@ -1,6 +1,7 @@
 package com.softuni.project.program.service;
 
-import com.softuni.project.exception.DomainException;
+import com.softuni.project.exception.ExceptionMessages;
+import com.softuni.project.exception.ProgramDoesntExistException;
 import com.softuni.project.program.model.Program;
 import com.softuni.project.program.repository.ProgramRepository;
 import com.softuni.project.user.model.User;
@@ -44,7 +45,7 @@ public class ProgramService {
         programRepository.save(program);
 
         workoutScheduleService.createWorkoutSchedules(programFormRequest, program);
-
+        log.info("New program created successfully");
     }
 
     private Program initializeProgram(User user, ProgramFormRequest programFormRequest) {
@@ -65,11 +66,15 @@ public class ProgramService {
     }
 
     public List<ViewProgramResponse> getAllSharedProgramsByAllOtherUsers(User user) {
+        log.info("Fetching all programs shared by all other users");
+
         List<Program> programs = programRepository.findSharedProgramsExcludingUser(user.getId());
         return getPrograms(programs);
     }
 
     public List<ViewProgramResponse> getAllSharedProgramsByUser(User user) {
+        log.info("Fetching all programs shared by given user");
+
         List<Program> programs = programRepository.getSharedProgramsByUser(user.getId());
         return getPrograms(programs);
     }
@@ -130,11 +135,11 @@ public class ProgramService {
         return programRepository.findById(id).orElseThrow(() -> {
 
             log.error("Program with ID '{}' does not exist", id);
-            return new DomainException("Program with this id does not exist");
+            return new ProgramDoesntExistException(ExceptionMessages.PROGRAM_DOESNT_EXIST);
         });
     }
 
-    public ViewProgramResponse getProgramResponseByProgramEntity(Program program) {
+    public ViewProgramResponse getProgramResponseByProgram(Program program) {
         if(null == program){
             return null;
         }

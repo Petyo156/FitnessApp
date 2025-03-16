@@ -1,6 +1,9 @@
 package com.softuni.project.user.service;
 
-import com.softuni.project.exception.DomainException;
+import com.softuni.project.exception.ExceptionMessages;
+import com.softuni.project.exception.UserAlreadyExistsException;
+import com.softuni.project.exception.UserIdDoesntExistException;
+import com.softuni.project.exception.UserUsernameDoesntExistException;
 import com.softuni.project.program.model.Program;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
@@ -40,20 +43,27 @@ public class UserService implements UserDetailsService {
     public void register(RegisterRequest registerRequest) {
         log.info("Attempting to register user: {}", registerRequest.getUsername());
 
-        if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
-            log.warn("Registration failed for user '{}': Username already exists", registerRequest.getUsername());
-            throw new DomainException("User with this username already exists");
-        }
-
-        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
-            log.warn("Registration failed for user '{}': Email already exists", registerRequest.getEmail());
-            throw new DomainException("User with this email address already exists");
-        }
+        checkIfUsernameAlreadyExists(registerRequest);
+        checkIfEmailAlreadyExists(registerRequest);
 
         User user = initializeUser(registerRequest);
         userRepository.save(user);
 
         log.info("Successfully registered user: {}", user.getUsername());
+    }
+
+    private void checkIfEmailAlreadyExists(RegisterRequest registerRequest) {
+        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
+            log.warn("Registration failed for user '{}': Email already exists", registerRequest.getEmail());
+            throw new UserAlreadyExistsException(ExceptionMessages.USER_ALREADY_EXISTS);
+        }
+    }
+
+    private void checkIfUsernameAlreadyExists(RegisterRequest registerRequest) {
+        if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
+            log.warn("Registration failed for user '{}': Username already exists", registerRequest.getUsername());
+            throw new UserAlreadyExistsException(ExceptionMessages.USER_ALREADY_EXISTS);
+        }
     }
 
     private User initializeUser(RegisterRequest registerRequest) {
@@ -74,13 +84,13 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(userId).orElseThrow(() -> {
 
             log.error("User with ID '{}' does not exist", userId);
-            return new DomainException("User with this id does not exist");
+            return new UserIdDoesntExistException(ExceptionMessages.USER_ID_DOESNT_EXIST);
         });
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Loading user by username: {}", username);
+        log.info("Loading user by username...");
         User user = getByUsername(username);
 
         return new AuthenticationMetadata(user.getId(), username, user.getPassword(), user.getUserRole(), user.isActive());
@@ -105,16 +115,14 @@ public class UserService implements UserDetailsService {
         return hasUsers;
     }
 
-    public void changeUserStatus(UUID id) {
-        log.info("Changing status for user with ID: {}", id);
-
+    public void updateUserStatus(UUID id) {
         User user = getById(id);
 
         boolean newStatus = !user.isActive();
         user.setActive(newStatus);
         userRepository.save(user);
 
-        log.info("User's activity status changed for ID {}: now {}", id, newStatus ? "Active" : "Inactive");
+        log.info("{}'s activity status changed to {}", user.getUsername(), newStatus ? "Active" : "Inactive");
     }
 
     public User getByUsername(String username) {
@@ -124,11 +132,11 @@ public class UserService implements UserDetailsService {
 
             log.error("User with username '{}' does not exist", username);
 
-            return new DomainException("User with this username does not exist");
+            return new UserUsernameDoesntExistException(ExceptionMessages.USER_USERNAME_DOESNT_EXIST);
         });
     }
 
-    public void changeUserRole(UUID id) {
+    public void updateUserRole(UUID id) {
         User user = getById(id);
 
         if (user.getUserRole() == UserRole.ADMIN) {

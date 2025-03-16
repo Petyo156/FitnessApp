@@ -1,6 +1,7 @@
 package com.softuni.project.log.service;
 
-import com.softuni.project.exception.DomainException;
+import com.softuni.project.exception.ExceptionMessages;
+import com.softuni.project.exception.LogDoesntExistException;
 import com.softuni.project.log.model.Log;
 import com.softuni.project.log.repository.LogRepository;
 import com.softuni.project.logexercise.service.LogExerciseService;
@@ -34,7 +35,7 @@ public class LogService {
     public void createLog(User user, Workout workout, WorkoutLogRequest workoutLogRequest) {
         Log newLog = initializeLog(user, workout);
         Log record = logRepository.save(newLog);
-        log.info("New log created");
+        log.info("New log created successfully");
 
         logExerciseService.logInfoForExercises(record, workoutLogRequest);
     }
@@ -67,9 +68,9 @@ public class LogService {
 
     public Log getById(UUID id) {
         return logRepository.findById(id).orElseThrow(() -> {
-            log.error("Exercise with ID '{}' does not exist", id);
+            log.error("Log with ID '{}' does not exist", id);
 
-            return new DomainException("Exercise with this id does not exist");
+            return new LogDoesntExistException(ExceptionMessages.LOG_DOESNT_EXIST);
         });
     }
 

@@ -1,18 +1,22 @@
 package com.softuni.project.workoutschedule.service;
 
 import com.softuni.project.common.DayOfWeek;
+import com.softuni.project.exception.ExceptionMessages;
+import com.softuni.project.exception.NoSetWorkoutForProgramException;
 import com.softuni.project.program.model.Program;
 import com.softuni.project.web.dto.ProgramFormRequest;
 import com.softuni.project.workout.model.Workout;
 import com.softuni.project.workout.service.WorkoutService;
 import com.softuni.project.workoutschedule.model.WorkoutSchedule;
 import com.softuni.project.workoutschedule.repository.WorkoutScheduleRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@Slf4j
 public class WorkoutScheduleService {
     private final WorkoutScheduleRepository workoutScheduleRepository;
     private final WorkoutService workoutService;
@@ -32,7 +36,7 @@ public class WorkoutScheduleService {
             DayOfWeek day = entry.getKey();
             String workoutId = entry.getValue();
 
-            if (workoutId != null) {
+            if (null != workoutId) {
                 Workout workout = workoutService.getById(UUID.fromString(workoutId));
                 createScheduleForDay(day, workout, program);
                 countCreatedSchedules++;
@@ -40,8 +44,9 @@ public class WorkoutScheduleService {
         }
 
         if (countCreatedSchedules == 0) {
-            throw new RuntimeException("No workout schedules, set at least one workout day");
+            throw new NoSetWorkoutForProgramException(ExceptionMessages.NO_SET_WORKOUT_FOR_PROGRAM);
         }
+        log.info("WorkoutSchedules set successfully");
     }
 
     private void createScheduleForDay(DayOfWeek day, Workout workout, Program program) {

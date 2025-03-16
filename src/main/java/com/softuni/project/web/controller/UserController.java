@@ -1,4 +1,4 @@
-package com.softuni.project.web.controllers;
+package com.softuni.project.web.controller;
 
 import com.softuni.project.program.service.ProgramService;
 import com.softuni.project.security.AuthenticationMetadata;
@@ -7,7 +7,6 @@ import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.dto.EditProfileRequest;
 import com.softuni.project.web.dto.ViewProgramResponse;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -20,7 +19,6 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/users")
-@Slf4j
 public class UserController {
     private final UserService userService;
     private final ProgramService programService;
@@ -43,7 +41,6 @@ public class UserController {
         modelAndView.addObject("loggedUserId", authenticationMetadata.getId());
         modelAndView.addObject("programs", programs);
 
-        log.info("View user profile with username {}", user.getUsername());
         return modelAndView;
     }
 

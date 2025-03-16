@@ -1,6 +1,5 @@
-package com.softuni.project.web.controllers;
+package com.softuni.project.web.controller;
 
-import com.softuni.project.exception.DomainException;
 import com.softuni.project.log.service.LogService;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
@@ -9,19 +8,18 @@ import com.softuni.project.web.dto.*;
 import com.softuni.project.workout.model.Workout;
 import com.softuni.project.workout.service.WorkoutService;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.UUID;
 
 @Controller
-@Slf4j
 @RequestMapping("/logs")
 public class LogController {
     private final UserService userService;
@@ -35,15 +33,20 @@ public class LogController {
         this.logService = logService;
     }
 
-    @PostMapping("/{workoutId}")
+    @PostMapping("/{dayOfWeek}/{workoutId}")
     public String createWorkoutLog(
             @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
+            @PathVariable String dayOfWeek,
             @PathVariable String workoutId,
             @Valid WorkoutLogRequest workoutLogRequest,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            throw new DomainException("Invalid input for creating a log: " + bindingResult.getAllErrors());
+            redirectAttributes.addFlashAttribute("error", "Sets > 0 / Reps > 0 / Added weight >= 0");
+            redirectAttributes.addFlashAttribute("workoutLogRequest", workoutLogRequest);
+
+            return "redirect:/logs/" + dayOfWeek + "/" + workoutId;
         }
 
         User user = userService.getById(authenticationMetadata.getId());
@@ -55,14 +58,18 @@ public class LogController {
     }
 
     @GetMapping("/{dayOfWeek}/{workoutId}")
-    public ModelAndView showLogWorkoutPage(@PathVariable String dayOfWeek, @PathVariable String workoutId) {
+    public ModelAndView showLogWorkoutPage(
+            @PathVariable String dayOfWeek,
+            @PathVariable String workoutId) {
+
         ModelAndView modelAndView = new ModelAndView("user/log-workout");
+
         Workout workout = workoutService.getById(UUID.fromString(workoutId));
-        ViewWorkoutResponse workoutResponse = workoutService.getViewWorkoutResponse(workout);
+        ViewWorkoutResponse workoutResponse = workoutService.getViewWorkoutResponseByWorkout(workout);
         WorkoutLogRequest workoutLogRequest = workoutService.initializeWorkoutLogRequest(workoutResponse);
 
-        modelAndView.addObject("workoutLogRequest", workoutLogRequest);
         modelAndView.addObject("workoutResponse", workoutResponse);
+        modelAndView.addObject("workoutLogRequest", workoutLogRequest);
         modelAndView.addObject("dayOfWeek", dayOfWeek);
 
         return modelAndView;
@@ -83,7 +90,6 @@ public class LogController {
     public String deleteLog(@PathVariable String id) {
         logService.deleteLogById(UUID.fromString(id));
 
-        log.info("Log deleted successfully");
         return "redirect:/logs";
     }
 }

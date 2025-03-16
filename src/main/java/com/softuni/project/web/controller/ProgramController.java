@@ -1,4 +1,4 @@
-package com.softuni.project.web.controllers;
+package com.softuni.project.web.controller;
 
 import com.softuni.project.program.model.Program;
 import com.softuni.project.program.service.ProgramService;
@@ -9,7 +9,6 @@ import com.softuni.project.web.dto.ProgramFormRequest;
 import com.softuni.project.web.dto.ViewProgramResponse;
 import com.softuni.project.web.dto.ViewWorkoutResponse;
 import com.softuni.project.workout.service.WorkoutService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +19,6 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/programs")
-@Slf4j
 public class ProgramController {
     private final ProgramService programService;
     private final UserService userService;
@@ -38,7 +36,7 @@ public class ProgramController {
         User user = userService.getById(authenticationMetadata.getId());
 
         ModelAndView modelAndView = new ModelAndView("user/submit-program");
-        List<ViewWorkoutResponse> workouts = workoutService.getYourWorkouts(user);
+        List<ViewWorkoutResponse> workouts = workoutService.getWorkoutsForUser(user);
 
         modelAndView.addObject("user", user);
         modelAndView.addObject("workouts", workouts);
@@ -50,24 +48,19 @@ public class ProgramController {
     public String createProgram(
             @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
             @ModelAttribute ProgramFormRequest programFormRequest) {
-
-        log.info("Received ProgramFormRequest: {}", programFormRequest);
-
         User user = userService.getById(authenticationMetadata.getId());
         programService.createProgram(user, programFormRequest);
 
-        log.info("New program created successfully!");
         return "redirect:/programs/personal";
     }
 
     @GetMapping("/personal")
     public ModelAndView getUserPrograms(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("user/your-programs");
-        modelAndView.addObject("user", userService.getById(authenticationMetadata.getId()));
-        modelAndView.addObject("programs", programService.getAllProgramsByUser
-                (userService.getById(authenticationMetadata.getId())));
 
-        log.info("Fetching all programs by logged user");
+        modelAndView.addObject("user", userService.getById(authenticationMetadata.getId()));
+        modelAndView.addObject("programs", programService.getAllProgramsByUser(userService.getById(authenticationMetadata.getId())));
+
         return modelAndView;
     }
 
@@ -75,7 +68,6 @@ public class ProgramController {
     public ModelAndView browseSharedPrograms(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         User user = userService.getById(authenticationMetadata.getId());
         List<ViewProgramResponse> programs = programService.getAllSharedProgramsByAllOtherUsers(user);
-        log.info("Fetching all programs shared by all other users");
 
         ModelAndView modelAndView = new ModelAndView("user/browse-programs");
         modelAndView.addObject("programs", programs);

@@ -1,4 +1,4 @@
-package com.softuni.project.web.controllers;
+package com.softuni.project.web.controller;
 
 import com.softuni.project.program.model.Program;
 import com.softuni.project.program.service.ProgramService;
@@ -82,7 +82,7 @@ public class IndexController {
 
         User user = userService.getById(authenticationMetadata.getId());
         Program program = userService.getActiveProgramForUser(user);
-        ViewProgramResponse activeProgram = programService.getProgramResponseByProgramEntity(program);
+        ViewProgramResponse activeProgram = programService.getProgramResponseByProgram(program);
 
         modelAndView.addObject("user", user);
         modelAndView.addObject("activeProgram", activeProgram);

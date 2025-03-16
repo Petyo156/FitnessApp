@@ -1,6 +1,7 @@
 package com.softuni.project.workout.service;
 
-import com.softuni.project.exception.DomainException;
+import com.softuni.project.exception.ExceptionMessages;
+import com.softuni.project.exception.WorkoutDoesntExistException;
 import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.user.model.User;
@@ -60,7 +61,7 @@ public class WorkoutService {
                 .build();
     }
 
-    public List<ViewWorkoutResponse> getYourWorkouts(User user) {
+    public List<ViewWorkoutResponse> getWorkoutsForUser(User user) {
         List<Workout> workoutsAddedBy = workoutRepository.findAllByAddedBy(user);
         log.info("Fetched workouts added by logged in user");
 
@@ -68,7 +69,7 @@ public class WorkoutService {
 
         for (Workout workout : workoutsAddedBy) {
 
-            ViewWorkoutResponse viewWorkoutResponse = getViewWorkoutResponse(workout);
+            ViewWorkoutResponse viewWorkoutResponse = getViewWorkoutResponseByWorkout(workout);
             responses.add(viewWorkoutResponse);
         }
         log.info("Responses for every workout retrieved");
@@ -76,7 +77,7 @@ public class WorkoutService {
         return responses;
     }
 
-    public ViewWorkoutResponse getViewWorkoutResponse(Workout workout) {
+    public ViewWorkoutResponse getViewWorkoutResponseByWorkout(Workout workout) {
         List<WorkoutExerciseEntry> workoutExerciseEntries = getWorkoutExerciseEntries(workout);
         return initializeViewWorkoutResponse(workout, workoutExerciseEntries);
     }
@@ -99,7 +100,7 @@ public class WorkoutService {
         return workoutRepository.findById(uuid).orElseThrow(() -> {
             log.error("Workout with ID '{}' does not exist", uuid);
 
-            return new DomainException("Workout with this id does not exist");
+            return new WorkoutDoesntExistException(ExceptionMessages.WORKOUT_DOESNT_EXIST);
         });
     }
 

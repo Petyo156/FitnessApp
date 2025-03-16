@@ -1,0 +1,15 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Error</title>
+</head>
+<body>
+<div class="container">
+    <h1>500 - Server error</h1>
+    <p>Something went wrong on our end. Please try again later.</p>
+    <p th:text="'Error: ' + ${errorMessage}"></p>
+    <a href="/home">Return to Home</a>
+</div>
+</body>
+</html>

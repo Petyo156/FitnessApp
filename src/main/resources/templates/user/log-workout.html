@@ -53,6 +53,15 @@
         button:hover {
             background-color: #218838;
         }
+        .error-message {
+            color: red;
+            font-size: 1em;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid red;
+            border-radius: 5px;
+            background-color: #ffe6e6;
+        }
     </style>
 </head>
 <body>
@@ -69,8 +78,12 @@
         <strong>Approximate Duration:</strong> <span th:text="${workoutResponse.approximateDuration + ' min'}"></span>
     </p>
 
-    <!-- Bind the form to workoutLogRequest -->
-    <form th:action="@{'/logs/' + ${workoutResponse.workoutId}}" method="post" th:object="${workoutLogRequest}">
+    <form th:action="@{'/logs/' + ${dayOfWeek} + '/' +  ${workoutResponse.workoutId}}" method="post" th:object="${workoutLogRequest}">
+
+        <div th:if="${null != error}" class="error-message">
+            <p th:text="${error}">All added sets must be > 0, reps > 0, added weight >= 0</p>
+        </div>
+
         <div th:each="exercise, iterStat : ${workoutResponse.exercises}" class="exercise-card">
             <h3 th:text="${exercise.exerciseName}"></h3>
             <img th:if="${exercise.mediaUrl != null}" th:src="${exercise.mediaUrl}" alt="Exercise Image">
@@ -79,23 +92,21 @@
                 <span th:text="'Sets: ' + ${exercise.sets} + ', Reps: ' + ${exercise.reps} + ', Weight: ' + ${exercise.addedWeight} + 'kg'"></span>
             </p>
 
-            <!-- Bind fields to loggedExercises -->
             <div class="form-group">
                 <label>Completed Sets:</label>
-                <input type="number" th:field="*{loggedExercises[__${iterStat.index}__].sets}" min="1" required>
+                <input type="number" th:field="*{loggedExercises[__${iterStat.index}__].sets}" required>
             </div>
 
             <div class="form-group">
                 <label>Completed Reps:</label>
-                <input type="number" th:field="*{loggedExercises[__${iterStat.index}__].reps}" min="1" required>
+                <input type="number" th:field="*{loggedExercises[__${iterStat.index}__].reps}" required>
             </div>
 
             <div class="form-group">
                 <label>Added Weight (kg):</label>
-                <input type="number" th:field="*{loggedExercises[__${iterStat.index}__].addedWeight}" min="0" step="0.1">
+                <input type="number" th:field="*{loggedExercises[__${iterStat.index}__].addedWeight}" step="0.125">
             </div>
 
-            <!-- Hidden field for exerciseId -->
             <input type="hidden" th:field="*{loggedExercises[__${iterStat.index}__].exerciseId}" th:value="${exercise.exerciseId}">
         </div>
 

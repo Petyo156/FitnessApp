@@ -1,6 +1,5 @@
 package com.softuni.project.common;
 
-import com.softuni.project.exception.DomainException;
 import lombok.Getter;
 
 @Getter
@@ -17,18 +16,6 @@ public enum DayOfWeek {
 
     DayOfWeek(String displayName) {
         this.displayName = displayName;
-    }
-
-    public DayOfWeek getNextDay() {
-        return switch (this) {
-            case MONDAY -> TUESDAY;
-            case TUESDAY -> WEDNESDAY;
-            case WEDNESDAY -> THURSDAY;
-            case THURSDAY -> FRIDAY;
-            case FRIDAY -> SATURDAY;
-            case SATURDAY -> SUNDAY;
-            default -> throw new DomainException("Invalid day");
-        };
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.softuni.project.web.controllers;
+package com.softuni.project.web.controller;
 
 import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.service.ExerciseService;

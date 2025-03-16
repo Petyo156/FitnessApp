@@ -1,4 +1,4 @@
-package com.softuni.project.web.controllers;
+package com.softuni.project.web.controller;
 
 import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.security.AuthenticationMetadata;
@@ -8,7 +8,6 @@ import com.softuni.project.web.dto.SubmitWorkoutRequest;
 import com.softuni.project.web.dto.ViewWorkoutResponse;
 import com.softuni.project.workout.service.WorkoutService;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -22,7 +21,6 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/workouts")
-@Slf4j
 public class WorkoutController {
     private final WorkoutService workoutService;
     private final UserService userService;
@@ -40,7 +38,7 @@ public class WorkoutController {
         ModelAndView modelAndView = new ModelAndView("user/your-workouts");
 
         User user = userService.getById(authenticationMetadata.getId());
-        List<ViewWorkoutResponse> workouts = workoutService.getYourWorkouts(user);
+        List<ViewWorkoutResponse> workouts = workoutService.getWorkoutsForUser(user);
 
         modelAndView.addObject("workouts", workouts);
 

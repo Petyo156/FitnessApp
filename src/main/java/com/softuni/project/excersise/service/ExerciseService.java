@@ -1,6 +1,9 @@
 package com.softuni.project.excersise.service;
 
-import com.softuni.project.exception.DomainException;
+import com.softuni.project.exception.ExceptionMessages;
+import com.softuni.project.exception.ExerciseAlreadyExistsException;
+import com.softuni.project.exception.ExerciseDoesntExistException;
+import com.softuni.project.exception.ExerciseNotApprovedException;
 import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.model.ExerciseStatus;
 import com.softuni.project.excersise.repository.ExerciseRepository;
@@ -31,13 +34,11 @@ public class ExerciseService {
     }
 
     public void submitExercise(SubmitExerciseRequest submitExerciseRequest, AuthenticationMetadata authenticationMetadata) {
-        log.info("Attempting to submit exercise: {}", submitExerciseRequest.getName());
-
         Optional<Exercise> exerciseOptional = exerciseRepository.findByName(submitExerciseRequest.getName());
         if (exerciseOptional.isPresent()) {
             log.warn("Exercise with name '{}' already exists", submitExerciseRequest.getName());
 
-            throw new DomainException("Exercise with this name already exists");
+            throw new ExerciseAlreadyExistsException(ExceptionMessages.EXERCISE_ALREADY_EXISTS);
         }
 
         User user = userService.getById(authenticationMetadata.getId());
@@ -60,18 +61,12 @@ public class ExerciseService {
                 .build();
     }
 
-    public List<Exercise> findAll() {
-        log.info("Retrieving all exercises");
-
-        return exerciseRepository.findAll();
-    }
-
     public Exercise getById(UUID uuid) {
 
         return exerciseRepository.findById(uuid).orElseThrow(() -> {
             log.error("Exercise with ID '{}' does not exist", uuid);
 
-            return new DomainException("Exercise with this id does not exist");
+            return new ExerciseDoesntExistException(ExceptionMessages.EXERCISE_DOESNT_EXIST);
         });
     }
 
@@ -81,22 +76,22 @@ public class ExerciseService {
         if (selectedExercise.getStatus() != ExerciseStatus.APPROVED) {
             log.warn("Exercise ID '{}' is not approved", selectedExercise.getId());
 
-            throw new DomainException("You cannot visit this exercise page");
+            throw new ExerciseNotApprovedException(ExceptionMessages.EXERCISE_NOT_APPROVED);
         }
     }
 
     public List<Exercise> findAllPendingExercises() {
-
+        log.info("Fetch all pending exercises");
         return exerciseRepository.findByStatus(ExerciseStatus.PENDING);
     }
 
     public List<Exercise> findAllRejectedExercises() {
-
+        log.info("Fetch all rejected exercises");
         return exerciseRepository.findByStatus(ExerciseStatus.REJECTED);
     }
 
     public List<Exercise> findAllApprovedExercises() {
-
+        log.info("Fetch all approved exercises");
         return exerciseRepository.findByStatus(ExerciseStatus.APPROVED);
     }
 
@@ -130,7 +125,7 @@ public class ExerciseService {
 
     public Exercise findByName(String name) {
         return exerciseRepository.findByName(name).orElseThrow(
-                () -> new DomainException("Exercise with name '" + name + "' does not exist")
+                () -> new ExerciseDoesntExistException(ExceptionMessages.EXERCISE_DOESNT_EXIST)
         );
     }
 

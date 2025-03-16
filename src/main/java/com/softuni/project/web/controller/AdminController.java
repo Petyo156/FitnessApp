@@ -1,6 +1,5 @@
-package com.softuni.project.web.controllers;
+package com.softuni.project.web.controller;
 
-import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
@@ -45,14 +44,14 @@ public class AdminController {
     @PostMapping("/users/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
     public String updateUserStatus(@PathVariable String id) {
-        userService.changeUserStatus(UUID.fromString(id));
+        userService.updateUserStatus(UUID.fromString(id));
         return "redirect:/admin/users";
     }
 
     @PostMapping("/users/{id}/role")
     @PreAuthorize("hasRole('ADMIN')")
     public String updateUserRole(@PathVariable String id) {
-        userService.changeUserRole(UUID.fromString(id));
+        userService.updateUserRole(UUID.fromString(id));
         return "redirect:/admin/users";
     }
 

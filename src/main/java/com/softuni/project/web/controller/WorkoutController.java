@@ -58,7 +58,8 @@ public class WorkoutController {
     }
 
     @PostMapping()
-    public String createWorkout(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata, @Valid SubmitWorkoutRequest submitWorkoutRequest, BindingResult bindingResult) {
+    public String createWorkout(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
+                                @Valid SubmitWorkoutRequest submitWorkoutRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "user/submit-workout";
         }

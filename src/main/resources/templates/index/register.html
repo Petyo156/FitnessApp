@@ -33,6 +33,9 @@
             <select name="level" id="level">
                 <option th:each="level : ${T(com.softuni.project.user.model.Level).values()}" th:value="${level}" th:text="${#strings.capitalize(#strings.toLowerCase(level))}"></option>
             </select>
+            <div th:if="${message}" class="alert alert-danger">
+                <p th:text="${message}"></p>
+            </div>
             <button>Register</button>
             <p>Already have an account? <a href="/login">Login</a>!</p>
 

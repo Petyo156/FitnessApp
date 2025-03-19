@@ -72,7 +72,8 @@ public class ExerciseController {
     }
 
     @PostMapping()
-    public String submitExercise(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata, @Valid SubmitExerciseRequest submitExerciseRequest, BindingResult bindingResult) {
+    public String submitExercise(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
+                                 @Valid SubmitExerciseRequest submitExerciseRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "user/submit-exercise";
         }

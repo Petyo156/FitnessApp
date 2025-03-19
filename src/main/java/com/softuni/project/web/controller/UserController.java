@@ -57,7 +57,8 @@ public class UserController {
     }
 
     @PutMapping("/profile/edit")
-    public ModelAndView editProfile(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata, @Valid EditProfileRequest editProfileRequest, BindingResult bindingResult) {
+    public ModelAndView editProfile(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
+                                    @Valid EditProfileRequest editProfileRequest, BindingResult bindingResult) {
         User user = userService.getById(authenticationMetadata.getId());
 
         if (bindingResult.hasErrors()) {

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.nio.file.AccessDeniedException;
@@ -15,24 +16,34 @@ import java.nio.file.AccessDeniedException;
 @ControllerAdvice
 public class ExceptionAdvice {
 
-    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler({
-            ExerciseAlreadyExistsException.class,
             UserAlreadyExistsException.class
     })
-    public ModelAndView handleDataAlreadyExistExceptions() {
+    public String handleUsernameAlreadyExistExceptions(RedirectAttributes redirectAttributes, UserAlreadyExistsException e) {
+        String message = e.getMessage();
+        redirectAttributes.addFlashAttribute("message", message);
 
-        return new ModelAndView("exception/data-already-exist");
+        return "redirect:/register";
     }
 
-    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     @ExceptionHandler({
-            InvalidWorkoutLogRequestException.class,
+            ExerciseAlreadyExistsException.class
+    })
+    public String handleExerciseAlreadyExistExceptions(RedirectAttributes redirectAttributes, ExerciseAlreadyExistsException e) {
+        String message = e.getMessage();
+        redirectAttributes.addFlashAttribute("message", message);
+
+        return "redirect:/exercises/new";
+    }
+
+    @ExceptionHandler({
             NoSetWorkoutForProgramException.class
     })
-    public ModelAndView handleUserRequestsExceptions() {
+    public String handleUserRequestsExceptions(RedirectAttributes redirectAttributes, NoSetWorkoutForProgramException e) {
+        String message = e.getMessage();
+        redirectAttributes.addFlashAttribute("message", message);
 
-        return new ModelAndView("exception/data-already-exist");
+        return "redirect:/programs/new";
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)

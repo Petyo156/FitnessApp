@@ -16,6 +16,10 @@
     <p class="text-warning" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
     <br>
 
+    <div th:if="${message}" class="alert alert-danger">
+        <p th:text="${message}"></p>
+    </div>
+
     <!-- Description -->
     <label for="description">Description:</label>
     <textarea id="description" th:field="*{description}" required></textarea>
@@ -45,8 +49,6 @@
     <input type="url" id="mediaUrl" th:field="*{mediaUrl}">
     <br>
     <p class="text-warning" th:if="${#fields.hasErrors('mediaUrl')}" th:errors="*{mediaUrl}"></p>
-
-
 
     <!-- Submit Button -->
     <button type="submit">Submit Exercise</button>

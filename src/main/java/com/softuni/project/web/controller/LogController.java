@@ -44,7 +44,6 @@ public class LogController {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("error", "Sets > 0 / Reps > 0 / Added weight >= 0");
-            redirectAttributes.addFlashAttribute("workoutLogRequest", workoutLogRequest);
 
             return "redirect:/logs/" + dayOfWeek + "/" + workoutId;
         }

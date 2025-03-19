@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class SubmitWorkoutRequest {
-    @NotEmpty(message = "Enter at least one entry")
+    @NotEmpty(message = "Enter at least one exercise")
     private List<WorkoutExerciseEntry> exercises;
 
     private String additionalInfo;

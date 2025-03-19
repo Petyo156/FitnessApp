@@ -20,6 +20,7 @@
     </select>
 
     <button type="button" onclick="addExercise()">Add Exercise</button>
+    <p class="alert-warning" th:if="${#fields.hasErrors('exercises')}" th:errors="*{exercises}"></p>
 
     <br><br>
 

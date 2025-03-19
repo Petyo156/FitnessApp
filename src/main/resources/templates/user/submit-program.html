@@ -48,6 +48,10 @@
 <form th:action="@{/programs}" th:object="${programFormRequest}" method="post">
     <h2>Create New Program</h2>
 
+    <div th:if="${message}" class="alert alert-danger">
+        <p th:text="${message}"></p>
+    </div>
+
     <label for="difficulty">Difficulty</label>
     <select id="difficulty" th:field="*{difficulty}" required>
         <option th:each="d : ${T(com.softuni.project.program.model.Difficulty).values()}"

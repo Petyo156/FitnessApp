@@ -19,6 +19,7 @@ public class SubmitExerciseRequest {
     @Size(min = 10, message = "Description has to be least 10 symbols")
     private String description;
 
+    @NotNull(message = "Difficulty cannot be null")
     private Difficulty difficulty;
 
     @NotEmpty(message = "Choose muscle groups")

@@ -9,8 +9,10 @@ import com.softuni.project.web.dto.ProgramFormRequest;
 import com.softuni.project.web.dto.ViewProgramResponse;
 import com.softuni.project.web.dto.ViewWorkoutResponse;
 import com.softuni.project.workout.service.WorkoutService;
+import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -47,7 +49,13 @@ public class ProgramController {
     @PostMapping()
     public String createProgram(
             @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-            @ModelAttribute ProgramFormRequest programFormRequest) {
+            @ModelAttribute @Valid ProgramFormRequest programFormRequest,
+            BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            return "user/submit-program";
+        }
+
         User user = userService.getById(authenticationMetadata.getId());
         programService.createProgram(user, programFormRequest);
 

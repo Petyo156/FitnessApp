@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -55,21 +54,21 @@ public class ProgramService {
 
     public List<ViewProgramResponse> getAllProgramsByUser(User user) {
         List<Program> programs = programRepository.findAllByUser_Id(user.getId());
-        return getPrograms(programs);
+        return getProgramsResponses(programs);
     }
 
     public List<ViewProgramResponse> getAllSharedProgramsByAllOtherUsers(User user) {
         log.info("Fetching all programs shared by all other users");
 
         List<Program> programs = programRepository.findSharedProgramsExcludingUser(user.getId());
-        return getPrograms(programs);
+        return getProgramsResponses(programs);
     }
 
     public List<ViewProgramResponse> getAllSharedProgramsByUser(User user) {
         log.info("Fetching all programs shared by given user");
 
         List<Program> programs = programRepository.getSharedProgramsByUser(user.getId());
-        return getPrograms(programs);
+        return getProgramsResponses(programs);
     }
 
     public Program getProgramById(UUID id) {
@@ -81,7 +80,7 @@ public class ProgramService {
     }
 
     public ViewProgramResponse getProgramResponseByProgram(Program program) {
-        if(null == program){
+        if (null == program) {
             return null;
         }
         ViewProgramResponse viewProgramResponse = programMapper.map(program);
@@ -89,7 +88,15 @@ public class ProgramService {
         return viewProgramResponse;
     }
 
-    private List<ViewProgramResponse> getPrograms(List<Program> programs) {
+    public List<ViewProgramResponse> getAllLikedPrograms(List<String> allLikedProgramsIds) {
+        List<Program> likedPrograms = new ArrayList<>();
+        for (String id : allLikedProgramsIds) {
+            programRepository.findById(UUID.fromString(id)).ifPresent(likedPrograms::add);
+        }
+        return getProgramsResponses(likedPrograms);
+    }
+
+    private List<ViewProgramResponse> getProgramsResponses(List<Program> programs) {
         List<ViewProgramResponse> responses = new ArrayList<>();
 
         for (Program program : programs) {
@@ -117,7 +124,6 @@ public class ProgramService {
         programResponse.setWorkouts(workoutResponses);
     }
 
-
     private ViewWorkoutResponse initializeWorkoutResponse(WorkoutSchedule workoutSchedule, Workout workout, List<WorkoutExerciseEntry> workoutExerciseEntries) {
         return ViewWorkoutResponse.builder()
                 .workoutId(workout.getId().toString())
@@ -127,6 +133,5 @@ public class ProgramService {
                 .exercises(workoutExerciseEntries)
                 .build();
     }
-
 }
 

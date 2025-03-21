@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+</head>
+<body>
+<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
+<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
+
+<h2>Notifications</h2>
+
+<div>
+    <ul th:each="notification : ${userNotifications}">
+        <li>
+            <strong th:text="${notification.message}"></strong> -
+            <span th:text="${notification.date}"></span>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

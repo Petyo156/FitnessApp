@@ -28,5 +28,7 @@ public class ViewProgramResponse {
 
     private String addedByUsername;
 
+    private String addedById;
+
     private String id;
 }

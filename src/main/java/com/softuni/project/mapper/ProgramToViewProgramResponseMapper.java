@@ -19,6 +19,7 @@ public class ProgramToViewProgramResponseMapper implements Mapper<Program, ViewP
                 .workouts(new ArrayList<>())
                 .addedByUsername(program.getUser().getUsername())
                 .id(program.getId().toString())
+                .addedById(program.getUser().getId().toString())
                 .build();
     }
 }

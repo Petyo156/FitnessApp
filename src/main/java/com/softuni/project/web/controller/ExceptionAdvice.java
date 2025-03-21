@@ -60,7 +60,8 @@ public class ExceptionAdvice {
             UserUsernameDoesntExistException.class,
             WorkoutDoesntExistException.class,
 
-            ExerciseNotApprovedException.class
+            ExerciseNotApprovedException.class,
+            UnauthorizedNotificationAccessException.class
     })
     public ModelAndView handleNotFoundExceptions() {
 

@@ -11,6 +11,9 @@
     <div>
         <h3 th:text="'Welcome ' + ${user.username} + '!'"></h3>
 
+        <div th:if="${error}" class="error-message">
+            <p th:text="${error}"></p>
+        </div>
 <!--        can be accessed by everyone-->
         <form th:action="@{/users/search}" method="get">
             <label for="search">Search:</label>
@@ -45,6 +48,8 @@
 
             <a th:href="@{/programs/new}"><button>Create Program</button></a>
             <a th:href="@{'/programs/personal'}"><button>Your Programs</button></a>
+            <a th:href="@{'/like/programs/' + ${user.id}}"><button>Liked Programs</button></a>
+            <a th:href="@{'/like/notifications/' + ${user.id}}"><button>Notifications</button></a>
             <br><br>
 
             <form th:action="@{/logs}" method="get">

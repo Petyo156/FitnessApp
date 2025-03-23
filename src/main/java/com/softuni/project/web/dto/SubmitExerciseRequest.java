@@ -5,11 +5,17 @@ import com.softuni.project.excersise.model.MuscleGroup;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SubmitExerciseRequest {
     @NotEmpty(message = "Name must not be empty")
     @Size(min = 2, message = "Name has to be least 2 symbols")

@@ -127,7 +127,6 @@ public class UserService implements UserDetailsService {
         user.setProfilePicture(editProfileRequest.getProfilePicture());
         user.setCountry(editProfileRequest.getCountry());
         user.setBio(editProfileRequest.getBio());
-        user.setLevel(editProfileRequest.getLevel());
 
         userRepository.save(user);
         log.info("Overwritten logged user's personal information");

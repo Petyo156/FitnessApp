@@ -3,101 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/home.css">
+    <!-- Add Google Fonts (Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Add FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Home</title>
 </head>
 <body>
 
-<main>
-    <div>
-        <h3 th:text="'Welcome ' + ${user.username} + '!'"></h3>
-
-        <div th:if="${error}" class="error-message">
-            <p th:text="${error}"></p>
-        </div>
-<!--        can be accessed by everyone-->
-        <form th:action="@{/users/search}" method="get">
-            <label for="search">Search:</label>
-            <input type="text" id="search" name="username" placeholder="Enter username">
-            <button type="submit">Search</button>
+<!-- Top Navigation Bar -->
+<nav class="navbar">
+    <div class="navbar-left">
+        <!-- User Profile Picture Button -->
+        <a th:href="@{'/users/' + ${user.id} + '/profile'}" class="profile-picture">
+            <img th:src="${user.profilePicture ?: '/images/default-profile.png'}" alt="Profile Picture" class="profile-image">
+        </a>
+        <h1 class="logo">FitnessApp</h1>
+    </div>
+    <div class="navbar-center">
+        <!-- Search Form -->
+        <form th:action="@{/users/search}" method="get" class="search-form">
+            <input type="text" id="search" name="username" placeholder="Search for a user...">
+            <button type="submit"><i class="fas fa-search"></i></button>
         </form>
-        <br>
-        <a th:href="@{'/users/' + ${user.id} + '/profile'}"><button>View Profile</button></a>
+        <!-- Create Dropdown Menu -->
+        <div class="dropdown">
+            <button class="dropdown-button">Community <i class="fas fa-caret-down"></i></button>
+            <div class="dropdown-content">
+                <a th:href="@{/exercises}">Browse Exercises</a>
+                <a th:href="@{/programs/browse}">Browse Programs</a>
+            </div>
+        </div>
+        <!-- Create Dropdown Menu -->
+        <div class="dropdown" th:if="${user.userRole.name() == 'USER'}">
+            <button class="dropdown-button">Create <i class="fas fa-caret-down"></i></button>
+            <div class="dropdown-content">
+                <a th:href="@{/exercises/new}">Create Exercise</a>
+                <a th:href="@{/workouts/new}">Create Workout</a>
+                <a th:href="@{/programs/new}">Create Program</a>
+            </div>
+        </div>
+        <!-- Your Exercises, Workouts, and Programs Buttons -->
+        <div class="dropdown" th:if="${user.userRole.name() == 'USER'}">
+            <button class="dropdown-button">My Activities  <i class="fas fa-caret-down"></i></button>
+            <div class="dropdown-content">
+                <a th:href="@{'/exercises/personal'}">My Exercises</a>
+                <a th:href="@{'/workouts/personal'}">My Workouts</a>
+                <a th:href="@{'/programs/personal'}">My Programs</a>
+                <a th:href="@{'/like/programs/' + ${user.id}}">Liked Programs</a>
+                <a th:href="@{/logs}">Logs</a>
+            </div>
+        </div>
+    </div>
+    <div class="navbar-right">
+        <!-- Notifications Bell Icon -->
+        <a th:if="${user.userRole.name() == 'USER'}" th:href="@{'/like/notifications/' + ${user.id}}" class="notification-icon">
+            <i class="fas fa-bell"></i>
+        </a>
+        <!-- Logout Button -->
+        <div th:replace="~{fragments/logout-button :: logoutButton}"></div>
+    </div>
+</nav>
 
-        <br><br>
+<!-- Main Content -->
+<main>
+    <!-- Welcome Message -->
+    <section class="welcome-section" th:if="${user.userRole.name() == 'USER'}">
+        <div class="welcome-container">
+            <h2 th:text="'Welcome, ' + ${user.username} + '!'"></h2>
+            <p>Ready to crush your fitness goals today? Let’s get started!</p>
+        </div>
+    </section>
 
-        <a th:href="@{/exercises}"><button>Browse Exercises</button></a>
-        <a th:href="@{/programs/browse}"><button>Browse Programs</button></a>
-        <br><br>
+    <!-- Error Message -->
+    <div th:if="${error}" class="error-message">
+        <p th:text="${error}"></p>
+    </div>
 
-<!--        ADMIN-->
-        <div th:if="${user.userRole.name() == 'ADMIN'}">
+    <!-- Admin Actions -->
+    <div th:if="${user.userRole.name() == 'ADMIN'}" class="admin-actions">
+        <h3>Admin Dashboard</h3>
+        <div class="action-buttons">
             <a th:href="@{/admin/exercises/moderation}"><button>Review Exercises</button></a>
             <a th:href="@{/admin/users}"><button>Manage Users</button></a>
-            <br><br>
         </div>
+    </div>
 
-<!--        USER-->
-        <div th:if="${user.userRole.name() == 'USER'}">
-            <a th:href="@{/exercises/new}"><button>Create Exercise</button></a>
-            <a th:href="@{'/exercises/personal'}"><button>Your Exercises</button></a>
-            <br><br>
+    <!-- Active Program Section -->
+    <section class="active-program" th:if="${user.userRole.name() == 'USER'}">
+        <div th:if="${activeProgram == null}" class="no-set-program">
+            <p>No active program found. Please activate a program.</p>
+        </div>
+        <div th:unless="${activeProgram == null}">
+            <div class="program-header">
+                <p><strong>Program Name:</strong> <span th:text="${activeProgram.name}"></span></p>
 
-            <a th:href="@{/workouts/new}"><button>Create Workout</button></a>
-            <a th:href="@{'/workouts/personal'}"><button>Your Workouts</button></a>
-            <br><br>
-
-            <a th:href="@{/programs/new}"><button>Create Program</button></a>
-            <a th:href="@{'/programs/personal'}"><button>Your Programs</button></a>
-            <a th:href="@{'/like/programs/' + ${user.id}}"><button>Liked Programs</button></a>
-            <a th:href="@{'/like/notifications/' + ${user.id}}"><button>Notifications</button></a>
-            <br><br>
-
-            <form th:action="@{/logs}" method="get">
-                <button type="submit">View logs</button>
-            </form>
-
-            <div>
-                <p><strong>Active Program:</strong></p>
-
-                <!-- Check if activeProgram is null -->
-                <div th:if="${activeProgram == null}">
-                    <p>No active program found. Please activate a program.</p>
-                </div>
-
-                <!-- If activeProgram exists, display the workouts -->
-                <div th:unless="${activeProgram == null}">
-                    <p><strong>Program Name:</strong> <span th:text="${activeProgram.name}"></span></p>
-                    <p>Mon / Tues / Wed / Thur / Fri / Sat / Sun</p>
-
-                    <ul>
-                        <li th:each="workout : ${activeProgram.workouts}">
-                            <p><strong>Day:</strong> <span th:text="${workout.dayOfWeek}"></span></p>
-
-                            <ul>
-                                <li th:each="exercise : ${workout.exercises}">
-                                    <p>
-                                        <strong>Exercise:</strong> <span th:text="${exercise.exerciseName}"></span> |
-                                        <strong>Sets:</strong> <span th:text="${exercise.sets}"></span> |
-                                        <strong>Reps:</strong> <span th:text="${exercise.reps}"></span> |
-                                        <strong>Weight:</strong> <span th:text="${exercise.addedWeight}"></span> kg
-                                    </p>
-                                </li>
-                            </ul>
-
-                            <form th:action="@{'/logs/' + ${workout.dayOfWeek.getDisplayName()} + '/' + ${workout.workoutId}}" method="get">
-                                <button type="submit">✔</button>
-                            </form>
-                        </li>
-                    </ul>
-
-                    <p>Click the ✔ button to mark workouts as completed.</p>
+                <div class="program-actions">
                     <form th:action="@{/programs/deactivate}" method="post">
-                        <button type="submit">Remove program</button>
+                        <button type="submit" class="remove-program">Remove Program</button>
                     </form>
-
                 </div>
             </div>
+
+            <div class="workouts-container">
+                <div class="workout-card" th:each="workout : ${activeProgram.workouts}">
+                    <div class="workout-header">
+                        <p><strong>Day:</strong> <span th:text="${workout.dayOfWeek}"></span></p>
+                        <form th:action="@{'/logs/' + ${workout.dayOfWeek.getDisplayName()} + '/' + ${workout.workoutId}}" method="get">
+                            <button type="submit" class="mark-completed">Log ✔</button>
+                        </form>
+                    </div>
+
+                    <div class="exercises-list">
+                        <div class="exercise-item" th:each="exercise : ${workout.exercises}">
+                            <p><strong>Exercise:</strong> <span th:text="${exercise.exerciseName}"></span></p>
+                            <p><strong>Sets:</strong> <span th:text="${exercise.sets}"></span></p>
+                            <p><strong>Reps:</strong> <span th:text="${exercise.reps}"></span></p>
+                            <p><strong>Weight:</strong> <span th:text="${exercise.addedWeight}"></span> kg</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
-<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
+
 </body>
 </html>

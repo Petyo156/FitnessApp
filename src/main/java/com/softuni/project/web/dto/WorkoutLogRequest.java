@@ -10,5 +10,5 @@ import java.util.List;
 public class WorkoutLogRequest {
     @NotEmpty(message = "Please log the exercises.")
     @Valid
-    private List<LogExerciseRequest> loggedExercises;
+    private List<LogExerciseResponse> loggedExercises;
 }

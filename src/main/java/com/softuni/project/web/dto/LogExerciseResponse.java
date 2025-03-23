@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 @Data
-public class LogExerciseRequest {
+public class LogExerciseResponse {
     @Min(value = 1, message = "Reps > 0")
     private Integer reps;
 

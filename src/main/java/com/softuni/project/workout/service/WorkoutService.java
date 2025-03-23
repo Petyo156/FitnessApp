@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.softuni.project.workout.model.Workout.*;
-
 @Service
 @Slf4j
 public class WorkoutService {
@@ -110,10 +108,10 @@ public class WorkoutService {
 
     public WorkoutLogRequest initializeWorkoutLogRequest(ViewWorkoutResponse workoutResponse) {
         WorkoutLogRequest workoutLogRequest = new WorkoutLogRequest();
-        List<LogExerciseRequest> loggedExercises = new ArrayList<>();
+        List<LogExerciseResponse> loggedExercises = new ArrayList<>();
 
         workoutResponse.getExercises().forEach(exercise -> {
-            LogExerciseRequest logExerciseRequest = new LogExerciseRequest();
+            LogExerciseResponse logExerciseRequest = new LogExerciseResponse();
             logExerciseRequest.setExerciseId(exercise.getExerciseId());
             loggedExercises.add(logExerciseRequest);
         });

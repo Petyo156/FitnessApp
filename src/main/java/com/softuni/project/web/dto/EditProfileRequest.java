@@ -18,6 +18,4 @@ public class EditProfileRequest {
 
     private Country country;
 
-    private Level level;
-
 }

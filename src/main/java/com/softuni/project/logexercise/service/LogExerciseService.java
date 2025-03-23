@@ -5,7 +5,7 @@ import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.log.model.Log;
 import com.softuni.project.logexercise.model.LogExercise;
 import com.softuni.project.logexercise.repository.LogExerciseRepository;
-import com.softuni.project.web.dto.LogExerciseRequest;
+import com.softuni.project.web.dto.LogExerciseResponse;
 import com.softuni.project.web.dto.ViewLoggedExerciseResponse;
 import com.softuni.project.web.dto.WorkoutLogRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class LogExerciseService {
     }
 
     public void logInfoForExercises(Log record, WorkoutLogRequest workoutLogRequest) {
-        for (LogExerciseRequest exercise : workoutLogRequest.getLoggedExercises()) {
+        for (LogExerciseResponse exercise : workoutLogRequest.getLoggedExercises()) {
             LogExercise logExercise = LogExercise.builder()
                     .log(record)
                     .exercise(exerciseService.getById(UUID.fromString(exercise.getExerciseId())))

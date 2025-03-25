@@ -40,16 +40,17 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void register(RegisterRequest registerRequest) {
+    public User register(RegisterRequest registerRequest) {
         log.info("Attempting to register user: {}", registerRequest.getUsername());
 
         checkIfUsernameAlreadyExists(registerRequest);
         checkIfEmailAlreadyExists(registerRequest);
 
         User user = initializeUser(registerRequest);
-        userRepository.save(user);
+        User save = userRepository.save(user);
 
         log.info("Successfully registered user: {}", user.getUsername());
+        return save;
     }
 
     public User getById(UUID userId) {
@@ -63,7 +64,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Loading user by username...");
-        User user = getByUsername(username);
+        User user = getByUsernameForLogin(username);
 
         return new AuthenticationMetadata(user.getId(), username, user.getPassword(), user.getUserRole(), user.isActive());
     }
@@ -105,6 +106,17 @@ public class UserService implements UserDetailsService {
             log.error("User with username '{}' does not exist", username);
 
             return new UserUsernameDoesntExistException(ExceptionMessages.USER_USERNAME_DOESNT_EXIST);
+        });
+    }
+
+    public User getByUsernameForLogin(String username) {
+        log.info("Logging in user with username '{}'", username);
+
+        return userRepository.findByUsername(username).orElseThrow(() -> {
+
+            log.error("User with username '{}' does not exist", username);
+
+            return new UsernameNotFoundException(ExceptionMessages.USER_USERNAME_DOESNT_EXIST);
         });
     }
 

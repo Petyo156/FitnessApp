@@ -97,7 +97,7 @@
         </div>
         <div th:unless="${activeProgram == null}">
             <div class="program-header">
-                <p><strong>Program Name:</strong> <span th:text="${activeProgram.name}"></span></p>
+                <p><strong>Your currently active program:</strong> <span th:text="${activeProgram.name}"></span></p>
 
                 <div class="program-actions">
                     <form th:action="@{/programs/deactivate}" method="post">

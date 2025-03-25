@@ -1,18 +1,3 @@
-/* General Styles */
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    background-color: #F5F5F5;
-    color: #333333;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-}
-
 /* Navigation Bar */
 .navbar {
     display: flex;
@@ -41,7 +26,7 @@ body {
     border: 1px solid #000000;
 }
 
-.profile-picture:hover {
+.navbar-left.profile-picture:hover {
     transform: scale(1.1);
 }
 
@@ -173,206 +158,176 @@ body {
     background-color: #FF8C00;
 }
 
-/* Main Content */
-main {
-    flex: 1;
-    max-width: 1200px;
-    width: 100%;
-    margin: 20px auto;
-    padding: 0 20px; /* Remove padding from top and bottom */
+/* Profile Page Styles */
+body.profile-body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #F5F5F5;
+    color: #333333;
 }
 
-/* Welcome Section */
-.welcome-section {
-    background: linear-gradient(135deg, #00CED1, #FFA500);
-    padding: 17px; /* Reduced padding */
-    border-radius: 10px;
-    text-align: center;
-    margin-bottom: 20px;
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-.welcome-container {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.welcome-section h2 {
-    color: #FFFFFF;
-    font-size: 24px; /* Reduced font size */
-    font-weight: 600;
-    margin-bottom: 10px;
-    animation: slideIn 1s ease-in-out;
-}
-
-.welcome-section p {
-    color: #FFFFFF;
-    font-size: 16px; /* Reduced font size */
-    font-weight: 400;
-    opacity: 0.9;
-    animation: slideIn 1.2s ease-in-out;
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideIn {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-/* Error Message */
-.error-message {
-    color: #FF0000;
-    background-color: #FFE4E1;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    border: 1px solid #FF0000;
-}
-
-/* Admin Actions */
-.admin-actions {
-    padding-left: 27em;
-}
-
-.admin-actions h3 {
-    color: #00CED1;
-    margin-bottom: 10px;
-    font-weight: 600;
-    padding-left: 3em;
-}
-
-.action-buttons {
+/* Profile Header */
+.profile-header {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    gap: 10em; /* Space between profile picture and details */
+    background-color: #FFFFFF;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    justify-content: center;
 }
 
-.action-buttons button {
+/* Profile Picture Section */
+.profile-header .head {
+    text-align: center;
+}
+
+.profile-header .profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #000000; /* Add a border to the profile picture */
+}
+
+.profile-header h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #333333;
+    margin-top: 10px;
+    margin-bottom: -0.2em;
+}
+
+/* Profile Details Section */
+.profile-header .profile-details {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+}
+
+.details-card {
+    margin-top: -1em;
+}
+
+.details-card p {
+    font-size: 16px;
+    color: #333333;
+    margin-bottom: 10px;
+}
+
+.details-card strong {
+    color: #00CED1; /* Highlight labels with theme color */
+}
+
+/* Edit Profile Button */
+.edit-profile {
+    text-align: center;
+    margin-top: 2em;
+}
+
+.btn-primary {
     padding: 10px 20px;
     background-color: #00CED1;
     border: none;
     border-radius: 5px;
     color: #FFFFFF;
-    cursor: pointer;
+    font-size: 16px;
     font-weight: 500;
-    transition: background-color 0.3s ease;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-decoration: none;
 }
 
-.action-buttons button:hover {
+.btn-primary:hover {
     background-color: #20B2AA;
+    transform: translateY(-2px);
 }
 
-/* Active Program Section */
-
-.no-set-program{
-    text-align: center;
-    opacity: 60%;
-}
-
-.active-program {
-    padding-bottom: 2em;
-}
-
-.program-header {
+/* Shared Programs Section */
+.shared-programs {
     background-color: #FFFFFF;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.shared-programs h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 20px;
+}
+
+/* Program Cards */
+.program-card {
+    background-color: #F5F5F5;
     padding: 15px;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
 }
 
-.program-header p {
-    margin: 5px 0;
-    font-size: 16px;
-    color: #333333;
+.program-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.program-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #00CED1; /* Theme color for program names */
+    margin-bottom: 10px;
+}
+
+.program-card p {
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 5px;
+}
+
+/* Workouts Container */
 .workouts-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    margin-top: 10px;
 }
 
 .workout-card {
     background-color: #FFFFFF;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.workout-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.workout-header p {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #00CED1;
-}
-
-.mark-completed {
-    padding: 8px 16px;
-    background-color: #FFA500;
-    border: none;
-    border-radius: 5px;
-    color: #FFFFFF;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-}
-
-.mark-completed:hover {
-    background-color: #FF8C00;
-}
-
-.exercises-list {
-    margin-top: 10px;
-    display: flex;
-}
-
-.exercise-item {
-    background-color: #F5F5F5;
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
     border: 1px solid #DDDDDD;
-    margin-right: 0.5em;
 }
 
-.exercise-item p {
-    margin: 5px 0;
+.workout-card h4 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333333;
+    margin-bottom: 5px;
+}
+
+.workout-card p {
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 5px;
+}
+
+.workout-card ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.workout-card li {
     font-size: 14px;
     color: #333333;
+    margin-bottom: 5px;
 }
 
-.program-actions {
-    text-align: center;
-    color: #666666;
-}
-
-
-.remove-program {
-    padding: 8px 19px;
-    background-color: #FF4500;
-    border: none;
-    border-radius: 5px;
-    color: #FFFFFF;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-}
-
-.remove-program:hover {
-    background-color: #FF0000;
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }

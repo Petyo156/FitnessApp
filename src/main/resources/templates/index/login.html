@@ -1,34 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login to FitnessApp</title>
+    <!-- Add Google Fonts (Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Add FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Link to your CSS file -->
+    <link rel="stylesheet" type="text/css" href="/css/login.css">
 </head>
-<body>
+<body class="login-body">
+<div class="login-container">
+    <div class="login-content">
+        <form class="login-form" th:action="@{/login}" th:method="POST" th:object="${loginRequest}">
+            <h2>Login to <span class="logo">FitnessApp</span></h2>
 
-<main>
-    <section>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" th:field="*{username}" placeholder="Enter your username" required>
+            </div>
 
-        <form class="form" th:action="@{/login}" th:method="POST" th:object="${loginRequest}">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" th:field="*{password}" placeholder="Enter your password" required>
+            </div>
 
-            <h3>Login Here</h3>
-
-            <label for="username"></label>
-            <input type="text" placeholder="Username" id="username"  th:field="*{username}" required>
-
-            <label for="password"></label>
-            <input type="password" placeholder="Password" id="password" th:field="*{password}" required>
             <p class="alert-warning" th:if="${errorMessage}" th:text="${errorMessage}"></p>
 
-            <button type="submit">Log In</button>
+            <button type="submit" class="btn btn-primary">Log In</button>
 
-            <p>Don't have an account? <a href="/register">Register now</a>!</p>
-
+            <p class="register-link">Don't have an account? <a href="/register">Register now</a>!</p>
         </form>
-
-    </section>
-</main>
-
+    </div>
+</div>
 </body>
 </html>

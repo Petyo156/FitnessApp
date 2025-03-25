@@ -1,65 +1,126 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>User Profile</title>
-    </head>
-    <body>
-    <th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
-    <th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
-    <section>
-        <img th:src="${user.profilePicture}" alt="Profile Picture" width="150" height="150">
-    </section>
-    <section>
-        <h2 th:text="${user.username}">Username</h2>
-
-        <p th:if="${user.firstName != null and user.lastName != null and user.firstName != '' and user.lastName != ''}">
-            <strong>Full Name:</strong> <span th:text="${user.firstName} + ' ' + ${user.lastName}"></span>
-        </p>
-        <p><strong>Level:</strong> <span th:text="${user.level}"></span></p>
-        <p><strong>Bio:</strong> <span th:text="${user.bio}"></span></p>
-        <p><strong>Country:</strong> <span th:text="${user.country}"></span></p>
-        <p><strong>Contact Email:</strong> <span th:text="${user.email}"></span></p>
-
-        <p><strong>Joined Date:</strong> <span th:text="${#temporals.format(user.getCreatedOn(), 'yyyy-MM-dd')}"></span></p>
-    </section>
-
-<!--    if in own profile-->
-    <section th:if="${loggedUserId == user.id}">
-        <a th:href="@{/users/profile/edit}">
-            <button>Edit Profile</button>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <!-- Add Google Fonts (Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Add FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Link to your CSS file -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/profile.css}">
+</head>
+<body class="profile-body">
+<!-- Simplified Navbar -->
+<!-- Top Navigation Bar -->
+<nav class="navbar">
+    <div class="navbar-left">
+        <!-- User Profile Picture Button -->
+        <a th:href="@{'/users/' + ${user.id} + '/profile'}" class="profile-picture">
+            <img th:src="${user.profilePicture ?: '/images/default-profile.png'}" alt="Profile Picture" class="profile-image">
         </a>
-    </section>
-
-
-<!--    if in another user's profile-->
-    <section th:if="${loggedUserId != user.id}">
-        <h2>Shared Programs</h2>
-
-        <div th:each="program : ${programs}" class="program-card" th:onclick="toggleWorkouts([[${program.name}]])">
-            <h3 th:text="${program.name}"></h3>
-            <p th:text="${program.description}"></p>
-            <p><strong>Difficulty:</strong> <span th:text="${program.difficulty}"></span></p>
-            <p><strong>Created On:</strong> <span th:text="${#temporals.format(program.createdOn, 'yyyy-MM-dd')}"></span></p>
-            <p><strong>Created By:</strong> <span th:text="${program.addedByUsername}"></span></p>
-
-            <div class="workouts-container" th:id="'workouts-' + ${program.name}">
-                <div th:each="workout : ${program.workouts}" class="workout-card">
-                    <h4 th:text="${workout.dayOfWeek}"></h4>
-                    <p><strong>Duration:</strong> <span th:text="${workout.approximateDuration} + ' min'"></span></p>
-                    <p><strong>Info:</strong> <span th:text="${workout.additionalInfo}"></span></p>
-
-                    <ul>
-                        <li th:each="exercise : ${workout.exercises}">
-                            <strong th:text="${exercise.exerciseName}"></strong>
-                            (<span th:text="${exercise.sets}"></span> sets x
-                            <span th:text="${exercise.reps}"></span> reps,
-                            <span th:text="${exercise.addedWeight}"></span> kg)
-                        </li>
-                    </ul>
-                </div>
+        <h1 class="logo" th:action="@{/home}">FitnessApp</h1>
+    </div>
+    <div class="navbar-center">
+        <!-- Search Form -->
+        <form th:action="@{/users/search}" method="get" class="search-form">
+            <input type="text" id="search" name="username" placeholder="Search for a user...">
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+        <!-- Create Dropdown Menu -->
+        <div class="dropdown">
+            <button class="dropdown-button">Community <i class="fas fa-caret-down"></i></button>
+            <div class="dropdown-content">
+                <a th:href="@{/exercises}">Browse Exercises</a>
+                <a th:href="@{/programs/browse}">Browse Programs</a>
             </div>
         </div>
-    </section>
+        <!-- Create Dropdown Menu -->
+        <div class="dropdown" th:if="${user.userRole.name() == 'USER'}">
+            <button class="dropdown-button">Create <i class="fas fa-caret-down"></i></button>
+            <div class="dropdown-content">
+                <a th:href="@{/exercises/new}">Create Exercise</a>
+                <a th:href="@{/workouts/new}">Create Workout</a>
+                <a th:href="@{/programs/new}">Create Program</a>
+            </div>
+        </div>
+        <!-- Your Exercises, Workouts, and Programs Buttons -->
+        <div class="dropdown" th:if="${user.userRole.name() == 'USER'}">
+            <button class="dropdown-button">My Activities  <i class="fas fa-caret-down"></i></button>
+            <div class="dropdown-content">
+                <a th:href="@{'/exercises/personal'}">My Exercises</a>
+                <a th:href="@{'/workouts/personal'}">My Workouts</a>
+                <a th:href="@{'/programs/personal'}">My Programs</a>
+                <a th:href="@{'/like/programs/' + ${user.id}}">Liked Programs</a>
+                <a th:href="@{/logs}">Logs</a>
+            </div>
+        </div>
+    </div>
+    <div class="navbar-right">
+        <!-- Notifications Bell Icon -->
+        <a th:if="${user.userRole.name() == 'USER'}" th:href="@{'/like/notifications/' + ${user.id}}" class="notification-icon">
+            <i class="fas fa-bell"></i>
+        </a>
+        <!-- Logout Button -->
+        <div th:replace="~{fragments/logout-button :: logoutButton}"></div>
+    </div>
+</nav>
 
+<!-- Profile Header -->
+<section class="profile-header">
+    <div class="head">
+        <img th:src="${user.profilePicture ?: '/images/default-profile.png'}" alt="Profile Picture" class="profile-picture">
+        <h2 th:text="${user.username}">Username</h2>
+    </div>
+
+    <div class="profile-details">
+        <div class="details-card">
+            <p th:if="${user.firstName != null and user.lastName != null and user.firstName != '' and user.lastName != ''}">
+                <strong>Full Name:</strong> <span th:text="${user.firstName} + ' ' + ${user.lastName}"></span>
+            </p>
+            <p><strong>Level:</strong> <span th:text="${user.level}"></span></p>
+            <p><strong>Bio:</strong> <span th:text="${user.bio}"></span></p>
+            <p><strong>Country:</strong> <span th:text="${user.country}"></span></p>
+            <p><strong>Contact Email:</strong> <span th:text="${user.email}"></span></p>
+            <p><strong>Joined Date:</strong> <span th:text="${#temporals.format(user.getCreatedOn(), 'yyyy-MM-dd')}"></span></p>
+        </div>
+    </div>
+</section>
+
+<!-- Edit Profile Button (if in own profile) -->
+<div th:if="${loggedUserId == user.id}" class="edit-profile">
+    <a th:href="@{/users/profile/edit}" class="btn btn-primary">Edit Profile</a>
+</div>
+
+<!-- Shared Programs (if in another user's profile) -->
+<section th:if="${loggedUserId != user.id}" class="shared-programs">
+    <h2>Shared Programs</h2>
+
+    <div th:each="program : ${programs}" class="program-card" th:onclick="toggleWorkouts([[${program.name}]])">
+        <h3 th:text="${program.name}"></h3>
+        <p th:text="${program.description}"></p>
+        <p><strong>Difficulty:</strong> <span th:text="${program.difficulty}"></span></p>
+        <p><strong>Created On:</strong> <span th:text="${#temporals.format(program.createdOn, 'yyyy-MM-dd')}"></span></p>
+        <p><strong>Created By:</strong> <span th:text="${program.addedByUsername}"></span></p>
+
+        <div class="workouts-container" th:id="'workouts-' + ${program.name}">
+            <div th:each="workout : ${program.workouts}" class="workout-card">
+                <h4 th:text="${workout.dayOfWeek}"></h4>
+                <p><strong>Duration:</strong> <span th:text="${workout.approximateDuration} + ' min'"></span></p>
+                <p><strong>Info:</strong> <span th:text="${workout.additionalInfo}"></span></p>
+
+                <ul>
+                    <li th:each="exercise : ${workout.exercises}">
+                        <strong th:text="${exercise.exerciseName}"></strong>
+                        (<span th:text="${exercise.sets}"></span> sets x
+                        <span th:text="${exercise.reps}"></span> reps,
+                        <span th:text="${exercise.addedWeight}"></span> kg)
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
 </body>
 </html>

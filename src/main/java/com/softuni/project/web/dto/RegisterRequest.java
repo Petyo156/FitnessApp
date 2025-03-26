@@ -8,6 +8,9 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegisterRequest {
     @Size(min = 3, message = "Username must be at least 3 symbols.")
     private String username;

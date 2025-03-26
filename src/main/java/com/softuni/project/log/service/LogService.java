@@ -32,17 +32,20 @@ public class LogService {
     }
 
     @Transactional
-    public void createLog(User user, Workout workout, WorkoutLogRequest workoutLogRequest) {
+    public Log createLog(User user, Workout workout, WorkoutLogRequest workoutLogRequest) {
         Log newLog = initializeLog(user, workout);
         Log record = logRepository.save(newLog);
         log.info("New log created successfully");
 
         logExerciseService.logInfoForExercises(record, workoutLogRequest);
+        return record;
     }
 
     public List<ViewLogResponse> getViewLogResponsesForUser(UUID userId) {
         List<Log> logs = logRepository.findByUserIdOrderByCompletionDateDesc(userId);
-        return initializeViewLogResponses(logs);
+        List<ViewLogResponse> responses = initializeViewLogResponses(logs);
+        log.info("Log responses for user {} have been initialized", userId);
+        return responses;
     }
 
     private List<ViewLogResponse> initializeViewLogResponses(List<Log> logs) {

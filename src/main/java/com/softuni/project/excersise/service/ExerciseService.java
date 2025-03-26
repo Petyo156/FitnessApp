@@ -36,7 +36,7 @@ public class ExerciseService {
         this.exerciseMapper = exerciseMapper;
     }
 
-    public void submitExercise(SubmitExerciseRequest submitExerciseRequest, AuthenticationMetadata authenticationMetadata) {
+    public Exercise submitExercise(SubmitExerciseRequest submitExerciseRequest, AuthenticationMetadata authenticationMetadata) {
         Optional<Exercise> exerciseOptional = exerciseRepository.findByName(submitExerciseRequest.getName());
         if (exerciseOptional.isPresent()) {
             log.warn("Exercise with name '{}' already exists", submitExerciseRequest.getName());
@@ -50,6 +50,7 @@ public class ExerciseService {
         exerciseRepository.save(exercise);
 
         log.info("Successfully submitted exercise: {}", submitExerciseRequest.getName());
+        return exercise;
     }
 
     public Exercise getById(UUID uuid) {

@@ -8,8 +8,8 @@ import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.model.ExerciseStatus;
 import com.softuni.project.excersise.repository.ExerciseRepository;
 import com.softuni.project.mapper.Mapper;
-import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
+import com.softuni.project.user.model.UserRole;
 import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.dto.SubmitExerciseRequest;
 import jakarta.transaction.Transactional;
@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,7 +35,7 @@ public class ExerciseService {
         this.exerciseMapper = exerciseMapper;
     }
 
-    public Exercise submitExercise(SubmitExerciseRequest submitExerciseRequest, AuthenticationMetadata authenticationMetadata) {
+    public Exercise submitExercise(SubmitExerciseRequest submitExerciseRequest, User createdBy) {
         Optional<Exercise> exerciseOptional = exerciseRepository.findByName(submitExerciseRequest.getName());
         if (exerciseOptional.isPresent()) {
             log.warn("Exercise with name '{}' already exists", submitExerciseRequest.getName());
@@ -44,9 +43,15 @@ public class ExerciseService {
             throw new ExerciseAlreadyExistsException(ExceptionMessages.EXERCISE_ALREADY_EXISTS);
         }
 
-        User user = userService.getById(authenticationMetadata.getId());
+        User user = userService.getById(createdBy.getId());
         Exercise exercise = exerciseMapper.map(submitExerciseRequest);
         exercise.setCreatedBy(user);
+
+        if(user.getUserRole() == UserRole.ADMIN){
+            exercise.setStatus(ExerciseStatus.APPROVED);
+            exercise.setApprovedBy(user);
+        }
+
         exerciseRepository.save(exercise);
 
         log.info("Successfully submitted exercise: {}", submitExerciseRequest.getName());
@@ -128,6 +133,10 @@ public class ExerciseService {
     @Transactional
     public void deleteAllRejectedExercises() {
         exerciseRepository.deleteAllByStatus(ExerciseStatus.REJECTED);
+    }
+
+    public List<Exercise> findAllExercises() {
+        return exerciseRepository.findAll();
     }
 }
 

@@ -2,65 +2,76 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/init.css">
+    <link rel="stylesheet" type="text/css" href="/css/edit-profile.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Edit Profile</title>
 </head>
 <body>
-<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
-<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
-<div class="container">
-    <h1>Edit Profile</h1>
 
-    <form th:action="@{/users/profile/edit}" method="post" th:object="${editProfileRequest}">
-        <input type="hidden" name="_method" value="put"/>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-        <div class="form-group">
-            <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" th:field="*{firstName}" placeholder="First Name" />
-        </div>
+<main class="profile-edit-container">
+    <section class="profile-edit-card">
+        <h1 class="profile-edit-title">Edit Profile</h1>
 
-        <div class="form-group">
-            <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" th:field="*{lastName}" placeholder="Last Name" />
-        </div>
+        <form class="profile-edit-form" th:action="@{/users/profile/edit}" method="post" th:object="${editProfileRequest}">
+            <input type="hidden" name="_method" value="put"/>
 
-        <div class="form-group">
-            <label for="profilePicture">Profile Picture URL:</label>
-            <input type="text" id="profilePicture" th:field="*{profilePicture}" placeholder="Profile Picture URL" />
-            <p class="text-warning" th:if="${#fields.hasErrors('profilePicture')}" th:errors="*{profilePicture}"></p>
-        </div>
+            <div class="profile-edit-form-group">
+                <label class="profile-edit-label" for="firstName">First Name:</label>
+                <input class="profile-edit-input" type="text" id="firstName" th:field="*{firstName}" placeholder="First Name"/>
+            </div>
 
-        <div class="form-group">
-            <label for="country">Country:</label>
-            <select id="country" th:field="*{country}">
-                <option value="" disabled>Select a country</option>
-                <option th:each="country : ${T(com.softuni.project.user.model.Country).values()}"
-                        th:value="${country}"
-                        th:text="${#strings.capitalize(#strings.toLowerCase(country))}">
-                </option>
-            </select>
-        </div>
+            <div class="profile-edit-form-group">
+                <label class="profile-edit-label" for="lastName">Last Name:</label>
+                <input class="profile-edit-input" type="text" id="lastName" th:field="*{lastName}" placeholder="Last Name"/>
+            </div>
 
-        <div class="form-group">
-            <label>
-                <select>
+            <div class="profile-edit-form-group">
+                <label class="profile-edit-label" for="profilePicture">Profile Picture URL:</label>
+                <input class="profile-edit-input" type="text" id="profilePicture" th:field="*{profilePicture}" placeholder="Profile Picture URL"/>
+                <p class="profile-edit-error" th:if="${#fields.hasErrors('profilePicture')}" th:errors="*{profilePicture}"></p>
+            </div>
+
+            <div class="profile-edit-form-group">
+                <label class="profile-edit-label" for="country">Country:</label>
+                <select class="profile-edit-select" id="country" th:field="*{country}">
                     <option value="" disabled>Select a country</option>
+                    <option th:each="country : ${T(com.softuni.project.user.model.Country).values()}"
+                            th:value="${country}"
+                            th:text="${#strings.capitalize(#strings.toLowerCase(country))}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="profile-edit-form-group">
+                <label class="profile-edit-label" for="level">Level:</label>
+                <select class="profile-edit-select" id="level" th:field="*{level}">
+                    <option value="" disabled>Select a level</option>
                     <option th:each="level : ${T(com.softuni.project.user.model.Level).values()}"
                             th:value="${level}"
                             th:text="${#strings.capitalize(#strings.toLowerCase(level))}">
                     </option>
                 </select>
-            </label>
-        </div>
+            </div>
 
-        <div class="form-group">
-            <label for="bio">Bio:</label>
-            <textarea id="bio" th:field="*{bio}" placeholder="Bio" rows="4" cols="50"></textarea>
-        </div>
+            <div class="profile-edit-form-group">
+                <label class="profile-edit-label" for="bio">Bio:</label>
+                <textarea class="profile-edit-textarea" id="bio" th:field="*{bio}" placeholder="Tell us about yourself..." rows="4"></textarea>
+            </div>
 
-        <button type="submit">Overwrite data</button>
-    </form>
-
-</div>
+            <div class="profile-edit-actions">
+                <button class="profile-edit-submit" type="submit">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </section>
+</main>
 
 </body>
 </html>

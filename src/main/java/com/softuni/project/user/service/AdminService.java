@@ -17,11 +17,13 @@ import java.time.LocalDateTime;
 public class AdminService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @Autowired
-    public AdminService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AdminService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserService userService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
     }
 
     public void insertAdmin() {
@@ -29,6 +31,10 @@ public class AdminService {
         userRepository.save(admin);
 
         log.info("Inserted admin successfully");
+    }
+
+    public User getAdmin() {
+        return userService.getByUsername("admin");
     }
 
     private User initializeAdmin() {

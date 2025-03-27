@@ -7,6 +7,7 @@ import com.softuni.project.excersise.model.ExerciseStatus;
 import com.softuni.project.excersise.model.MuscleGroup;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.Country;
+import com.softuni.project.user.model.Level;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.model.UserRole;
 import com.softuni.project.workout.model.Workout;
@@ -29,6 +30,7 @@ public class TestBuilder {
                 .isActive(true)
                 .createdOn(LocalDateTime.now())
                 .updatedOn(LocalDateTime.now())
+                .level(Level.EXPERT)
                 .build();
     }
 

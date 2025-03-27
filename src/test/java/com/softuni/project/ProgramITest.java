@@ -80,15 +80,7 @@ public class ProgramITest {
                 .difficulty(Difficulty.HARD)
                 .build();
 
-        AuthenticationMetadata authenticationMetadata = AuthenticationMetadata.builder()
-                .role(UserRole.USER)
-                .isActive(true)
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .id(user.getId())
-                .build();
-
-        Exercise exercise = exerciseService.submitExercise(submitExerciseRequest, authenticationMetadata);
+        Exercise exercise = exerciseService.submitExercise(submitExerciseRequest, user);
         assertTrue(exerciseRepository.count() > 0);
 
         WorkoutExerciseEntry entry = WorkoutExerciseEntry.builder()

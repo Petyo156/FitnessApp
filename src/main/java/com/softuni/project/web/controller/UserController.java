@@ -34,11 +34,12 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView();
 
         User user = userService.getById(id);
+        User loggedUser = userService.getById(authenticationMetadata.getId());
         List<ViewProgramResponse> programs = programService.getAllSharedProgramsByUser(user);
 
         modelAndView.setViewName("user/profile");
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("loggedUserId", authenticationMetadata.getId());
+        modelAndView.addObject("pathUser", user);
+        modelAndView.addObject("user", loggedUser);
         modelAndView.addObject("programs", programs);
 
         return modelAndView;

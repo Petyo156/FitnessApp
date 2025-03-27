@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>none</title>
+</head>
+<body>
+<nav class="navbar" th:fragment="navbar">
+    <div class="navbar-left">
+        <!-- User Profile Picture Button -->
+        <a th:href="@{'/users/' + ${user.id} + '/profile'}" class="profile-picture">
+            <img th:src="${user.profilePicture ?: '/images/default-profile.png'}" alt="Profile Picture" class="profile-image">
+        </a>
+        <a th:href="@{/home}">
+            <h1 class="logo">FitnessApp</h1>
+        </a>
+    </div>
+    <div class="navbar-center">
+        <!-- Search Form -->
+        <form th:action="@{/users/search}" method="get" class="search-form">
+            <input type="text" id="search" name="username" placeholder="Search for a user...">
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+        <!-- Create Dropdown Menu -->
+        <div class="dropdown">
+            <button class="dropdown-button">Community <i class="fas fa-caret-down"></i></button>
+            <div class="dropdown-content">
+                <a th:href="@{/exercises}">Browse Exercises</a>
+                <a th:href="@{/programs/browse}">Browse Programs</a>
+            </div>
+        </div>
+        <!-- Create Dropdown Menu -->
+        <div class="dropdown" th:if="${user.userRole.name() == 'USER'}">
+            <button class="dropdown-button">Create <i class="fas fa-caret-down"></i></button>
+            <div class="dropdown-content">
+                <a th:href="@{/exercises/new}">Create Exercise</a>
+                <a th:href="@{/workouts/new}">Create Workout</a>
+                <a th:href="@{/programs/new}">Create Program</a>
+            </div>
+        </div>
+        <!-- Your Exercises, Workouts, and Programs Buttons -->
+        <div class="dropdown" th:if="${user.userRole.name() == 'USER'}">
+            <button class="dropdown-button">My Activities  <i class="fas fa-caret-down"></i></button>
+            <div class="dropdown-content">
+                <a th:href="@{'/exercises/personal'}">My Exercises</a>
+                <a th:href="@{'/workouts/personal'}">My Workouts</a>
+                <a th:href="@{'/programs/personal'}">My Programs</a>
+                <a th:href="@{'/like/programs/' + ${user.id}}">Liked Programs</a>
+                <a th:href="@{/logs}">Logs</a>
+            </div>
+        </div>
+    </div>
+    <div class="navbar-right">
+        <!-- Notifications Bell Icon -->
+        <a th:if="${user.userRole.name() == 'USER'}" th:href="@{'/like/notifications/' + ${user.id}}" class="notification-icon">
+            <i class="fas fa-bell"></i>
+        </a>
+        <!-- Logout Button -->
+        <div th:replace="~{fragments/logout-button :: logoutButton}"></div>
+    </div>
+</nav>
+</body>
+</html>

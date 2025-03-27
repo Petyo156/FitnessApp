@@ -3,6 +3,8 @@ package com.softuni.project.web.controller;
 import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.security.AuthenticationMetadata;
+import com.softuni.project.user.model.User;
+import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.dto.SubmitExerciseRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +23,12 @@ import java.util.UUID;
 @Slf4j
 public class ExerciseController {
     private final ExerciseService exerciseService;
+    private final UserService userService;
 
     @Autowired
-    public ExerciseController(ExerciseService exerciseService) {
+    public ExerciseController(ExerciseService exerciseService, UserService userService) {
         this.exerciseService = exerciseService;
+        this.userService = userService;
     }
 
     @GetMapping()
@@ -77,8 +81,8 @@ public class ExerciseController {
         if (bindingResult.hasErrors()) {
             return "user/submit-exercise";
         }
-
-        exerciseService.submitExercise(submitExerciseRequest, authenticationMetadata);
+        User user = userService.getById(authenticationMetadata.getId());
+        exerciseService.submitExercise(submitExerciseRequest, user);
 
         return "redirect:/home";
     }

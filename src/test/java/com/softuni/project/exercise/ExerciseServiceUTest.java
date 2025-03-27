@@ -9,8 +9,8 @@ import com.softuni.project.excersise.model.ExerciseStatus;
 import com.softuni.project.excersise.repository.ExerciseRepository;
 import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.mapper.Mapper;
-import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
+import com.softuni.project.user.model.UserRole;
 import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.dto.SubmitExerciseRequest;
 import org.junit.jupiter.api.Test;
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.softuni.project.web.TestBuilder.aRandomUser;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -41,30 +42,95 @@ public class ExerciseServiceUTest {
     private ExerciseService exerciseService;
 
     @Test
-    void submitExercise_whenExerciseAlreadyExists_thenThrowException() {
-        SubmitExerciseRequest request = SubmitExerciseRequest.builder().name("Push-up").build();
-        AuthenticationMetadata metadata = AuthenticationMetadata.builder().build();
+    void submitExercise_whenExerciseAlreadyExists_thenThrowExerciseAlreadyExistsException() {
+        SubmitExerciseRequest submitExerciseRequest = SubmitExerciseRequest.builder().name("Push-up").build();
+        User createdBy = aRandomUser();
+        when(exerciseRepository.findByName(submitExerciseRequest.getName())).thenReturn(Optional.of(new Exercise()));
 
-        when(exerciseRepository.findByName(request.getName())).thenReturn(Optional.of(new Exercise()));
-        assertThrows(ExerciseAlreadyExistsException.class, () -> exerciseService.submitExercise(request, metadata));
-
-        verify(exerciseRepository, times(1)).findByName(request.getName());
+        assertThrows(ExerciseAlreadyExistsException.class, () -> exerciseService.submitExercise(submitExerciseRequest, createdBy));
+        verify(exerciseRepository, times(1)).findByName(submitExerciseRequest.getName());
         verify(exerciseRepository, never()).save(any());
     }
 
     @Test
-    void submitExercise_whenValidExercise_thenSaveSuccessfully() {
-        SubmitExerciseRequest request = SubmitExerciseRequest.builder().build();
-        AuthenticationMetadata metadata = AuthenticationMetadata.builder()
-                .id(UUID.randomUUID())
-                .build();
+    void submitExercise_whenExerciseDoesNotExist_thenSubmitAndSaveExercise() {
+        SubmitExerciseRequest submitExerciseRequest = SubmitExerciseRequest.builder().name("Push-up").build();
+        User createdBy = aRandomUser();
+        when(exerciseRepository.findByName(submitExerciseRequest.getName())).thenReturn(Optional.empty());
+        Exercise mappedExercise = new Exercise();
+        when(exerciseMapper.map(submitExerciseRequest)).thenReturn(mappedExercise);
+        when(userService.getById(createdBy.getId())).thenReturn(createdBy);
 
-        when(exerciseRepository.findByName(request.getName())).thenReturn(Optional.empty());
-        when(userService.getById(metadata.getId())).thenReturn(new User());
-        when(exerciseMapper.map(request)).thenReturn(new Exercise());
+        Exercise result = exerciseService.submitExercise(submitExerciseRequest, createdBy);
 
-        exerciseService.submitExercise(request, metadata);
-        verify(exerciseRepository, times(1)).save(any(Exercise.class));
+        assertNotNull(result);
+        verify(exerciseRepository, times(1)).findByName(submitExerciseRequest.getName());
+        verify(exerciseRepository, times(1)).save(any());
+    }
+
+    @Test
+    void submitExercise_whenUserIsAdmin_thenSetApprovedStatus() {
+        SubmitExerciseRequest submitExerciseRequest = SubmitExerciseRequest.builder().name("Push-up").build();
+        User createdBy = aRandomUser();
+        when(exerciseRepository.findByName(submitExerciseRequest.getName())).thenReturn(Optional.empty());
+        Exercise mappedExercise = new Exercise();
+        when(exerciseMapper.map(submitExerciseRequest)).thenReturn(mappedExercise);
+        when(userService.getById(createdBy.getId())).thenReturn(createdBy);
+
+        createdBy.setUserRole(UserRole.ADMIN);
+
+        Exercise result = exerciseService.submitExercise(submitExerciseRequest, createdBy);
+
+        assertEquals(ExerciseStatus.APPROVED, result.getStatus());
+        verify(exerciseRepository, times(1)).findByName(submitExerciseRequest.getName());
+        verify(exerciseRepository, times(1)).save(any());
+    }
+
+    @Test
+    void submitExercise_whenUserIsNotAdmin_thenStatusIsNotApproved() {
+        SubmitExerciseRequest submitExerciseRequest = SubmitExerciseRequest.builder().name("Push-up").build();
+        User createdBy = aRandomUser();
+        when(exerciseRepository.findByName(submitExerciseRequest.getName())).thenReturn(Optional.empty());
+        Exercise mappedExercise = new Exercise();
+        when(exerciseMapper.map(submitExerciseRequest)).thenReturn(mappedExercise);
+        when(userService.getById(createdBy.getId())).thenReturn(createdBy);
+
+        createdBy.setUserRole(UserRole.USER);
+
+        Exercise result = exerciseService.submitExercise(submitExerciseRequest, createdBy);
+
+        assertNotEquals(ExerciseStatus.APPROVED, result.getStatus());
+        verify(exerciseRepository, times(1)).findByName(submitExerciseRequest.getName());
+        verify(exerciseRepository, times(1)).save(any());
+    }
+
+    @Test
+    void submitExercise_whenExerciseCreated_thenSetCorrectCreator() {
+        SubmitExerciseRequest submitExerciseRequest = SubmitExerciseRequest.builder().name("Push-up").build();
+        User createdBy = aRandomUser();
+
+        when(exerciseRepository.findByName(submitExerciseRequest.getName())).thenReturn(Optional.empty());
+        Exercise mappedExercise = new Exercise();
+        when(exerciseMapper.map(submitExerciseRequest)).thenReturn(mappedExercise);
+        when(userService.getById(createdBy.getId())).thenReturn(createdBy);
+
+        Exercise result = exerciseService.submitExercise(submitExerciseRequest, createdBy);
+
+        assertEquals(createdBy, result.getCreatedBy());
+        verify(exerciseRepository, times(1)).findByName(submitExerciseRequest.getName());
+        verify(exerciseRepository, times(1)).save(any());
+    }
+
+
+    @Test
+    void submitExercise_whenExerciseAlreadyExists_thenThrowException() {
+        SubmitExerciseRequest request = SubmitExerciseRequest.builder().name("Push-up").build();
+
+        when(exerciseRepository.findByName(request.getName())).thenReturn(Optional.of(new Exercise()));
+        assertThrows(ExerciseAlreadyExistsException.class, () -> exerciseService.submitExercise(request, aRandomUser()));
+
+        verify(exerciseRepository, times(1)).findByName(request.getName());
+        verify(exerciseRepository, never()).save(any());
     }
 
     @Test

@@ -4,6 +4,7 @@ import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.UserRole;
+import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.controller.ExerciseController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class ExerciseControllerApiTest {
 
     @MockitoBean
     private ExerciseService exerciseService;
+
+    @MockitoBean
+    private UserService userService;
 
     @Autowired
     private MockMvc mockMvc;

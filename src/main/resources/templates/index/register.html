@@ -37,7 +37,7 @@
             <div class="form-group">
                 <label for="country">Country</label>
                 <select id="country" th:field="*{country}">
-                    <option th:each="country : ${T(com.softuni.project.user.model.Country).values()}" th:value="${country}" th:text="${#strings.capitalize(#strings.toLowerCase(country))}"></option>
+                    <option th:each="country : ${T(com.softuni.project.user.model.Country).values()}" th:value="${country}" th:text="${country.getUrl()}"></option>
                 </select>
             </div>
 

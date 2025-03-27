@@ -4,8 +4,10 @@ import com.softuni.project.user.service.AdminService;
 import com.softuni.project.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+@Order(1)
 @Component
 public class InitializeAdmin implements CommandLineRunner {
     private final UserService userService;

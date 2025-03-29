@@ -16,26 +16,32 @@
 
 <main class="submit-exercise-container">
     <form class="submit-exercise-form" th:action="@{/exercises}" th:object="${submitExerciseRequest}" method="post">
-        <div class="alert-message" th:if="${message}" th:classappend="${success} ? 'alert-success' : 'alert-danger'">
-            <p th:text="${message}"></p>
-        </div>
-
+        <!-- Exercise Name -->
         <div class="compact-form-group">
             <label class="form-label" for="name">Exercise Name:</label>
-            <input class="form-input" type="text" id="name" th:field="*{name}" required>
+            <input class="form-input" type="text" id="name"
+                   th:field="*{name}"
+                   th:classappend="${#fields.hasErrors('name')} ? 'input-error'">
             <p class="form-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
         </div>
 
+        <!-- Exercise Description -->
         <div class="compact-form-group">
             <label class="form-label" for="description">Exercise Description:</label>
-            <textarea class="form-textarea" id="description" th:field="*{description}" rows="3" required></textarea>
+            <textarea class="form-textarea" id="description"
+                      th:field="*{description}"
+                      th:classappend="${#fields.hasErrors('description')} ? 'input-error'"
+                      rows="3" ></textarea>
             <p class="form-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
         </div>
 
         <div class="form-row">
+            <!-- Difficulty -->
             <div class="compact-form-group">
                 <label class="form-label" for="difficulty">Difficulty:</label>
-                <select class="form-select" id="difficulty" th:field="*{difficulty}" required>
+                <select class="form-select" id="difficulty"
+                        th:field="*{difficulty}"
+                        th:classappend="${#fields.hasErrors('difficulty')} ? 'input-error'">
                     <option value="" disabled selected>Select</option>
                     <option th:each="d : ${T(com.softuni.project.excersise.model.Difficulty).values()}"
                             th:value="${d}" th:text="${d}"></option>
@@ -43,18 +49,26 @@
                 <p class="form-error" th:if="${#fields.hasErrors('difficulty')}" th:errors="*{difficulty}"></p>
             </div>
 
+            <!-- Media URL -->
             <div class="compact-form-group">
-                <label class="form-label" for="mediaUrl">Media URL:</label>
-                <input class="form-input" type="url" id="mediaUrl" th:field="*{mediaUrl}" placeholder="https://example.com/image.jpg">
+                <label class="form-label" for="mediaUrl">Media URL: (optional)</label>
+                <input class="form-input" type="url" id="mediaUrl"
+                       th:field="*{mediaUrl}"
+                       th:classappend="${#fields.hasErrors('mediaUrl')} ? 'input-error'"
+                       placeholder="https://example.com/image.jpg">
                 <p class="form-error" th:if="${#fields.hasErrors('mediaUrl')}" th:errors="*{mediaUrl}"></p>
             </div>
         </div>
 
+        <!-- Muscle Groups -->
         <div class="compact-form-group">
             <label class="form-label" for="muscleGroups">Muscle Groups:</label>
             <div class="multi-select-container">
                 <div class="selected-tags" id="selectedTags"></div>
-                <select class="form-multiselect" id="muscleGroups" th:field="*{muscleGroups}" multiple style="display:none">
+                <select class="form-multiselect" id="muscleGroups"
+                        th:field="*{muscleGroups}"
+                        th:classappend="${#fields.hasErrors('muscleGroups')} ? 'input-error'"
+                        multiple style="display:none">
                     <option th:each="m : ${T(com.softuni.project.excersise.model.MuscleGroup).values()}"
                             th:value="${m}" th:text="${m.name()}"></option>
                 </select>
@@ -72,7 +86,7 @@
 </main>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const select = document.getElementById('muscleGroups');
         const tagOptions = document.getElementById('tagOptions');
         const selectedTags = document.getElementById('selectedTags');

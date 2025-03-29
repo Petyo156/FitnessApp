@@ -1,116 +1,83 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/init.css">
+    <link rel="stylesheet" type="text/css" href="/css/log-workout.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Log Workout</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-        }
-        .workout-container {
-            max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-        }
-        .exercise-card {
-            padding: 15px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: white;
-        }
-        .exercise-card img {
-            max-width: 100%;
-            border-radius: 5px;
-        }
-        .form-group {
-            margin-top: 10px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            padding: 10px 15px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .error-message {
-            color: red;
-            font-size: 1em;
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid red;
-            border-radius: 5px;
-            background-color: #ffe6e6;
-        }
-    </style>
 </head>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
 <body>
 
-<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
-<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
+<div class="log-workout-container">
+    <h2 class="log-workout-title" th:text="'Log Workout - ' + ${dayOfWeek}"></h2>
 
-<div class="workout-container">
-    <h2 th:text="'Log Workout - ' + ${dayOfWeek}"></h2>
-    <p th:if="${workoutResponse.additionalInfo != null}">
-        <strong>Additional Info:</strong> <span th:text="${workoutResponse.additionalInfo}"></span>
-    </p>
-    <p th:if="${workoutResponse.approximateDuration != null}">
-        <strong>Approximate Duration:</strong> <span th:text="${workoutResponse.approximateDuration + ' min'}"></span>
-    </p>
+    <div class="log-workout-meta">
+        <p class="log-workout-info" th:if="${workoutResponse.additionalInfo != null and !workoutResponse.additionalInfo.isEmpty()}">
+            <strong>Additional Info:</strong> <span th:text="${workoutResponse.additionalInfo}"></span>
+        </p>
+        <p class="log-workout-duration" th:if="${workoutResponse.approximateDuration != null}">
+            <strong>Approximate Duration:</strong> <span th:text="${workoutResponse.approximateDuration + ' min'}"></span>
+        </p>
+    </div>
 
-    <form th:action="@{'/logs/' + ${dayOfWeek} + '/' +  ${workoutResponse.workoutId}}" method="post" th:object="${workoutLogRequest}">
+    <form class="log-workout-form" th:action="@{'/logs/' + ${dayOfWeek} + '/' + ${workoutResponse.workoutId}}" method="post" th:object="${workoutLogRequest}">
 
-        <div th:if="${null != error}" class="error-message">
+        <div class="log-workout-error" th:if="${null != error}">
             <p th:text="${error}">All added sets must be > 0, reps > 0, added weight >= 0</p>
         </div>
 
-        <div th:each="exercise, iterStat : ${workoutResponse.exercises}" class="exercise-card">
-            <h3 th:text="${exercise.exerciseName}"></h3>
-            <img th:if="${exercise.mediaUrl != null}" th:src="${exercise.mediaUrl}" alt="Exercise Image">
+        <div th:each="exercise, iterStat : ${workoutResponse.exercises}" class="log-workout-exercise">
+            <h3 class="log-workout-exercise-name" th:text="${exercise.exerciseName}"></h3>
 
-            <p><strong>Target:</strong>
+            <div class="info-exercise">
+                <div class="img">
+            <img class="log-workout-exercise-image"
+                 th:if="${exercise.mediaUrl != null}"
+                 th:src="${exercise.mediaUrl}"
+                 alt="Exercise Image">
+                </div>
+                <div class="info-log">
+            <p class="log-workout-exercise-target">
+                <strong>Target:</strong>
                 <span th:text="'Sets: ' + ${exercise.sets} + ', Reps: ' + ${exercise.reps} + ', Weight: ' + ${exercise.addedWeight} + 'kg'"></span>
             </p>
 
-            <div class="form-group">
-                <label>Completed Sets:</label>
-                <input type="number" th:field="*{loggedExercises[__${iterStat.index}__].sets}" required>
+            <div class="log-workout-form-group">
+                <label class="log-workout-label">Completed Sets:</label>
+                <input class="log-workout-input"
+                       type="number"
+                       th:field="*{loggedExercises[__${iterStat.index}__].sets}">
             </div>
 
-            <div class="form-group">
-                <label>Completed Reps:</label>
-                <input type="number" th:field="*{loggedExercises[__${iterStat.index}__].reps}" required>
+            <div class="log-workout-form-group">
+                <label class="log-workout-label">Completed Reps:</label>
+                <input class="log-workout-input"
+                       type="number"
+                       th:field="*{loggedExercises[__${iterStat.index}__].reps}">
             </div>
 
-            <div class="form-group">
-                <label>Added Weight (kg):</label>
-                <input type="number" th:field="*{loggedExercises[__${iterStat.index}__].addedWeight}" step="0.125">
+            <div class="log-workout-form-group">
+                <label class="log-workout-label">Added Weight (in kg, optional):</label>
+                <input class="log-workout-input"
+                       type="number"
+                       th:field="*{loggedExercises[__${iterStat.index}__].addedWeight}"
+                       step="0.125">
             </div>
-
-            <input type="hidden" th:field="*{loggedExercises[__${iterStat.index}__].exerciseId}" th:value="${exercise.exerciseId}">
+                </div>
+            <input type="hidden"
+                   th:field="*{loggedExercises[__${iterStat.index}__].exerciseId}"
+                   th:value="${exercise.exerciseId}">
+            </div>
         </div>
 
-        <button type="submit">Log Workout</button>
+        <button class="log-workout-submit" type="submit">Log Workout</button>
     </form>
 </div>
 

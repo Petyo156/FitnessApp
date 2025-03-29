@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -41,33 +42,42 @@ public class WorkoutController {
         List<ViewWorkoutResponse> workouts = workoutService.getWorkoutsForUser(user);
 
         modelAndView.addObject("workouts", workouts);
+        modelAndView.addObject("user", userService.getById(authenticationMetadata.getId()));
 
         return modelAndView;
     }
 
     @GetMapping("/new")
-    public ModelAndView showCreateWorkoutForm() {
+    public ModelAndView showCreateWorkoutForm(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("user/submit-workout");
 
         List<String> allExercises = exerciseService.findAllApprovedExercisesNames();
 
         modelAndView.addObject("submitWorkoutRequest", new SubmitWorkoutRequest());
         modelAndView.addObject("allExercises", allExercises);
+        modelAndView.addObject("user", userService.getById(authenticationMetadata.getId()));
 
         return modelAndView;
     }
 
     @PostMapping()
-    public String createWorkout(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-                                @Valid SubmitWorkoutRequest submitWorkoutRequest, BindingResult bindingResult) {
+    public ModelAndView createWorkout(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
+                                      @Valid @ModelAttribute SubmitWorkoutRequest submitWorkoutRequest,
+                                      BindingResult bindingResult) {
+
+        ModelAndView modelAndView = new ModelAndView("user/submit-workout");
+
         if (bindingResult.hasErrors()) {
-            return "user/submit-workout";
+            modelAndView.addObject("allExercises", exerciseService.findAllApprovedExercisesNames());
+            modelAndView.addObject("user", userService.getById(authenticationMetadata.getId()));
+            modelAndView.addObject("submitWorkoutRequest", submitWorkoutRequest);
+            return modelAndView;
         }
 
         User user = userService.getById(authenticationMetadata.getId());
         workoutService.submitWorkout(submitWorkoutRequest, user);
 
-        return "redirect:/home";
+        return new ModelAndView("redirect:/home");
     }
 
 }

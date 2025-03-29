@@ -58,18 +58,18 @@ public class UserController {
 
     @PutMapping("/profile/edit")
     public ModelAndView editProfile(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-                                    @Valid EditProfileRequest editProfileRequest, BindingResult bindingResult) {
+                                    @Valid @ModelAttribute EditProfileRequest editProfileRequest,
+                                    BindingResult bindingResult) {
         User user = userService.getById(authenticationMetadata.getId());
+        ModelAndView modelAndView = new ModelAndView("user/edit-profile");
 
         if (bindingResult.hasErrors()) {
-            ModelAndView modelAndView = new ModelAndView("user/edit-profile");
             modelAndView.addObject("user", user);
             modelAndView.addObject("editProfileRequest", editProfileRequest);
             return modelAndView;
         }
 
         userService.editUserProfile(user, editProfileRequest);
-
         return new ModelAndView("redirect:/home");
     }
 

@@ -1,94 +1,136 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/init.css">
+    <link rel="stylesheet" type="text/css" href="/css/submit-workout.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Submit Workout</title>
 </head>
 <body>
-<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
-<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
 
-<h2>Submit Your Workout</h2>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-<!-- Form submission -->
-<form th:action="@{/workouts}" method="post" th:object="${submitWorkoutRequest}">
+<main class="workout-form-container">
+    <h1 class="workout-form-title">Create New Workout</h1>
 
-    <!-- 🔍 Search/Select Exercise -->
-    <label>Select an Exercise:</label>
-    <select id="exerciseSelect">
-        <option value="" selected disabled>Choose an exercise</option>
-        <option th:each="exercise : ${allExercises}" th:value="${exercise}" th:text="${exercise}"></option>
-    </select>
-
-    <button type="button" onclick="addExercise()">Add Exercise</button>
-    <p class="alert-warning" th:if="${#fields.hasErrors('exercises')}" th:errors="*{exercises}"></p>
-
-    <br><br>
-
-    <!-- 📋 List of Added Exercises -->
-    <div id="exerciseList">
-        <div th:each="exercise, index : *{exercises}">
-            <label>Exercise Name:</label>
-            <input type="text" th:field="*{exercises[__${index.index}__].exerciseName}" readonly />
-
-            <label>Sets:</label>
-            <input type="number" th:field="*{exercises[__${index.index}__].sets}" min="1" required />
-
-            <label>Reps:</label>
-            <input type="number" th:field="*{exercises[__${index.index}__].reps}" min="1" required />
-
-            <label>Added Weight:</label>
-            <input type="number" th:field="*{exercises[__${index.index}__].addedWeight}" step="0.1" />
-
-            <button type="button" onclick="removeExercise(this)">Remove</button>
+    <form class="workout-form" th:action="@{/workouts}" method="post" th:object="${submitWorkoutRequest}">
+        <div class="form-group exercise-selection">
+            <label class="form-label">Select Exercise:</label>
+            <div class="select-wrapper">
+                <select class="form-select" id="exerciseSelect">
+                    <option value="" selected disabled>Choose an exercise</option>
+                    <option th:each="exercise : ${allExercises}"
+                            th:value="${exercise}"
+                            th:text="${exercise}"></option>
+                </select>
+                <button class="add-exercise-btn" type="button" onclick="addExercise()">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <p class="form-error" th:if="${#fields.hasErrors('exercises')}" th:errors="*{exercises}"></p>
         </div>
-    </div>
 
-    <br>
+        <div class="exercise-list" id="exerciseList">
+            <div class="exercise-item" th:each="exercise, index : *{exercises}">
+                <div class="exercise-header">
+                    <div class="exercise-image-container">
+                        <img class="exercise-thumbnail"
+                             th:src="${exercise.mediaUrl}"
+                             alt="Exercise image">
+                    </div>
+                    <h3 th:text="${exercise.exerciseName}"></h3>
+                    <button class="remove-btn" type="button" onclick="removeExercise(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="exercise-fields">
+                    <div class="form-group">
+                        <label class="form-label">Sets</label>
+                        <input class="form-input" type="number" th:field="*{exercises[__${index.index}__].sets}" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Reps</label>
+                        <input class="form-input" type="number" th:field="*{exercises[__${index.index}__].reps}" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Weight (kg)</label>
+                        <input class="form-input" type="number" th:field="*{exercises[__${index.index}__].addedWeight}" step="0.1" min="0">
+                    </div>
+                    <input type="hidden" th:field="*{exercises[__${index.index}__].exerciseName}">
+                </div>
+            </div>
+        </div>
 
-    <label>Additional Info: (optional)</label>
-    <textarea th:field="*{additionalInfo}"></textarea>
+        <div class="form-group">
+            <label class="form-label">Additional Notes (optional)</label>
+            <textarea class="form-textarea" th:field="*{additionalInfo}" placeholder="Any special instructions..."></textarea>
+        </div>
 
-    <label>Approximate Duration in minutes: (optional)</label>
-    <input type="number" th:field="*{approximateDuration}"/>
+        <div class="form-group">
+            <label class="form-label">Approximate Duration (minutes, optional)</label>
+            <input class="form-input" type="number" th:field="*{approximateDuration}" min="1">
+        </div>
 
-    <br><br>
+        <div class="form-actions">
+            <button class="submit-btn" type="submit">
+                <i class="fas fa-save"></i> Save Workout
+            </button>
+        </div>
+    </form>
+</main>
 
-    <button type="submit">Submit Workout</button>
-</form>
-
-<!-- Basic JavaScript for Form Manipulation -->
 <script>
     function addExercise() {
         const select = document.getElementById("exerciseSelect");
         const selectedExercise = select.options[select.selectedIndex].value;
 
-        if (!selectedExercise) return;
+        if (!selectedExercise) {
+            alert("Please select an exercise first");
+            return;
+        }
 
         const exerciseList = document.getElementById("exerciseList");
-        const index = exerciseList.children.length; // Get the next index
+        const index = exerciseList.children.length;
 
         const div = document.createElement("div");
+        div.className = "exercise-item";
         div.innerHTML = `
-        <label>Exercise Name:</label>
-        <input type="text" name="exercises[${index}].exerciseName" value="${selectedExercise}" readonly />
-
-        <label>Sets:</label>
-        <input type="number" name="exercises[${index}].sets" min="1" required value="1" />
-
-        <label>Reps:</label>
-        <input type="number" name="exercises[${index}].reps" min="1" required value="1" />
-
-        <label>Added Weight:</label>
-        <input type="number" name="exercises[${index}].addedWeight" step="0.1" value="0" />
-
-        <button type="button" onclick="removeExercise(this)">Remove</button>
-    `;
+            <div class="exercise-header">
+                <div class="exercise-image-container">
+                    <img class="exercise-thumbnail"
+                         src="/images/default-exercise.png"
+                         alt="Exercise image">
+                </div>
+                <h3>${selectedExercise}</h3>
+                <button class="remove-btn" type="button" onclick="removeExercise(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="exercise-fields">
+                <div class="form-group">
+                    <label class="form-label">Sets</label>
+                    <input class="form-input" type="number" name="exercises[${index}].sets" min="1" required value="1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Reps</label>
+                    <input class="form-input" type="number" name="exercises[${index}].reps" min="1" required value="1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Weight (kg)</label>
+                    <input class="form-input" type="number" name="exercises[${index}].addedWeight" step="0.1" min="0" value="0">
+                </div>
+                <input type="hidden" name="exercises[${index}].exerciseName" value="${selectedExercise}">
+            </div>
+        `;
         exerciseList.appendChild(div);
     }
 
-
     function removeExercise(button) {
-        button.parentElement.remove();
+        button.closest('.exercise-item').remove();
     }
 </script>
 

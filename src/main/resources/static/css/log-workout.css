@@ -1,0 +1,117 @@
+/* Specific to log workout page only */
+.log-workout-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 12px;
+}
+
+.log-workout-title {
+    color: #00CED1;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.log-workout-meta {
+    margin-bottom: 1.5rem;
+}
+
+.log-workout-info,
+.log-workout-duration {
+    color: #555;
+    margin: 0.5rem 0;
+}
+
+.log-workout-exercise {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.log-workout-exercise-name {
+    color: #2c3e50;
+    margin-top: 0;
+    font-size: 1.3rem;
+}
+
+.log-workout-exercise-image {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1rem 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.log-workout-exercise-target {
+    color: #555;
+    margin: 0.5rem 0;
+}
+
+.log-workout-form-group {
+    margin: 1.2rem 0;
+}
+
+.log-workout-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #555;
+}
+
+.info-exercise {
+    display: flex;
+}
+
+.info-log {
+    padding-left: 2em;
+    margin-top: 1em;
+}
+
+.log-workout-input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+.log-workout-input:focus {
+    border-color: #00CED1;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 206, 209, 0.2);
+}
+
+.log-workout-submit {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #00CED1, #FFA500);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.log-workout-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 206, 209, 0.3);
+}
+
+.log-workout-error {
+    background-color: #FFF5F5;
+    border-left: 4px solid #FF5252;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+    color: #D32F2F;
+    font-weight: 500;
+}

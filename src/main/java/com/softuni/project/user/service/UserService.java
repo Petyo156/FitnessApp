@@ -96,13 +96,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void updateUserStatus(String id) {
-        UUID userId;
-        try {
-            userId = UUID.fromString(id);
-        } catch (Exception e) {
-            throw new UserIdDoesntExistException(ExceptionMessages.USER_ID_DOESNT_EXIST);
-        }
-        User user = getById(userId);
+        User user = getById(id);
         boolean newStatus = !user.isActive();
         user.setActive(newStatus);
         userRepository.save(user);
@@ -111,13 +105,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void updateUserRole(String id) {
-        UUID userId;
-        try {
-            userId = UUID.fromString(id);
-        } catch (Exception e) {
-            throw new UserIdDoesntExistException(ExceptionMessages.USER_ID_DOESNT_EXIST);
-        }
-        User user = getById(userId);
+        User user = getById(id);
         if (user.getUserRole() == UserRole.ADMIN) {
             user.setUserRole(UserRole.USER);
         } else {

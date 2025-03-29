@@ -157,6 +157,7 @@
 .alert-message {
     padding: 0.8rem;
     font-size: 0.9rem;
+    color: orangered;
     margin-bottom: 1rem;
 }
 
@@ -176,5 +177,15 @@
     box-shadow: 0 2px 6px rgba(255, 165, 0, 0.3); /* Softer shadow */
     width: auto;            /* Let button size naturally */
     margin: 0 auto;
+}
+/* Error Styling */
+.form-error {
+    color: #FF5252;
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+}
+
+.input-error {
+    border-color: #FF5252 !important;
 }
 

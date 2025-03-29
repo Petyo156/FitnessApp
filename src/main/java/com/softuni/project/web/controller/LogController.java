@@ -57,6 +57,7 @@ public class LogController {
 
     @GetMapping("/{dayOfWeek}/{workoutId}")
     public ModelAndView showLogWorkoutPage(
+            @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
             @PathVariable String dayOfWeek,
             @PathVariable String workoutId) {
 
@@ -69,6 +70,7 @@ public class LogController {
         modelAndView.addObject("workoutResponse", workoutResponse);
         modelAndView.addObject("workoutLogRequest", workoutLogRequest);
         modelAndView.addObject("dayOfWeek", dayOfWeek);
+        modelAndView.addObject("user", userService.getById(authenticationMetadata.getId()));
 
         return modelAndView;
     }
@@ -78,6 +80,7 @@ public class LogController {
         ModelAndView modelAndView = new ModelAndView("user/your-logs");
 
         List<ViewLogResponse> logs = logService.getViewLogResponsesForUser(authenticationMetadata.getId());
+        modelAndView.addObject("user", userService.getById(authenticationMetadata.getId()));
         modelAndView.addObject("logs", logs);
 
         return modelAndView;

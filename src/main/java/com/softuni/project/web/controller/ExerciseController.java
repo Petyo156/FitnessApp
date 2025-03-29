@@ -59,17 +59,6 @@ public class ExerciseController {
         return modelAndView;
     }
 
-    @GetMapping("/new")
-    public ModelAndView showSubmitExerciseForm(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
-        ModelAndView modelAndView = new ModelAndView("user/submit-exercise");
-
-        User user = userService.getById(authenticationMetadata.getId());
-        modelAndView.addObject("submitExerciseRequest", new SubmitExerciseRequest());
-        modelAndView.addObject("user", user);
-
-        return modelAndView;
-    }
-
     @GetMapping("/personal")
     public ModelAndView getUserExercises(@AuthenticationPrincipal AuthenticationMetadata auth) {
         ModelAndView modelAndView = new ModelAndView("user/your-exercises");
@@ -83,16 +72,33 @@ public class ExerciseController {
         return modelAndView;
     }
 
+    @GetMapping("/new")
+    public ModelAndView showSubmitExerciseForm(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+        ModelAndView modelAndView = new ModelAndView("user/submit-exercise");
+
+        User user = userService.getById(authenticationMetadata.getId());
+        modelAndView.addObject("submitExerciseRequest", new SubmitExerciseRequest());
+        modelAndView.addObject("user", user);
+
+        return modelAndView;
+    }
+
     @PostMapping()
-    public String submitExercise(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-                                 @Valid SubmitExerciseRequest submitExerciseRequest, BindingResult bindingResult) {
+    public ModelAndView submitExercise(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
+                                       @Valid @ModelAttribute SubmitExerciseRequest submitExerciseRequest,
+                                       BindingResult bindingResult) {
+        ModelAndView modelAndView = new ModelAndView("user/submit-exercise");
+        modelAndView.addObject("user", userService.getById(authenticationMetadata.getId()));
+
         if (bindingResult.hasErrors()) {
-            return "user/submit-exercise";
+            modelAndView.addObject("submitExerciseRequest", submitExerciseRequest);
+            return modelAndView;
         }
+
         User user = userService.getById(authenticationMetadata.getId());
         exerciseService.submitExercise(submitExerciseRequest, user);
 
-        return "redirect:/home";
+        return new ModelAndView("redirect:/home");
     }
 
 }

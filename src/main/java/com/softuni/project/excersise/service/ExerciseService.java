@@ -120,7 +120,7 @@ public class ExerciseService {
         exercise.setStatus(ExerciseStatus.PENDING);
         exerciseRepository.save(exercise);
 
-        log.info("Rejected exercise with ID: {}", uuid);
+        log.info("Revoked exercise with ID: {}", uuid);
     }
 
     public List<Exercise> findAllApprovedExercisesByUserId(UUID id) {

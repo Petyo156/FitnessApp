@@ -8,7 +8,6 @@ import java.util.List;
 
 @Data
 public class WorkoutLogRequest {
-    @NotEmpty(message = "Please log the exercises.")
     @Valid
     private List<LogExerciseResponse> loggedExercises;
 }

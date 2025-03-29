@@ -1,48 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/init.css">
+    <link rel="stylesheet" type="text/css" href="/css/all-users.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Admin - Manage Users</title>
 </head>
 <body>
-<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
-<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
-<h2>Admin Panel - Manage Users</h2>
 
-<div>
-    <table border="1">
-        <thead>
-        <tr>
-            <th>Username</th>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="user : ${users}">
-            <td th:text="${user.username}"></td>
-            <td th:text="${user.firstName} + ' ' + ${user.lastName}"></td>
-            <td th:text="${user.email}"></td>
-            <td th:text="${user.active ? 'Active' : 'Inactive'}"></td>
-            <td>
-                <form th:action="@{'/admin/users/' + ${user.id} + '/status'}" th:method="POST">
-                    <input type="hidden" name="status" th:value="${user.active} ? 'deactivate' : 'activate'">
-                    <button type="submit" th:text="${user.active} ? 'Deactivate' : 'Activate'"></button>
-                </form>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-                <form th:action="@{'/admin/users/' + ${user.id} + '/role'}"  th:method="POST">
-                    <button type="submit" th:if="${user.userRole.name() == 'ADMIN' && user.username != 'admin'}">Demote</button>
-                    <button type="submit" th:if="${user.userRole.name() != 'ADMIN' && user.username != 'admin'}">Promote</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<main class="admin-users-container">
+    <h1 class="admin-users-title">Manage Users</h1>
 
+    <div class="users-table-container">
+        <table class="users-table">
+            <thead>
+            <tr>
+                <th class="username-col">Username</th>
+                <th class="name-col">Full Name</th>
+                <th class="email-col">Email</th>
+                <th class="status-col">Status</th>
+                <th class="actions-col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="user-row" th:each="user : ${users}">
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.firstName} + ' ' + ${user.lastName}"></td>
+                <td th:text="${user.email}"></td>
+                <td>
+                        <span class="status-badge"
+                              th:classappend="${user.active} ? 'active' : 'inactive'"
+                              th:text="${user.active} ? 'Active' : 'Inactive'">
+                        </span>
+                </td>
+                <td class="user-actions">
+                    <form class="status-form" th:action="@{'/admin/users/' + ${user.id} + '/status'}" method="POST">
+                        <input type="hidden" name="status" th:value="${user.active} ? 'deactivate' : 'activate'">
+                        <button type="submit" class="status-btn"
+                                th:classappend="${user.active} ? 'deactivate-btn' : 'activate-btn'"
+                                th:text="${user.active} ? 'Deactivate' : 'Activate'">
+                        </button>
+                    </form>
+
+                    <form class="role-form" th:action="@{'/admin/users/' + ${user.id} + '/role'}" method="POST">
+                        <button type="submit" class="role-btn promote-btn"
+                                th:if="${user.userRole.name() != 'ADMIN' && user.username != 'admin'}">
+                            <i class="fas fa-arrow-up"></i> Promote
+                        </button>
+                        <button type="submit" class="role-btn demote-btn"
+                                th:if="${user.userRole.name() == 'ADMIN' && user.username != 'admin'}">
+                            <i class="fas fa-arrow-down"></i> Demote
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
 
 </body>
 </html>

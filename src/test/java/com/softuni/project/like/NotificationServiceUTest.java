@@ -54,13 +54,13 @@ class NotificationServiceUTest {
                 .message(String.format("Your program '%s' was liked by %s", PROGRAM_NAME, LIKED_BY_USERNAME))
                 .build();
 
-        when(programService.getProgramById(UUID.fromString(PROGRAM_ID))).thenReturn(program);
+        when(programService.getById(UUID.fromString(PROGRAM_ID))).thenReturn(program);
         when(notificationClient.notifyUserForLikedProgram(request))
                 .thenReturn(ResponseEntity.ok().build());
 
         notificationService.notifyUserForLikedProgram(RECEIVER_ID, SENDER_ID, PROGRAM_ID, LIKED_BY_USERNAME);
 
-        verify(programService, times(1)).getProgramById(UUID.fromString(PROGRAM_ID));
+        verify(programService, times(1)).getById(UUID.fromString(PROGRAM_ID));
         verify(notificationClient, times(1)).notifyUserForLikedProgram(any(NotifyUserRequest.class));
     }
 
@@ -71,7 +71,7 @@ class NotificationServiceUTest {
                 .name(PROGRAM_NAME)
                 .build();
 
-        when(programService.getProgramById(UUID.fromString(PROGRAM_ID))).thenReturn(program);
+        when(programService.getById(UUID.fromString(PROGRAM_ID))).thenReturn(program);
         when(notificationClient.notifyUserForLikedProgram(any(NotifyUserRequest.class)))
                 .thenReturn(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
 

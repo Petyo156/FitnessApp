@@ -1,6 +1,7 @@
 package com.softuni.project.program.service;
 
 import com.softuni.project.exception.ExceptionMessages;
+import com.softuni.project.exception.InvalidUuidFormatException;
 import com.softuni.project.exception.ProgramDoesntExistException;
 import com.softuni.project.mapper.Mapper;
 import com.softuni.project.program.model.Program;
@@ -71,7 +72,17 @@ public class ProgramService {
         return getProgramsResponses(programs);
     }
 
-    public Program getProgramById(UUID id) {
+    public Program getById(String id) {
+        UUID programId;
+        try {
+            programId = UUID.fromString(id);
+        } catch (Exception e) {
+            throw new InvalidUuidFormatException(ExceptionMessages.INVALID_UUID_FORMAT);
+        }
+        return getById(programId);
+    }
+
+    public Program getById(UUID id) {
         return programRepository.findById(id).orElseThrow(() -> {
 
             log.error("Program with ID '{}' does not exist", id);

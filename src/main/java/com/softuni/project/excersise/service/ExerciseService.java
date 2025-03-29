@@ -1,9 +1,6 @@
 package com.softuni.project.excersise.service;
 
-import com.softuni.project.exception.ExceptionMessages;
-import com.softuni.project.exception.ExerciseAlreadyExistsException;
-import com.softuni.project.exception.ExerciseDoesntExistException;
-import com.softuni.project.exception.ExerciseNotApprovedException;
+import com.softuni.project.exception.*;
 import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.model.ExerciseStatus;
 import com.softuni.project.excersise.repository.ExerciseRepository;
@@ -67,6 +64,16 @@ public class ExerciseService {
         });
     }
 
+    public Exercise getById(String uuid) {
+        UUID exerciseId;
+        try {
+            exerciseId = UUID.fromString(uuid);
+        } catch (Exception e) {
+            throw new InvalidUuidFormatException(ExceptionMessages.INVALID_UUID_FORMAT);
+        }
+        return getById(exerciseId);
+    }
+
     public void throwIfNotApproved(Exercise selectedExercise) {
         log.info("Checking approval status for exercise ID: {}", selectedExercise.getId());
 
@@ -92,7 +99,7 @@ public class ExerciseService {
         return exerciseRepository.findByStatus(ExerciseStatus.APPROVED);
     }
 
-    public void approveById(UUID uuid) {
+    public void approveById(String uuid) {
         Exercise exercise = getById(uuid);
         exercise.setStatus(ExerciseStatus.APPROVED);
         exerciseRepository.save(exercise);
@@ -100,9 +107,17 @@ public class ExerciseService {
         log.info("Approved exercise with ID: {}", uuid);
     }
 
-    public void rejectById(UUID uuid) {
+    public void rejectById(String uuid) {
         Exercise exercise = getById(uuid);
         exercise.setStatus(ExerciseStatus.REJECTED);
+        exerciseRepository.save(exercise);
+
+        log.info("Rejected exercise with ID: {}", uuid);
+    }
+
+    public void revokeById(String uuid) {
+        Exercise exercise = getById(uuid);
+        exercise.setStatus(ExerciseStatus.PENDING);
         exerciseRepository.save(exercise);
 
         log.info("Rejected exercise with ID: {}", uuid);

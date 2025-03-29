@@ -177,7 +177,7 @@ public class ExerciseServiceUTest {
         Exercise exercise = new Exercise();
         when(exerciseRepository.findById(exerciseId)).thenReturn(Optional.of(exercise));
 
-        exerciseService.approveById(exerciseId);
+        exerciseService.approveById(exerciseId.toString());
 
         assertEquals(ExerciseStatus.APPROVED, exercise.getStatus());
         verify(exerciseRepository, times(1)).save(exercise);
@@ -189,7 +189,7 @@ public class ExerciseServiceUTest {
         Exercise exercise = new Exercise();
         when(exerciseRepository.findById(exerciseId)).thenReturn(Optional.of(exercise));
 
-        exerciseService.rejectById(exerciseId);
+        exerciseService.rejectById(exerciseId.toString());
 
         assertEquals(ExerciseStatus.REJECTED, exercise.getStatus());
         verify(exerciseRepository, times(1)).save(exercise);

@@ -17,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/logs")
@@ -49,7 +48,7 @@ public class LogController {
         }
 
         User user = userService.getById(authenticationMetadata.getId());
-        Workout workout = workoutService.getById(UUID.fromString(workoutId));
+        Workout workout = workoutService.getById(workoutId);
 
         logService.createLog(user, workout, workoutLogRequest);
 
@@ -63,7 +62,7 @@ public class LogController {
 
         ModelAndView modelAndView = new ModelAndView("user/log-workout");
 
-        Workout workout = workoutService.getById(UUID.fromString(workoutId));
+        Workout workout = workoutService.getById(workoutId);
         ViewWorkoutResponse workoutResponse = workoutService.getViewWorkoutResponseByWorkout(workout);
         WorkoutLogRequest workoutLogRequest = workoutService.initializeWorkoutLogRequest(workoutResponse);
 
@@ -77,9 +76,8 @@ public class LogController {
     @GetMapping()
     public ModelAndView getUserLogs(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("user/your-logs");
-        UUID userId = authenticationMetadata.getId();
 
-        List<ViewLogResponse> logs = logService.getViewLogResponsesForUser(userId);
+        List<ViewLogResponse> logs = logService.getViewLogResponsesForUser(authenticationMetadata.getId());
         modelAndView.addObject("logs", logs);
 
         return modelAndView;
@@ -87,7 +85,7 @@ public class LogController {
 
     @DeleteMapping("/{id}")
     public String deleteLog(@PathVariable String id) {
-        logService.deleteLogById(UUID.fromString(id));
+        logService.deleteLogById(id);
 
         return "redirect:/logs";
     }

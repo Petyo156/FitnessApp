@@ -39,7 +39,7 @@ public class NotificationService {
     }
 
     private NotifyUserRequest initializeNotifyUserRequest(String receiverId, String senderId, String programId, String likedByUserUsername) {
-        Program program = programService.getProgramById(UUID.fromString(programId));
+        Program program = programService.getById(UUID.fromString(programId));
         String message = String.format("Your program '%s' was liked by %s", program.getName(), likedByUserUsername);
 
         return NotifyUserRequest.builder()

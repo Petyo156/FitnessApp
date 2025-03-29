@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/users")
@@ -30,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/profile")
-    public ModelAndView getProfile(@PathVariable UUID id, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView getProfile(@PathVariable String id, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView();
 
         User user = userService.getById(id);

@@ -62,7 +62,7 @@ public class WorkoutControllerApiTest {
 
         List<ViewWorkoutResponse> workouts = List.of(viewWorkoutResponse);
 
-        when(userService.getById(any())).thenReturn(user);
+        when(userService.getById(UUID.randomUUID())).thenReturn(user);
         when(workoutService.getWorkoutsForUser(any())).thenReturn(workouts);
 
         MockHttpServletRequestBuilder request = get("/workouts/personal")
@@ -73,7 +73,7 @@ public class WorkoutControllerApiTest {
                 .andExpect(view().name("user/your-workouts"))
                 .andExpect(model().attributeExists("workouts"));
 
-        verify(userService, times(1)).getById(any());
+        verify(userService, times(1)).getById(UUID.randomUUID());
         verify(workoutService, times(1)).getWorkoutsForUser(any());
     }
 
@@ -109,7 +109,7 @@ public class WorkoutControllerApiTest {
         submitWorkoutRequest.setApproximateDuration(60);
         submitWorkoutRequest.setAdditionalInfo("Top workout");
 
-        when(userService.getById(any())).thenReturn(user);
+        when(userService.getById(UUID.randomUUID())).thenReturn(user);
 
         MockHttpServletRequestBuilder request = post("/workouts")
                 .with(user(userMetadata()))

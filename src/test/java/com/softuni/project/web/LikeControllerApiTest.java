@@ -41,7 +41,7 @@ public class LikeControllerApiTest {
 
     @Test
     void postLikeProgram_shouldRedirectToHome() throws Exception {
-        when(userService.getById(any())).thenReturn(aRandomUser());
+        when(userService.getById(UUID.randomUUID())).thenReturn(aRandomUser());
 
         MockHttpServletRequestBuilder request = post("/like/{programId}/{programOwnerId}", UUID.randomUUID(), UUID.randomUUID())
                 .with(user(userMetadata()))
@@ -58,7 +58,7 @@ public class LikeControllerApiTest {
     @Test
     void getLikedPrograms_shouldReturnLikedProgramsPage() throws Exception {
         User user = aRandomUser();
-        when(userService.getById(any())).thenReturn(user);
+        when(userService.getById(UUID.randomUUID())).thenReturn(user);
         when(likeService.getAllLikedPrograms(any())).thenReturn(List.of());
 
         MockHttpServletRequestBuilder request = get("/like/programs/{userId}", user.getId())
@@ -76,7 +76,7 @@ public class LikeControllerApiTest {
     @Test
     void getLikeNotifications_shouldReturnNotificationsPage() throws Exception {
         User user = aRandomUser();
-        when(userService.getById(any())).thenReturn(user);
+        when(userService.getById(UUID.randomUUID())).thenReturn(user);
         when(notificationService.getAllNotificationsForUser(any(), any())).thenReturn(List.of());
 
         MockHttpServletRequestBuilder request = get("/like/notifications/{userId}", user.getId())

@@ -54,7 +54,7 @@ public class ProgramControllerApiTest {
         programFormRequest.setShared(true);
         programFormRequest.setDifficulty(Difficulty.HARD);
 
-        when(userService.getById(any())).thenReturn(aRandomUser());
+        when(userService.getById(UUID.randomUUID())).thenReturn(aRandomUser());
 
         MockHttpServletRequestBuilder request = post("/programs")
                 .with(user(userMetadata()))
@@ -72,7 +72,7 @@ public class ProgramControllerApiTest {
     void getUserPrograms_shouldReturnPersonalProgramsPage() throws Exception {
         User user = aRandomUser();
 
-        when(userService.getById(any())).thenReturn(user);
+        when(userService.getById(UUID.randomUUID())).thenReturn(user);
 
         WorkoutExerciseEntry exerciseEntry = WorkoutExerciseEntry.builder()
                 .exerciseId(UUID.randomUUID().toString())
@@ -118,7 +118,7 @@ public class ProgramControllerApiTest {
         User user = aRandomUser();
         List<ViewProgramResponse> programs = List.of(new ViewProgramResponse());
 
-        when(userService.getById(any())).thenReturn(user);
+        when(userService.getById(UUID.randomUUID())).thenReturn(user);
         when(programService.getAllSharedProgramsByAllOtherUsers(any())).thenReturn(programs);
 
         MockHttpServletRequestBuilder request = get("/programs/browse")
@@ -139,8 +139,8 @@ public class ProgramControllerApiTest {
         User user = aRandomUser();
         Program program = new Program();
 
-        when(userService.getById(any())).thenReturn(user);
-        when(programService.getProgramById(any())).thenReturn(program);
+        when(userService.getById(UUID.randomUUID())).thenReturn(user);
+        when(programService.getById(UUID.randomUUID())).thenReturn(program);
 
         MockHttpServletRequestBuilder request = post("/programs/{programId}/activate", programId)
                 .with(user(userMetadata()))
@@ -157,7 +157,7 @@ public class ProgramControllerApiTest {
     void postDeactivateProgram_shouldRedirectToHome() throws Exception {
         User user = aRandomUser();
 
-        when(userService.getById(any())).thenReturn(user);
+        when(userService.getById(UUID.randomUUID())).thenReturn(user);
 
         MockHttpServletRequestBuilder request = post("/programs/deactivate")
                 .with(user(userMetadata()))

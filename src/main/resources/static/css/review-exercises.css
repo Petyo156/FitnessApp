@@ -1,0 +1,142 @@
+
+.review-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.review-title {
+    color: #00CED1;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    font-size: 2rem;
+    position: relative;
+}
+
+.review-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #00CED1, #FFA500);
+}
+
+/* Section Styles */
+.review-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.pending-section .section-header i {
+    color: #FFA500;
+}
+
+.approved-section .section-header i {
+    color: #4CAF50;
+}
+
+.rejected-section .section-header i {
+    color: #F44336;
+}
+
+/* Table Styles */
+.review-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.review-table td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.review-table tr:last-child td {
+    border-bottom: none;
+}
+
+.exercise-thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: #F5F5F5;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+
+}
+
+.btn {
+    margin-left: 2em;
+    margin-top: 2em;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.approve-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.approve-btn:hover {
+    background: #3e8e41;
+    transform: translateY(-2px);
+}
+
+.reject-btn {
+    background: #F44336;
+    color: white;
+}
+
+.reject-btn:hover {
+    background: #d32f2f;
+    transform: translateY(-2px);
+}
+
+.revoke-btn {
+    background: #FFA500;
+    color: white;
+}
+
+.revoke-btn:hover {
+    background: #e69500;
+    transform: translateY(-2px);
+}
+
+/* Empty State */
+.empty-message {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 1.5rem 0;
+}

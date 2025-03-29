@@ -1,0 +1,123 @@
+/* Admin Users Management Styles */
+.admin-users-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.admin-users-title {
+    color: #00CED1;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    font-size: 2rem;
+    position: relative;
+}
+
+.admin-users-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #00CED1, #FFA500);
+}
+
+.users-table th {
+    opacity: 70%;
+    background-color: #00CED1;
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 500;
+}
+
+th.actions-col {
+    padding-left: 9em;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.users-table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.users-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status Badge */
+.status-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.active {
+    background-color: #E8F5E9;
+    color: #4CAF50;
+}
+
+.status-badge.inactive {
+    background-color: #FFEBEE;
+    color: #F44336;
+}
+
+/* Button Styles */
+.user-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.status-form, .role-form {
+    margin: 0;
+}
+
+.status-btn, .role-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.activate-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.deactivate-btn {
+    background: #F44336;
+    color: white;
+}
+
+.promote-btn {
+    background: #FFA500;
+    color: white;
+}
+
+.demote-btn {
+    background: #607D8B;
+    color: white;
+}
+
+.status-btn:hover, .role-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+

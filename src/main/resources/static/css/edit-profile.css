@@ -69,8 +69,8 @@
 }
 
 .profile-edit-textarea {
-    resize: vertical;
-    min-height: 100px; /* Slightly shorter */
+    resize: none;
+    min-height: 2em;
 }
 
 .profile-edit-actions {

@@ -11,6 +11,6 @@ public class ExceptionMessages {
     public static final String USER_ID_DOESNT_EXIST = "User with this id does not exist";
     public static final String USER_USERNAME_DOESNT_EXIST = "User with this username does not exist";
     public static final String WORKOUT_DOESNT_EXIST = "Workout with this id does not exist";
-    public static final String WORKOUT_DOESNT_EXIST_ADMIN = "Invalid Workout - Admin error";
     public static final String UNAUTHORIZED_NOTIFICATIONS_ACCESS = "You cannot view other users notifications";
+    public static final String INVALID_UUID_FORMAT = "Invalid UUID format provided";
 }

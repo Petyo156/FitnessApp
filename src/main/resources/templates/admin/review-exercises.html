@@ -2,90 +2,127 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/init.css">
+    <link rel="stylesheet" type="text/css" href="/css/review-exercises.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Exercise Review</title>
 </head>
 <body>
-<div class="container">
-    <th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
-    <th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<main class="review-container">
+    <h1 class="review-title">Exercise Review</h1>
+
     <!-- Pending Exercises -->
-    <h2 class="mt-4">Pending Exercises</h2>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Difficulty</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="exercise : ${pendingExercises}">
-            <td th:text="${exercise.name}"></td>
-            <td th:text="${exercise.description}"></td>
-            <td th:text="${exercise.difficulty}"></td>
-            <td>
-                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/approval'}" method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-success">Approve</button>
-                </form>
-                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/rejection'}" method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-danger">Reject</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <section class="review-section pending-section">
+        <div class="section-header">
+            <i class="fas fa-clock"></i>
+            <h2 class="section-title">Pending Exercises</h2>
+        </div>
+
+        <div class="table-container" th:if="${not #lists.isEmpty(pendingExercises)}">
+            <table class="review-table">
+                <tbody>
+                <tr th:each="exercise : ${pendingExercises}">
+                    <td>
+                        <img class="exercise-thumbnail" th:src="${exercise.mediaUrl}"
+                             alt="Exercise image" onerror="this.src='/images/default-exercise.png'">
+                    </td>
+                    <td th:text="${exercise.name}"></td>
+                    <td th:text="${exercise.description}"></td>
+                    <td th:text="${exercise.difficulty}"></td>
+                    <td class="action-buttons">
+                        <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/approval'}" method="post">
+                            <button type="submit" class="btn approve-btn">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                        </form>
+                        <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/rejection'}" method="post">
+                            <button type="submit" class="btn reject-btn">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="empty-message" th:if="${#lists.isEmpty(pendingExercises)}">No pending exercises to review.</p>
+    </section>
 
     <!-- Approved Exercises -->
-    <h2 class="mt-4">Approved Exercises</h2>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Difficulty</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="exercise : ${approvedExercises}">
-            <td th:text="${exercise.name}"></td>
-            <td th:text="${exercise.description}"></td>
-            <td th:text="${exercise.difficulty}"></td>
-            <td>
-                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/rejection'}" method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-warning">Move to Rejected</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <section class="review-section approved-section">
+        <div class="section-header">
+            <i class="fas fa-check-circle"></i>
+            <h2 class="section-title">Approved Exercises</h2>
+        </div>
+
+        <div class="table-container" th:if="${not #lists.isEmpty(approvedExercises)}">
+            <table class="review-table">
+                <tbody>
+                <tr th:each="exercise : ${approvedExercises}">
+                    <td>
+                        <img class="exercise-thumbnail" th:src="${exercise.mediaUrl}"
+                             alt="Exercise image" onerror="this.src='/images/default-exercise.png'">
+                    </td>
+                    <td th:text="${exercise.name}"></td>
+                    <td th:text="${exercise.description}"></td>
+                    <td th:text="${exercise.difficulty}"></td>
+                    <td class="action-buttons">
+                        <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/revoke'}" method="post">
+                            <button type="submit" class="btn revoke-btn">
+                                <i class="fas fa-undo"></i> Revoke
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="empty-message" th:if="${#lists.isEmpty(approvedExercises)}">No approved exercises found.</p>
+    </section>
 
     <!-- Rejected Exercises -->
-    <h2 class="mt-4">Rejected Exercises</h2>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Difficulty</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="exercise : ${rejectedExercises}">
-            <td th:text="${exercise.name}"></td>
-            <td th:text="${exercise.description}"></td>
-            <td th:text="${exercise.difficulty}"></td>
-            <td>
-                <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/approval'}" method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-warning">Move to Approved</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <section class="review-section rejected-section">
+        <div class="section-header">
+            <i class="fas fa-times-circle"></i>
+            <h2 class="section-title">Rejected Exercises</h2>
+        </div>
+
+        <div class="table-container" th:if="${not #lists.isEmpty(rejectedExercises)}">
+            <table class="review-table">
+                <tbody>
+                <tr th:each="exercise : ${rejectedExercises}">
+                    <td>
+                        <img class="exercise-thumbnail" th:src="${exercise.mediaUrl}"
+                             alt="Exercise image" onerror="this.src='/images/default-exercise.png'">
+                    </td>
+                    <td th:text="${exercise.name}"></td>
+                    <td th:text="${exercise.description}"></td>
+                    <td th:text="${exercise.difficulty}"></td>
+                    <td class="action-buttons">
+                        <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/approval'}" method="post">
+                            <button type="submit" class="btn approve-btn">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                        </form>
+                        <form th:action="@{'/admin/exercises/' + ${exercise.id} + '/revoke'}" method="post">
+                            <button type="submit" class="btn revoke-btn">
+                                <i class="fas fa-undo"></i> Revoke
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="empty-message" th:if="${#lists.isEmpty(rejectedExercises)}">No rejected exercises found.</p>
+    </section>
+</main>
 
 </body>
 </html>

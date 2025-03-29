@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.softuni.project.web.TestBuilder.aRandomUser;
 import static com.softuni.project.web.TestBuilder.userMetadata;
@@ -41,7 +42,7 @@ public class UserControllerApiTest {
         User user = aRandomUser();
         List<ViewProgramResponse> programs = List.of(new ViewProgramResponse());
 
-        when(userService.getById(any())).thenReturn(user);
+        when(userService.getById(UUID.randomUUID())).thenReturn(user);
         when(programService.getAllSharedProgramsByUser(any())).thenReturn(programs);
 
         MockHttpServletRequestBuilder request = get("/users/{id}/profile", user.getId())
@@ -54,7 +55,7 @@ public class UserControllerApiTest {
                 .andExpect(model().attributeExists("loggedUserId"))
                 .andExpect(model().attributeExists("programs"));
 
-        verify(userService, times(1)).getById(any());
+        verify(userService, times(1)).getById(UUID.randomUUID());
         verify(programService, times(1)).getAllSharedProgramsByUser(any());
     }
 
@@ -62,7 +63,7 @@ public class UserControllerApiTest {
     void getEditProfilePage_shouldReturnEditProfilePage() throws Exception {
         User user = aRandomUser();
 
-        when(userService.getById(any())).thenReturn(user);
+        when(userService.getById(UUID.randomUUID())).thenReturn(user);
 
         MockHttpServletRequestBuilder request = get("/users/profile/edit")
                 .with(user(userMetadata()));
@@ -73,14 +74,14 @@ public class UserControllerApiTest {
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attributeExists("editProfileRequest"));
 
-        verify(userService, times(1)).getById(any());
+        verify(userService, times(1)).getById(UUID.randomUUID());
     }
 
     @Test
     void putEditProfile_shouldRedirectToHome() throws Exception {
         User user = aRandomUser();
 
-        when(userService.getById(any())).thenReturn(user);
+        when(userService.getById(UUID.randomUUID())).thenReturn(user);
 
         MockHttpServletRequestBuilder request = put("/users/profile/edit")
                 .with(user(userMetadata()))

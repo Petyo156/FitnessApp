@@ -1,0 +1,141 @@
+/* Your Exercises Page Styles */
+.exercises-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.exercises-title {
+    color: #00CED1;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    font-size: 2rem;
+    position: relative;
+}
+
+.exercises-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #00CED1, #FFA500);
+}
+
+/* Exercise Sections */
+.exercise-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.approved-exercises .section-header i {
+    color: #4CAF50;
+}
+
+.pending-exercises .section-header i {
+    color: #FFA500;
+}
+
+.rejected-exercises .section-header i {
+    color: #F44336;
+}
+
+/* Tables */
+.exercise-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-body tr {
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.table-body tr:last-child {
+    border-bottom: none;
+}
+
+.table-body td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+/* Table Cells */
+.exercise-image-cell {
+    width: 150px;
+}
+
+.exercise-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: #F5F5F5;
+}
+
+.exercise-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.exercise-difficulty {
+    font-weight: 500;
+}
+
+.difficulty-BEGINNER {
+    color: #4CAF50;
+}
+
+.difficulty-INTERMEDIATE {
+    color: #FFA500;
+}
+
+.difficulty-ADVANCED {
+    color: #F44336;
+}
+
+.muscle-tag {
+    display: inline-block;
+    background: #F0F0F0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.exercise-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.exercise-status {
+    font-weight: 500;
+    color: #F44336;
+}
+
+.no-exercises-message {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 0.5rem 0;
+}

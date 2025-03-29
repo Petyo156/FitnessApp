@@ -59,10 +59,10 @@ public class LogControllerApiTest {
         WorkoutLogRequest workoutLogRequest = new WorkoutLogRequest();
         workoutLogRequest.setLoggedExercises(responses);
 
-        when(userService.getById(any())).thenReturn(aRandomUser());
+        when(userService.getById(UUID.randomUUID())).thenReturn(aRandomUser());
 
         Workout workout = randomWorkout();
-        when(workoutService.getById(any())).thenReturn(workout);
+        when(workoutService.getById(UUID.randomUUID())).thenReturn(workout);
 
         MockHttpServletRequestBuilder request = post("/logs/{dayOfWeek}/{workoutId}", "Monday", workout.getId())
                 .with(user(userMetadata()))
@@ -112,7 +112,7 @@ public class LogControllerApiTest {
         workoutLogRequest.setLoggedExercises(responses);
 
 
-        when(workoutService.getById(any())).thenReturn(workout);
+        when(workoutService.getById(UUID.randomUUID())).thenReturn(workout);
         when(workoutService.getViewWorkoutResponseByWorkout(any())).thenReturn(workoutResponse);
         when(workoutService.initializeWorkoutLogRequest(any())).thenReturn(workoutLogRequest);
 
@@ -126,7 +126,7 @@ public class LogControllerApiTest {
                 .andExpect(model().attributeExists("workoutLogRequest"))
                 .andExpect(model().attributeExists("dayOfWeek"));
 
-        verify(workoutService, times(1)).getById(any());
+        verify(workoutService, times(1)).getById(UUID.randomUUID());
         verify(workoutService, times(1)).getViewWorkoutResponseByWorkout(any());
         verify(workoutService, times(1)).initializeWorkoutLogRequest(any());
     }
@@ -147,7 +147,7 @@ public class LogControllerApiTest {
 
         List<ViewLogResponse> logs = List.of(viewLogResponse);
 
-        when(userService.getById(any())).thenReturn(aRandomUser());
+        when(userService.getById(UUID.randomUUID())).thenReturn(aRandomUser());
         when(logService.getViewLogResponsesForUser(any())).thenReturn(logs);
 
         MockHttpServletRequestBuilder request = get("/logs")

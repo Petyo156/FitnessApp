@@ -1,0 +1,174 @@
+/* Base Styles */
+.exercises-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Search Box */
+.exercise-search {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 2rem;
+    padding: 0.8rem 1.2rem;
+    border: 1px solid #E0E0E0;
+    border-radius: 30px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    display: block;
+}
+
+/* Layout */
+.exercises-content {
+    display: flex;
+    gap: 2rem;
+}
+
+.exercises-list-container {
+    flex: 1;
+    max-width: 300px;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.exercise-details {
+    flex: 2;
+    background: white;
+    border-radius: 12px;
+    padding: 0.6rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Exercises List */
+.exercises-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.exercise-item {
+    background: white;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.exercise-link {
+    display: block;
+    padding: 1rem;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.exercise-link:hover {
+    color: #00CED1;
+}
+
+/* Image Container */
+.image-container {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f8f8;
+    background-size: 50%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.exercise-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: none !important;
+}
+
+.exercise-info {
+    padding-left: 3em;
+}
+
+/* Exercise Info */
+.exercise-name {
+    color: #00CED1;
+    margin-bottom: 0.8rem;
+    font-size: 1.5rem;
+}
+
+.exercise-description {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 0.8rem;
+}
+
+.exercise-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+    align-items: center;
+}
+
+.exercise-difficulty {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: GrayText;
+    background: #F0F0F0;
+}
+
+.difficulty-beginner { background: #4CAF50; }
+.difficulty-intermediate { background: #FFA500; }
+.difficulty-advanced { background: #F44336; }
+
+.exercise-creator {
+    color: #666;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* Muscle Groups */
+.exercise-muscle-groups h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.muscle-groups-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.muscle-group-item {
+    background: #F0F0F0;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+/* Scrollbar */
+.exercises-list-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.exercises-list-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.exercises-list-container::-webkit-scrollbar-thumb {
+    background: #00CED1;
+    border-radius: 3px;
+}

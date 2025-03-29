@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/programs")
@@ -85,9 +84,9 @@ public class ProgramController {
     }
 
     @PostMapping("/{programId}/activate")
-    public String activateProgram(@PathVariable("programId") UUID programId, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public String activateProgram(@PathVariable("programId") String programId, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         User user = userService.getById(authenticationMetadata.getId());
-        Program program = programService.getProgramById(programId);
+        Program program = programService.getById(programId);
 
         userService.setActiveProgramForUser(user, program);
 

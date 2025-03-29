@@ -138,7 +138,7 @@ public class IndexControllerApiTest {
     @Test
     void getAuthenticatedRequestToHome_returnsHomeView() throws Exception {
 
-        when(userService.getById(any())).thenReturn(aRandomUser());
+        when(userService.getById(UUID.randomUUID())).thenReturn(aRandomUser());
 
         UUID userId = UUID.randomUUID();
         AuthenticationMetadata principal = new AuthenticationMetadata(userId, "User123", "123123", UserRole.USER, true);
@@ -159,6 +159,6 @@ public class IndexControllerApiTest {
 
         mockMvc.perform(request)
                 .andExpect(status().is3xxRedirection());
-        verify(userService, never()).getById(any());
+        verify(userService, never()).getById(UUID.randomUUID());
     }
 }

@@ -1,9 +1,6 @@
 package com.softuni.project.user.service;
 
-import com.softuni.project.exception.ExceptionMessages;
-import com.softuni.project.exception.UserAlreadyExistsException;
-import com.softuni.project.exception.UserIdDoesntExistException;
-import com.softuni.project.exception.UserUsernameDoesntExistException;
+import com.softuni.project.exception.*;
 import com.softuni.project.program.model.Program;
 import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
@@ -53,6 +50,16 @@ public class UserService implements UserDetailsService {
         return save;
     }
 
+    public User getById(String uuid) {
+        UUID userId;
+        try {
+            userId = UUID.fromString(uuid);
+        } catch (Exception e) {
+            throw new InvalidUuidFormatException(ExceptionMessages.INVALID_UUID_FORMAT);
+        }
+        return getById(userId);
+    }
+
     public User getById(UUID userId) {
         return userRepository.findById(userId).orElseThrow(() -> {
 
@@ -88,14 +95,36 @@ public class UserService implements UserDetailsService {
         return hasUsers;
     }
 
-    public void updateUserStatus(UUID id) {
-        User user = getById(id);
-
+    public void updateUserStatus(String id) {
+        UUID userId;
+        try {
+            userId = UUID.fromString(id);
+        } catch (Exception e) {
+            throw new UserIdDoesntExistException(ExceptionMessages.USER_ID_DOESNT_EXIST);
+        }
+        User user = getById(userId);
         boolean newStatus = !user.isActive();
         user.setActive(newStatus);
         userRepository.save(user);
 
         log.info("{}'s activity status changed to {}", user.getUsername(), newStatus ? "Active" : "Inactive");
+    }
+
+    public void updateUserRole(String id) {
+        UUID userId;
+        try {
+            userId = UUID.fromString(id);
+        } catch (Exception e) {
+            throw new UserIdDoesntExistException(ExceptionMessages.USER_ID_DOESNT_EXIST);
+        }
+        User user = getById(userId);
+        if (user.getUserRole() == UserRole.ADMIN) {
+            user.setUserRole(UserRole.USER);
+        } else {
+            user.setUserRole(UserRole.ADMIN);
+        }
+        userRepository.save(user);
+        log.info("User with ID {} 's role was changed successfully", id);
     }
 
     public User getByUsername(String username) {
@@ -118,19 +147,6 @@ public class UserService implements UserDetailsService {
 
             return new UsernameNotFoundException(ExceptionMessages.USER_USERNAME_DOESNT_EXIST);
         });
-    }
-
-    public void updateUserRole(UUID id) {
-        User user = getById(id);
-
-        if (user.getUserRole() == UserRole.ADMIN) {
-            user.setUserRole(UserRole.USER);
-        } else {
-            user.setUserRole(UserRole.ADMIN);
-        }
-
-        userRepository.save(user);
-        log.info("User with ID {} 's role was changed successfully", id);
     }
 
     public void editUserProfile(User user, EditProfileRequest editProfileRequest) {

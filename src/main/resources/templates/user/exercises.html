@@ -1,32 +1,81 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/init.css">
+    <link rel="stylesheet" type="text/css" href="/css/exercises.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Exercises</title>
 </head>
 <body>
-<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
-<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
-<h1>Exercises</h1>
 
-<ul>
-    <li th:each="exercise : ${exercises}">
-        <a th:href="@{/exercises/{id}(id=${exercise.id})}" th:text="${exercise.name}"></a>
-    </li>
-</ul>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-<div th:if="${selectedExercise}">
-    <section>
-        <img th:src="${selectedExercise.mediaUrl}" alt="Exercise picture" width="150" height="150">
-    </section>
-    <h2 th:text="${selectedExercise.name}"></h2>
-    <h2 th:text="${selectedExercise.description}"></h2>
-    <h2 th:text="${selectedExercise.difficulty.name()}"></h2>
-    <ul th:each="muscleGroup : ${selectedExercise.muscleGroups}">
-        <li th:text="${muscleGroup.getDisplayName()}"></li>
-    </ul>
-    <h2 th:text="${selectedExercise.createdBy.username}"></h2>
+<main class="exercises-container">
+    <input type="text" class="exercise-search" placeholder="Search exercises..." id="exerciseSearch">
 
-</div>
+    <div class="exercises-content">
+        <div class="exercises-list-container">
+            <ul class="exercises-list" id="exercisesList">
+                <li class="exercise-item" th:each="exercise : ${exercises}">
+                    <a class="exercise-link" th:href="@{/exercises/{id}(id=${exercise.id})}"
+                       th:text="${exercise.name}"></a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="exercise-details" th:if="${selectedExercise}" id="exerciseDetails">
+            <div class="image-container">
+                <img class="exercise-image" th:src="${selectedExercise.mediaUrl}"
+                     alt="Exercise demonstration" onerror="this.src='/images/default-exercise.png'">
+            </div>
+
+            <div class="exercise-info">
+                <h2 class="exercise-name" th:text="${selectedExercise.name}"></h2>
+                <p class="exercise-description" th:text="${selectedExercise.description}"></p>
+
+                <div class="exercise-meta">
+                    <span class="exercise-difficulty"
+                          th:text="${selectedExercise.difficulty.name()}"
+                          th:classappend="'difficulty-' + ${selectedExercise.difficulty.name().toLowerCase()}"></span>
+                    <span class="exercise-creator"
+                          th:text="'Created by: ' + ${selectedExercise.createdBy.username}"></span>
+                </div>
+
+                <div class="exercise-muscle-groups">
+                    <h3>Targeted Muscle Groups:</h3>
+                    <ul class="muscle-groups-list">
+                        <li class="muscle-group-item"
+                            th:each="muscleGroup : ${selectedExercise.muscleGroups}"
+                            th:text="${muscleGroup.getDisplayName()}"></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.getElementById('exerciseSearch').addEventListener('input', function(e) {
+        const term = e.target.value.toLowerCase();
+        document.querySelectorAll('.exercise-item').forEach(item => {
+            item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+        });
+    });
+
+    if (window.innerWidth <= 768) {
+        document.querySelectorAll('.exercise-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('exerciseDetails')?.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    }
+</script>
 
 </body>
 </html>

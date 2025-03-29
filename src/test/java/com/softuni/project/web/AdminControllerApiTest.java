@@ -54,7 +54,8 @@ public class AdminControllerApiTest {
         mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/all-users"))
-                .andExpect(model().attributeExists("users"));
+                .andExpect(model().attributeExists("users"))
+                .andExpect(model().attributeExists("user"));
     }
 
     @Test

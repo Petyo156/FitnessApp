@@ -125,7 +125,7 @@ public class LogControllerApiTest {
         user.setId(authenticationMetadata.getId());
 
         when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
-        when(workoutService.getById(workoutId.toString())).thenReturn(workout);
+        when(workoutService.getById(workoutId)).thenReturn(workout);
         when(workoutService.getViewWorkoutResponseByWorkout(any())).thenReturn(workoutResponse);
         when(workoutService.initializeWorkoutLogRequest(any())).thenReturn(workoutLogRequest);
 
@@ -141,7 +141,7 @@ public class LogControllerApiTest {
                 .andExpect(model().attributeExists("user"));
 
         verify(userService, times(1)).getById(authenticationMetadata.getId());
-        verify(workoutService, times(1)).getById(workoutId.toString());
+        verify(workoutService, times(1)).getById(workoutId);
         verify(workoutService, times(1)).getViewWorkoutResponseByWorkout(any());
         verify(workoutService, times(1)).initializeWorkoutLogRequest(any());
     }

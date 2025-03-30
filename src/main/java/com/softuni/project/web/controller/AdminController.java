@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/admin")
@@ -44,14 +45,14 @@ public class AdminController {
 
     @PostMapping("/users/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
-    public String updateUserStatus(@PathVariable String id) {
+    public String updateUserStatus(@PathVariable UUID id) {
         userService.updateUserStatus(id);
         return "redirect:/admin/users";
     }
 
     @PostMapping("/users/{id}/role")
     @PreAuthorize("hasRole('ADMIN')")
-    public String updateUserRole(@PathVariable String id) {
+    public String updateUserRole(@PathVariable UUID id) {
         userService.updateUserRole(id);
         return "redirect:/admin/users";
     }
@@ -75,7 +76,7 @@ public class AdminController {
 
     @PostMapping("/exercises/{id}/approval")
     @PreAuthorize("hasRole('ADMIN')")
-    public String approveExercise(@PathVariable String id) {
+    public String approveExercise(@PathVariable UUID id) {
         exerciseService.approveById(id);
 
         return "redirect:/admin/exercises/moderation";
@@ -83,7 +84,7 @@ public class AdminController {
 
     @PostMapping("/exercises/{id}/rejection")
     @PreAuthorize("hasRole('ADMIN')")
-    public String rejectExercise(@PathVariable String id) {
+    public String rejectExercise(@PathVariable UUID id) {
         exerciseService.rejectById(id);
 
         return "redirect:/admin/exercises/moderation";
@@ -91,7 +92,7 @@ public class AdminController {
 
     @PostMapping("/exercises/{id}/revoke")
     @PreAuthorize("hasRole('ADMIN')")
-    public String revokeExercise(@PathVariable String id) {
+    public String revokeExercise(@PathVariable UUID id) {
         exerciseService.revokeById(id);
 
         return "redirect:/admin/exercises/moderation";

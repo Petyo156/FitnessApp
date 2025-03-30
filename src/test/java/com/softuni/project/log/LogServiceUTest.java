@@ -123,7 +123,7 @@ class LogServiceUTest {
     void deleteLogById_whenLogExists_thenDeleteIt() {
         when(logRepository.findById(logId)).thenReturn(Optional.of(log));
 
-        logService.deleteLogById(logId.toString());
+        logService.deleteLogById(logId);
 
         verify(logRepository, times(1)).deleteById(logId);
     }
@@ -134,7 +134,7 @@ class LogServiceUTest {
 
         LogDoesntExistException exception = assertThrows(
                 LogDoesntExistException.class,
-                () -> logService.deleteLogById(logId.toString())
+                () -> logService.deleteLogById(logId)
         );
 
         assertEquals(ExceptionMessages.LOG_DOESNT_EXIST, exception.getMessage());

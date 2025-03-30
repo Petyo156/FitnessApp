@@ -64,16 +64,6 @@ public class ExerciseService {
         });
     }
 
-    public Exercise getById(String uuid) {
-        UUID exerciseId;
-        try {
-            exerciseId = UUID.fromString(uuid);
-        } catch (Exception e) {
-            throw new InvalidUuidFormatException(ExceptionMessages.INVALID_UUID_FORMAT);
-        }
-        return getById(exerciseId);
-    }
-
     public void throwIfNotApproved(Exercise selectedExercise) {
         log.info("Checking approval status for exercise ID: {}", selectedExercise.getId());
 
@@ -99,7 +89,7 @@ public class ExerciseService {
         return exerciseRepository.findByStatus(ExerciseStatus.APPROVED);
     }
 
-    public void approveById(String uuid) {
+    public void approveById(UUID uuid) {
         Exercise exercise = getById(uuid);
         exercise.setStatus(ExerciseStatus.APPROVED);
         exerciseRepository.save(exercise);
@@ -107,7 +97,7 @@ public class ExerciseService {
         log.info("Approved exercise with ID: {}", uuid);
     }
 
-    public void rejectById(String uuid) {
+    public void rejectById(UUID uuid) {
         Exercise exercise = getById(uuid);
         exercise.setStatus(ExerciseStatus.REJECTED);
         exerciseRepository.save(exercise);
@@ -115,7 +105,7 @@ public class ExerciseService {
         log.info("Rejected exercise with ID: {}", uuid);
     }
 
-    public void revokeById(String uuid) {
+    public void revokeById(UUID uuid) {
         Exercise exercise = getById(uuid);
         exercise.setStatus(ExerciseStatus.PENDING);
         exerciseRepository.save(exercise);

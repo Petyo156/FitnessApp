@@ -27,8 +27,8 @@ public class NotificationService {
         this.programService = programService;
     }
 
-    public void notifyUserForLikedProgram(String receiverId, String senderId, String programId, String likedByUserUsername) {
-        NotifyUserRequest notifyUserRequest = initializeNotifyUserRequest(receiverId, senderId, programId, likedByUserUsername);
+    public void notifyUserForLikedProgram(UUID receiverId, UUID senderId, UUID programId, String likedByUserUsername) {
+        NotifyUserRequest notifyUserRequest = initializeNotifyUserRequest(receiverId.toString(), senderId.toString(), programId.toString(), likedByUserUsername);
 
         ResponseEntity<Void> response = notificationClient.notifyUserForLikedProgram(notifyUserRequest);
 
@@ -49,11 +49,11 @@ public class NotificationService {
                 .build();
     }
 
-    public List<NotifyUserResponse> getAllNotificationsForUser(String userId, String loggedUserId) {
+    public List<NotifyUserResponse> getAllNotificationsForUser(UUID userId, UUID loggedUserId) {
         if(!userId.equals(loggedUserId)) {
             throw new UnauthorizedNotificationAccessException(ExceptionMessages.UNAUTHORIZED_NOTIFICATIONS_ACCESS);
         }
-        ResponseEntity<List<NotifyUserResponse>> notificationsForUser = notificationClient.getNotificationsForUser(userId);
+        ResponseEntity<List<NotifyUserResponse>> notificationsForUser = notificationClient.getNotificationsForUser(userId.toString());
 
         log.info("[FEIGN CALL SUCCESS] Retrieved all notifications for user.");
         return notificationsForUser.getBody();

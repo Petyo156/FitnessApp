@@ -69,7 +69,7 @@ public class ExerciseControllerApiTest {
         UUID exerciseId = UUID.randomUUID();
         Exercise mockExercise = randomExercise();
         when(exerciseService.findAllApprovedExercises()).thenReturn(List.of(mockExercise));
-        when(exerciseService.getById(exerciseId.toString())).thenReturn(mockExercise);
+        when(exerciseService.getById(exerciseId)).thenReturn(mockExercise);
 
         MockHttpServletRequestBuilder request = get("/exercises/{id}", exerciseId)
                 .with(user(authenticationMetadata));

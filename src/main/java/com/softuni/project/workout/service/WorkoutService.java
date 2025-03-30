@@ -98,16 +98,6 @@ public class WorkoutService {
         return workoutExerciseEntries;
     }
 
-    public Workout getById(String id) {
-        UUID workoutId;
-        try {
-            workoutId = UUID.fromString(id);
-        } catch (Exception e) {
-            throw new InvalidUuidFormatException(ExceptionMessages.INVALID_UUID_FORMAT);
-        }
-        return getById(workoutId);
-    }
-
     public Workout getById(UUID id) {
         return workoutRepository.findById(id).orElseThrow(() -> {
             log.error("Workout with ID '{}' does not exist", id);

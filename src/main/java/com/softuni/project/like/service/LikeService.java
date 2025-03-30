@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -23,8 +24,8 @@ public class LikeService {
         this.programService = programService;
     }
 
-    public void likeProgram(String programId, String likedByUserId, String programOwnerId) {
-        LikeProgramRequest request = initializeLikeProgramRequest(programId, likedByUserId, programOwnerId);
+    public void likeProgram(UUID programId, UUID likedByUserId, UUID programOwnerId) {
+        LikeProgramRequest request = initializeLikeProgramRequest(programId.toString(), likedByUserId.toString(), programOwnerId.toString());
 
         ResponseEntity<Void> response = likeClient.likeProgram(request);
 
@@ -34,12 +35,12 @@ public class LikeService {
         log.info("[FEIGN CALL SUCCESS] Liking program was successful.");
     }
 
-    public List<ViewProgramResponse> getAllLikedPrograms(String id) {
+    public List<ViewProgramResponse> getAllLikedPrograms(UUID id) {
         return programService.getAllLikedPrograms(getAllLikedProgramsIds(id));
     }
 
-    private List<String> getAllLikedProgramsIds(String id) {
-        ResponseEntity<List<String>> allLikedPrograms = likeClient.getAllLikedPrograms(id);
+    private List<String> getAllLikedProgramsIds(UUID id) {
+        ResponseEntity<List<String>> allLikedPrograms = likeClient.getAllLikedPrograms(id.toString());
         log.info("[FEIGN CALL SUCCESS] Retrieved all liked programs.");
         return allLikedPrograms.getBody();
     }

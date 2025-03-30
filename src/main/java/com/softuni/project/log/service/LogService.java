@@ -1,7 +1,6 @@
 package com.softuni.project.log.service;
 
 import com.softuni.project.exception.ExceptionMessages;
-import com.softuni.project.exception.InvalidUuidFormatException;
 import com.softuni.project.exception.LogDoesntExistException;
 import com.softuni.project.log.model.Log;
 import com.softuni.project.log.repository.LogRepository;
@@ -70,16 +69,6 @@ public class LogService {
                 .build();
     }
 
-    public Log getById(String id) {
-        UUID logId;
-        try {
-            logId = UUID.fromString(id);
-        } catch (Exception e) {
-            throw new InvalidUuidFormatException(ExceptionMessages.INVALID_UUID_FORMAT);
-        }
-        return getById(logId);
-    }
-
     public Log getById(UUID id) {
         return logRepository.findById(id).orElseThrow(() -> {
             log.error("Log with ID '{}' does not exist", id);
@@ -88,7 +77,7 @@ public class LogService {
         });
     }
 
-    public void deleteLogById(String id) {
+    public void deleteLogById(UUID id) {
         Log record = getById(id);
 
         log.info("Log with id '{}' has been deleted", id);

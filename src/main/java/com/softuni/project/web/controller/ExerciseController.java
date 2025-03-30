@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/exercises")
@@ -44,7 +45,7 @@ public class ExerciseController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView exercises(@PathVariable String id, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView exercises(@PathVariable UUID id, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
         ModelAndView modelAndView = new ModelAndView("user/exercises");
 
         User user = userService.getById(authenticationMetadata.getId());
@@ -88,14 +89,15 @@ public class ExerciseController {
                                        @Valid @ModelAttribute SubmitExerciseRequest submitExerciseRequest,
                                        BindingResult bindingResult) {
         ModelAndView modelAndView = new ModelAndView("user/submit-exercise");
-        modelAndView.addObject("user", userService.getById(authenticationMetadata.getId()));
+
+        User user = userService.getById(authenticationMetadata.getId());
+        modelAndView.addObject("user", user);
 
         if (bindingResult.hasErrors()) {
             modelAndView.addObject("submitExerciseRequest", submitExerciseRequest);
             return modelAndView;
         }
 
-        User user = userService.getById(authenticationMetadata.getId());
         exerciseService.submitExercise(submitExerciseRequest, user);
 
         return new ModelAndView("redirect:/home");

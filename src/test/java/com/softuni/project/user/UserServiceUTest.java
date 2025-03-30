@@ -167,7 +167,7 @@ class UserServiceUTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        userService.updateUserStatus(String.valueOf(userId));
+        userService.updateUserStatus(userId);
 
         assertFalse(user.isActive());
         verify(userRepository, times(1)).save(user);
@@ -181,7 +181,7 @@ class UserServiceUTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        userService.updateUserRole(String.valueOf(userId));
+        userService.updateUserRole(userId);
 
         assertEquals(UserRole.ADMIN, user.getUserRole());
         verify(userRepository, times(1)).save(user);

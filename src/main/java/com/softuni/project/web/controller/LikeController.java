@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/like")
@@ -32,19 +33,18 @@ public class LikeController {
     @PostMapping("/{programId}/{programOwnerId}")
     public String likeProgram(
             @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-            @PathVariable("programId") String programId,
-            @PathVariable("programOwnerId") String programOwnerId) {
+            @PathVariable("programId") UUID programId,
+            @PathVariable("programOwnerId") UUID programOwnerId) {
         User user = userService.getById(authenticationMetadata.getId());
-        String likedByUserId = user.getId().toString();
 
-        likeService.likeProgram(programId, likedByUserId, programOwnerId);
-        notificationService.notifyUserForLikedProgram(programOwnerId, user.getId().toString(), programId, user.getUsername());
+        likeService.likeProgram(programId, user.getId(), programOwnerId);
+        notificationService.notifyUserForLikedProgram(programOwnerId, user.getId(), programId, user.getUsername());
         return "redirect:/home";
     }
 
     @GetMapping("/programs/{userId}")
     public ModelAndView getLikedPrograms(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-                                         @PathVariable("userId") String userId) {
+                                         @PathVariable("userId") UUID userId) {
         ModelAndView modelAndView = new ModelAndView("user/liked-programs");
         User user = userService.getById(authenticationMetadata.getId());
         List<ViewProgramResponse> allLikedPrograms = likeService.getAllLikedPrograms(userId);
@@ -56,10 +56,10 @@ public class LikeController {
 
     @GetMapping("/notifications/{userId}")
     public ModelAndView getLikesNotifications(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-                                              @PathVariable("userId") String userId) {
+                                              @PathVariable("userId") UUID userId) {
         ModelAndView modelAndView = new ModelAndView("user/notifications");
         User user = userService.getById(authenticationMetadata.getId());
-        List<NotifyUserResponse> userNotifications = notificationService.getAllNotificationsForUser(userId, user.getId().toString());
+        List<NotifyUserResponse> userNotifications = notificationService.getAllNotificationsForUser(userId, user.getId());
 
         modelAndView.addObject("user", user);
         modelAndView.addObject("userNotifications", userNotifications);

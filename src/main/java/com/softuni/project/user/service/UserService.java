@@ -50,16 +50,6 @@ public class UserService implements UserDetailsService {
         return save;
     }
 
-    public User getById(String uuid) {
-        UUID userId;
-        try {
-            userId = UUID.fromString(uuid);
-        } catch (Exception e) {
-            throw new InvalidUuidFormatException(ExceptionMessages.INVALID_UUID_FORMAT);
-        }
-        return getById(userId);
-    }
-
     public User getById(UUID userId) {
         return userRepository.findById(userId).orElseThrow(() -> {
 
@@ -95,7 +85,7 @@ public class UserService implements UserDetailsService {
         return hasUsers;
     }
 
-    public void updateUserStatus(String id) {
+    public void updateUserStatus(UUID id) {
         User user = getById(id);
         boolean newStatus = !user.isActive();
         user.setActive(newStatus);
@@ -104,7 +94,7 @@ public class UserService implements UserDetailsService {
         log.info("{}'s activity status changed to {}", user.getUsername(), newStatus ? "Active" : "Inactive");
     }
 
-    public void updateUserRole(String id) {
+    public void updateUserRole(UUID id) {
         User user = getById(id);
         if (user.getUserRole() == UserRole.ADMIN) {
             user.setUserRole(UserRole.USER);

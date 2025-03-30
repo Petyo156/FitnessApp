@@ -35,43 +35,44 @@ class NotificationServiceUTest {
     @InjectMocks
     private NotificationService notificationService;
 
-    private static final String RECEIVER_ID = "receiver-1";
-    private static final String SENDER_ID = "sender-1";
-    private static final String PROGRAM_ID = UUID.randomUUID().toString();
+    private static final UUID RECEIVER_ID = UUID.randomUUID();
+    private static final UUID SENDER_ID = UUID.randomUUID();
+    private static final UUID PROGRAM_ID = UUID.randomUUID();
+    private static final UUID LOGGED_USER_ID = UUID.randomUUID();
     private static final String LIKED_BY_USERNAME = "john_doe";
     private static final String PROGRAM_NAME = "Strength Training";
 
     @Test
     void notifyUserForLikedProgram_whenResponseIs2xx_thenLogsSuccess() {
         Program program = Program.builder()
-                .id(UUID.fromString(PROGRAM_ID))
+                .id(PROGRAM_ID)
                 .name(PROGRAM_NAME)
                 .build();
 
         NotifyUserRequest request = NotifyUserRequest.builder()
-                .receiverId(RECEIVER_ID)
-                .senderId(SENDER_ID)
+                .receiverId(String.valueOf(RECEIVER_ID))
+                .senderId(String.valueOf(SENDER_ID))
                 .message(String.format("Your program '%s' was liked by %s", PROGRAM_NAME, LIKED_BY_USERNAME))
                 .build();
 
-        when(programService.getById(UUID.fromString(PROGRAM_ID))).thenReturn(program);
+        when(programService.getById(PROGRAM_ID)).thenReturn(program);
         when(notificationClient.notifyUserForLikedProgram(request))
                 .thenReturn(ResponseEntity.ok().build());
 
         notificationService.notifyUserForLikedProgram(RECEIVER_ID, SENDER_ID, PROGRAM_ID, LIKED_BY_USERNAME);
 
-        verify(programService, times(1)).getById(UUID.fromString(PROGRAM_ID));
+        verify(programService, times(1)).getById(PROGRAM_ID);
         verify(notificationClient, times(1)).notifyUserForLikedProgram(any(NotifyUserRequest.class));
     }
 
     @Test
     void notifyUserForLikedProgram_whenResponseIsNot2xx_thenDoesNotLogSuccess() {
         Program program = Program.builder()
-                .id(UUID.fromString(PROGRAM_ID))
+                .id(PROGRAM_ID)
                 .name(PROGRAM_NAME)
                 .build();
 
-        when(programService.getById(UUID.fromString(PROGRAM_ID))).thenReturn(program);
+        when(programService.getById(PROGRAM_ID)).thenReturn(program);
         when(notificationClient.notifyUserForLikedProgram(any(NotifyUserRequest.class)))
                 .thenReturn(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
 
@@ -85,13 +86,13 @@ class NotificationServiceUTest {
         List<NotifyUserResponse> notifications = Arrays.asList(
                 NotifyUserResponse.builder()
                         .message("New like on your program")
-                        .receiverId(RECEIVER_ID)
-                        .senderId(SENDER_ID)
+                        .receiverId(RECEIVER_ID.toString())
+                        .senderId(SENDER_ID.toString())
                         .date("2024-03-22 10:15:30")
                         .build(),
                 NotifyUserResponse.builder()
                         .message("New like on your second program")
-                        .receiverId(RECEIVER_ID)
+                        .receiverId(RECEIVER_ID.toString())
                         .senderId("sender-2")
                         .date("2024-03-21 08:45:00")
                         .build()
@@ -99,7 +100,7 @@ class NotificationServiceUTest {
 
         ResponseEntity<List<NotifyUserResponse>> responseEntity = ResponseEntity.ok(notifications);
 
-        when(notificationClient.getNotificationsForUser(RECEIVER_ID)).thenReturn(responseEntity);
+        when(notificationClient.getNotificationsForUser(RECEIVER_ID.toString())).thenReturn(responseEntity);
 
         List<NotifyUserResponse> result = notificationService.getAllNotificationsForUser(RECEIVER_ID, RECEIVER_ID);
 
@@ -107,14 +108,14 @@ class NotificationServiceUTest {
         assertEquals(2, result.size());
         assertEquals(notifications, result);
 
-        verify(notificationClient, times(1)).getNotificationsForUser(RECEIVER_ID);
+        verify(notificationClient, times(1)).getNotificationsForUser(RECEIVER_ID.toString());
     }
 
     @Test
     void getAllNotificationsForUser_whenUserIdDoesNotMatchLoggedUser_thenThrowsException() {
         UnauthorizedNotificationAccessException exception = assertThrows(
                 UnauthorizedNotificationAccessException.class,
-                () -> notificationService.getAllNotificationsForUser(RECEIVER_ID, "another-user")
+                () -> notificationService.getAllNotificationsForUser(RECEIVER_ID, LOGGED_USER_ID)
         );
 
         assertEquals(ExceptionMessages.UNAUTHORIZED_NOTIFICATIONS_ACCESS, exception.getMessage());

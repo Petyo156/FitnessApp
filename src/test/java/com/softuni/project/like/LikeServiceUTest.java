@@ -33,9 +33,9 @@ public class LikeServiceUTest {
     @InjectMocks
     private LikeService likeService;
 
-    private static final String PROGRAM_ID = "123";
-    private static final String LIKED_BY_USER_ID = "user-1";
-    private static final String PROGRAM_OWNER_ID = "owner-1";
+    private static final UUID PROGRAM_ID = UUID.randomUUID();
+    private static final UUID LIKED_BY_USER_ID = UUID.randomUUID();
+    private static final UUID PROGRAM_OWNER_ID = UUID.randomUUID();
 
     @Test
     void likeProgram_whenResponseIs2xx_thenLogsSuccess() {
@@ -70,7 +70,7 @@ public class LikeServiceUTest {
                 ViewProgramResponse.builder().id(programId2).build()
         );
 
-        when(likeClient.getAllLikedPrograms(LIKED_BY_USER_ID)).thenReturn(ResponseEntity.ok(likedProgramIds));
+        when(likeClient.getAllLikedPrograms(LIKED_BY_USER_ID.toString())).thenReturn(ResponseEntity.ok(likedProgramIds));
         when(programService.getAllLikedPrograms(likedProgramIds)).thenReturn(expectedPrograms);
 
         List<ViewProgramResponse> result = likeService.getAllLikedPrograms(LIKED_BY_USER_ID);
@@ -79,7 +79,7 @@ public class LikeServiceUTest {
         assertEquals(2, result.size());
         assertEquals(expectedPrograms, result);
 
-        verify(likeClient, times(1)).getAllLikedPrograms(LIKED_BY_USER_ID);
+        verify(likeClient, times(1)).getAllLikedPrograms(LIKED_BY_USER_ID.toString());
         verify(programService, times(1)).getAllLikedPrograms(likedProgramIds);
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/logs")
@@ -36,7 +37,7 @@ public class LogController {
     public String createWorkoutLog(
             @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
             @PathVariable String dayOfWeek,
-            @PathVariable String workoutId,
+            @PathVariable UUID workoutId,
             @Valid WorkoutLogRequest workoutLogRequest,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
@@ -59,7 +60,7 @@ public class LogController {
     public ModelAndView showLogWorkoutPage(
             @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
             @PathVariable String dayOfWeek,
-            @PathVariable String workoutId) {
+            @PathVariable UUID workoutId) {
 
         ModelAndView modelAndView = new ModelAndView("user/log-workout");
 
@@ -87,7 +88,7 @@ public class LogController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteLog(@PathVariable String id) {
+    public String deleteLog(@PathVariable UUID id) {
         logService.deleteLogById(id);
 
         return "redirect:/logs";

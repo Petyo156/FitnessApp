@@ -61,7 +61,6 @@ public class ExceptionAdvice {
             UserIdDoesntExistException.class,
             UserUsernameDoesntExistException.class,
             WorkoutDoesntExistException.class,
-            InvalidUuidFormatException.class,
 
             ExerciseNotApprovedException.class,
             UnauthorizedNotificationAccessException.class

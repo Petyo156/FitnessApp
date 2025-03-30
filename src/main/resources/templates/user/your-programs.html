@@ -2,151 +2,102 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/init.css">
+    <link rel="stylesheet" type="text/css" href="/css/your-programs.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Your Programs</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .program-container {
-            background: white;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .accordion {
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-            padding: 10px;
-            width: 100%;
-            text-align: left;
-            border: none;
-            outline: none;
-            transition: 0.4s;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .accordion:hover, .active {
-            background-color: #0056b3;
-        }
-        .panel {
-            padding: 0 15px;
-            display: none;
-            background-color: white;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-        .workout-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .workout-card {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            flex: 1 1 calc(33.333% - 20px);
-            min-width: 250px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-        h1, h2, h3, h4, h5 {
-            color: #333;
-        }
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
 </head>
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
 <body>
-<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
-<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
+<main class="programs-container">
+    <h1 class="page-title"><i class="fas fa-dumbbell"></i> Your Programs</h1>
 
-<h1>Your Programs</h1>
+    <div th:each="program : ${programs}" class="program-card" onclick="toggleWorkouts(this)">
+        <div class="program-header">
+            <div>
+                <h2 th:text="${program.name}"></h2>
+                <div class="program-meta">
+                    <span><i class="far fa-file-alt"></i> <span th:text="${program.description}"></span></span>
+                    <span><i class="fas fa-bolt"></i> <span th:text="${program.difficulty}"></span></span>
+                    <span><i class="far fa-calendar"></i> <span th:text="${#temporals.format(program.createdOn, 'yyyy-MM-dd')}"></span></span>
+                    <span th:if="${program.sharedWithOthers}"><i class="fas fa-users"></i> Shared</span>
+                </div>
+            </div>
+            <form th:action="@{/programs/{programId}/activate(programId=${program.id})}" method="post" onclick="event.stopPropagation()">
+                <button type="submit" class="activate-btn">
+                    <i class="fas fa-check-circle"></i> Make Active
+                </button>
+            </form>
+        </div>
 
-<div th:each="program : ${programs}" class="program-container">
-    <form th:action="@{/programs/{programId}/activate(programId=${program.id})}" method="post">
-        <button type="submit">Make active</button>
-    </form>
-    <h2 th:text="${program.name}"></h2>
-    <p><strong>Description:</strong> <span th:text="${program.description}"></span></p>
-    <p><strong>Difficulty:</strong> <span th:text="${program.difficulty}"></span></p>
-    <p><strong>Created On:</strong> <span th:text="${#temporals.format(program.createdOn, 'yyyy-MM-dd HH:mm')}"></span></p>
-    <p><strong>Shared with Others:</strong> <span th:text="${program.sharedWithOthers ? 'Yes' : 'No'}"></span></p>
-
-    <button class="accordion">Show Workouts</button>
-    <div class="panel">
-        <div class="workout-container">
+        <div class="workouts-container">
             <div th:each="workout : ${program.workouts}" class="workout-card">
-                <h4>Workout for <span th:text="${workout.dayOfWeek}"></span></h4>
-                <p><strong>Approximate Duration:</strong> <span th:text="${workout.approximateDuration}"></span> minutes</p>
-                <p><strong>Additional Info:</strong> <span th:text="${workout.additionalInfo}"></span></p>
+                <h3><i class="far fa-calendar-alt"></i> <span th:text="${workout.dayOfWeek}"></span></h3>
+                <div class="workout-meta">
+                    <span th:if="${workout.approximateDuration > 0 and null != workout.approximateDuration}"><i class="far fa-clock"></i> <span th:if="${workout.approximateDuration > 0 and null != workout.approximateDuration}"  th:text="${workout.approximateDuration}"></span> mins</span>
+                    <span th:if="${null != workout.additionalInfo and !workout.additionalInfo.isEmpty()}"><i class="far fa-comment"></i> <span th:if="${null != workout.additionalInfo and !workout.additionalInfo.isEmpty()}" th:text="${workout.additionalInfo}"></span></span>
+                </div>
 
-                <h5>Exercises</h5>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Exercise Name</th>
-                        <th>Sets</th>
-                        <th>Reps</th>
-                        <th>Added Weight (kg)</th>
-                        <th>Media</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="exercise : ${workout.exercises}">
-                        <td th:text="${exercise.exerciseName}"></td>
-                        <td th:text="${exercise.sets}"></td>
-                        <td th:text="${exercise.reps}"></td>
-                        <td th:text="${exercise.addedWeight}"></td>
-                        <td>
-                            <a th:if="${exercise.mediaUrl}" th:href="${exercise.mediaUrl}" target="_blank">View</a>
-                            <span th:unless="${exercise.mediaUrl}">No media</span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                <h4><i class="fas fa-dumbbell"></i> Exercises</h4>
+                <div class="exercises-container">
+                    <div th:each="exercise : ${workout.exercises}" class="exercise-card">
+                        <div class="exercise-header">
+                            <h5 class="exercise-name">
+                                <i class="fas fa-dumbbell"></i>
+                                <span th:text="${exercise.exerciseName}"></span>
+                            </h5>
+                            <div class="exercise-details">
+                <span class="exercise-detail">
+                    <i class="fas fa-layer-group"></i>
+                    <span th:text="${exercise.sets}"></span> sets
+                </span>
+                                <span class="exercise-detail">
+                    <i class="fas fa-redo"></i>
+                    <span th:text="${exercise.reps}"></span> reps
+                </span>
+                                <span th:if="${exercise.addedWeight > 0}" class="exercise-detail">
+                    <i class="fas fa-weight-hanging"></i>
+                    <span th:text="${exercise.addedWeight}"></span> kg
+                </span>
+                            </div>
+                        </div>
+                        <div th:if="${exercise.mediaUrl}" class="exercise-media">
+                            <img th:src="${exercise.mediaUrl}" alt="Exercise demonstration">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</main>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let accordions = document.querySelectorAll(".accordion");
-        accordions.forEach(function(accordion) {
-            accordion.addEventListener("click", function() {
-                this.classList.toggle("active");
-                let panel = this.nextElementSibling;
-                if (panel.style.display === "block") {
-                    panel.style.display = "none";
-                } else {
-                    panel.style.display = "block";
-                }
-            });
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.workouts-container').forEach(container => {
+            container.style.display = 'none';
         });
     });
+
+    function toggleWorkouts(card) {
+        const container = card.querySelector('.workouts-container');
+
+        if (container.style.display === 'none' || !container.style.display) {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+
+        const icon = card.querySelector('.fa-chevron-down, .fa-chevron-up');
+        if (icon) {
+            icon.classList.toggle('fa-chevron-down');
+            icon.classList.toggle('fa-chevron-up');
+        }
+    }
 </script>
 </body>
 </html>

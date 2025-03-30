@@ -1,138 +1,161 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Workout Program</title>
-    <script>
-        function toggleWorkout(id) {
-            const x = document.getElementById(id);
-            if (x.style.display === "none" || x.style.display === "") {
-                x.style.display = "block";
-            } else {
-                x.style.display = "none";
-            }
-        }
-    </script>
-    <style>
-        .day-section {
-            margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .workout-container {
-            display: none; /* Hidden by default */
-            margin-top: 10px;
-            padding-right: 5em;
-        }
-
-        .workout-card {
-            border: 1px solid #eee;
-            display: flex;
-        }
-
-        .exercise {
-            margin-left: 1em;
-            color: #555;
-        }
-
-        button {
-            margin-bottom: 10px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/init.css">
+    <link rel="stylesheet" type="text/css" href="/css/submit-program.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Create Program</title>
 </head>
 <body>
-<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
-<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-<form th:action="@{/programs}" th:object="${programFormRequest}" method="post">
-    <h2>Create New Program</h2>
+<main class="program-container">
+    <form th:action="@{/programs}" th:object="${programFormRequest}" method="post" class="program-form">
+        <h1 class="form-title"><i class="fas fa-dumbbell"></i> Create New Program</h1>
 
-    <div th:if="${message}" class="alert alert-danger">
-        <p th:text="${message}"></p>
-    </div>
-
-    <label for="difficulty">Difficulty</label>
-    <select id="difficulty" th:field="*{difficulty}" required>
-        <option th:each="d : ${T(com.softuni.project.program.model.Difficulty).values()}"
-                th:value="${d}" th:text="${d}"></option>
-    </select>
-    <br>
-
-    <label for="name">Program name:</label>
-    <input type="text" id="name" th:field="*{name}" required>
-    <p class="text-warning" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
-    <br>
-
-    <label for="name">Program description:</label>
-    <input type="text" id="description" th:field="*{description}" required>
-    <p class="text-warning" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
-    <br>
-
-    <label for="shared">
-        <input type="checkbox" id="shared" th:field="*{shared}">
-        Share with other users
-    </label>
-    <br>
-
-    <div class="day-section">
-        <h3>MONDAY</h3>
-        <button type="button" onclick="toggleWorkout('monday-workout')">Show/Hide Workouts</button>
-        <div id="monday-workout" class="workout-container">
-            <div th:replace="~{fragments/workout-card :: workout-card('monday')}"></div>
+        <div th:if="${message}" class="error-message">
+            <p th:text="${message}"></p>
         </div>
-    </div>
 
-    <div class="day-section">
-        <h3>TUESDAY</h3>
-        <button type="button" onclick="toggleWorkout('tuesday-workout')">Show/Hide Workouts</button>
-        <div id="tuesday-workout" class="workout-container">
-            <div th:replace="~{fragments/workout-card :: workout-card('tuesday')}"></div>
+        <div class="form-group">
+            <label for="name">Program Name</label>
+            <input type="text" id="name" th:field="*{name}">
+            <p class="input-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
         </div>
-    </div>
 
-    <div class="day-section">
-        <h3>WEDNESDAY</h3>
-        <button type="button" onclick="toggleWorkout('wednesday-workout')">Show/Hide Workouts</button>
-        <div id="wednesday-workout" class="workout-container">
-            <div th:replace="~{fragments/workout-card :: workout-card('wednesday')}"></div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <input type="text" id="description" th:field="*{description}">
+            <p class="input-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
         </div>
-    </div>
 
-    <div class="day-section">
-        <h3>THURSDAY</h3>
-        <button type="button" onclick="toggleWorkout('thursday-workout')">Show/Hide Workouts</button>
-        <div id="thursday-workout" class="workout-container">
-            <div th:replace="~{fragments/workout-card :: workout-card('thursday')}"></div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="difficulty">Difficulty</label>
+                <select id="difficulty" th:field="*{difficulty}">
+                    <option th:each="d : ${T(com.softuni.project.program.model.Difficulty).values()}"
+                            th:value="${d}" th:text="${d}"></option>
+                </select>
+            </div>
+
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="shared" th:field="*{shared}">
+                <label for="shared">Share with community</label>
+            </div>
         </div>
-    </div>
 
-    <div class="day-section">
-        <h3>FRIDAY</h3>
-        <button type="button" onclick="toggleWorkout('friday-workout')">Show/Hide Workouts</button>
-        <div id="friday-workout" class="workout-container">
-            <div th:replace="~{fragments/workout-card :: workout-card('friday')}"></div>
+        <a href="/programs/new" class="refresh-btn">
+            <i class="fas fa-sync-alt"></i> Start Over
+        </a>
+
+        <div class="day-section">
+            <div class="day-header">
+                <h3>MONDAY</h3>
+                <button type="button" class="toggle-btn" onclick="toggleWorkout('monday-workout')">
+                    <i class="fas fa-chevron-down"></i> Show Workouts
+                </button>
+            </div>
+            <div id="monday-workout" class="workout-container">
+                <div th:replace="~{fragments/workout-card :: workout-card('monday')}"></div>
+            </div>
         </div>
-    </div>
 
-    <div class="day-section">
-        <h3>SATURDAY</h3>
-        <button type="button" onclick="toggleWorkout('saturday-workout')">Show/Hide Workouts</button>
-        <div id="saturday-workout" class="workout-container">
-            <div th:replace="~{fragments/workout-card :: workout-card('saturday')}"></div>
+        <div class="day-section">
+            <div class="day-header">
+                <h3>TUESDAY</h3>
+                <button type="button" class="toggle-btn" onclick="toggleWorkout('tuesday-workout')">
+                    <i class="fas fa-chevron-down"></i> Show Workouts
+                </button>
+            </div>
+            <div id="tuesday-workout" class="workout-container">
+                <div th:replace="~{fragments/workout-card :: workout-card('tuesday')}"></div>
+            </div>
         </div>
-    </div>
 
-    <div class="day-section">
-        <h3>SUNDAY</h3>
-        <button type="button" onclick="toggleWorkout('sunday-workout')">Show/Hide Workouts</button>
-        <div id="sunday-workout" class="workout-container">
-            <div th:replace="~{fragments/workout-card :: workout-card('sunday')}"></div>
+        <div class="day-section">
+            <div class="day-header">
+                <h3>WEDNESDAY</h3>
+                <button type="button" class="toggle-btn" onclick="toggleWorkout('wednesday-workout')">
+                    <i class="fas fa-chevron-down"></i> Show Workouts
+                </button>
+            </div>
+            <div id="wednesday-workout" class="workout-container">
+                <div th:replace="~{fragments/workout-card :: workout-card('wednesday')}"></div>
+            </div>
         </div>
-    </div>
 
-    <br><br>
-    <button type="submit">Save Program</button>
-</form>
+        <div class="day-section">
+            <div class="day-header">
+                <h3>THURSDAY</h3>
+                <button type="button" class="toggle-btn" onclick="toggleWorkout('thursday-workout')">
+                    <i class="fas fa-chevron-down"></i> Show Workouts
+                </button>
+            </div>
+            <div id="thursday-workout" class="workout-container">
+                <div th:replace="~{fragments/workout-card :: workout-card('thursday')}"></div>
+            </div>
+        </div>
+
+        <div class="day-section">
+            <div class="day-header">
+                <h3>FRIDAY</h3>
+                <button type="button" class="toggle-btn" onclick="toggleWorkout('friday-workout')">
+                    <i class="fas fa-chevron-down"></i> Show Workouts
+                </button>
+            </div>
+            <div id="friday-workout" class="workout-container">
+                <div th:replace="~{fragments/workout-card :: workout-card('friday')}"></div>
+            </div>
+        </div>
+
+        <div class="day-section">
+            <div class="day-header">
+                <h3>SATURDAY</h3>
+                <button type="button" class="toggle-btn" onclick="toggleWorkout('saturday-workout')">
+                    <i class="fas fa-chevron-down"></i> Show Workouts
+                </button>
+            </div>
+            <div id="saturday-workout" class="workout-container">
+                <div th:replace="~{fragments/workout-card :: workout-card('saturday')}"></div>
+            </div>
+        </div>
+
+        <div class="day-section">
+            <div class="day-header">
+                <h3>SUNDAY</h3>
+                <button type="button" class="toggle-btn" onclick="toggleWorkout('sunday-workout')">
+                    <i class="fas fa-chevron-down"></i> Show Workouts
+                </button>
+            </div>
+            <div id="sunday-workout" class="workout-container">
+                <div th:replace="~{fragments/workout-card :: workout-card('sunday')}"></div>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Save Program</button>
+    </form>
+</main>
+
+<script>
+    function toggleWorkout(id) {
+        const container = document.getElementById(id);
+        const button = container.previousElementSibling.querySelector('button');
+        const icon = button.querySelector('i');
+
+        if (container.style.display === "none" || container.style.display === "") {
+            container.style.display = "block";
+            icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            button.innerHTML = button.innerHTML.replace('Show', 'Hide');
+        } else {
+            container.style.display = "none";
+            icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            button.innerHTML = button.innerHTML.replace('Hide', 'Show');
+        }
+    }
+</script>
 </body>
 </html>

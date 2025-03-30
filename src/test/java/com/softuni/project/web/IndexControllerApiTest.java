@@ -137,10 +137,9 @@ public class IndexControllerApiTest {
 
     @Test
     void getAuthenticatedRequestToHome_returnsHomeView() throws Exception {
-
-        when(userService.getById(UUID.randomUUID())).thenReturn(aRandomUser());
-
         UUID userId = UUID.randomUUID();
+        when(userService.getById(userId)).thenReturn(aRandomUser());
+
         AuthenticationMetadata principal = new AuthenticationMetadata(userId, "User123", "123123", UserRole.USER, true);
         MockHttpServletRequestBuilder request = get("/home")
                 .with(user(principal));

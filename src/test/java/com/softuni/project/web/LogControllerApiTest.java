@@ -3,6 +3,8 @@ package com.softuni.project.web;
 import com.softuni.project.common.DayOfWeek;
 import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.log.service.LogService;
+import com.softuni.project.security.AuthenticationMetadata;
+import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.controller.LogController;
 import com.softuni.project.web.dto.*;
@@ -59,7 +61,11 @@ public class LogControllerApiTest {
         WorkoutLogRequest workoutLogRequest = new WorkoutLogRequest();
         workoutLogRequest.setLoggedExercises(responses);
 
-        when(userService.getById(UUID.randomUUID())).thenReturn(aRandomUser());
+        AuthenticationMetadata authenticationMetadata = userMetadata();
+        User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
+
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
 
         Workout workout = randomWorkout();
         when(workoutService.getById(UUID.randomUUID())).thenReturn(workout);
@@ -69,7 +75,7 @@ public class LogControllerApiTest {
                 .with(csrf())
                 .formField("loggedExercises[0].sets", "2")
                 .formField("loggedExercises[0].reps", "2")
-                .formField("loggedExercises[0].weight", "2");
+                .formField("loggedExercises[0].addedWeight", "2");
 
         mockMvc.perform(request)
                 .andExpect(status().is3xxRedirection())
@@ -80,7 +86,9 @@ public class LogControllerApiTest {
 
     @Test
     void getShowLogWorkoutPage_shouldReturnLogWorkoutPage() throws Exception {
-        Workout workout = randomWorkout();
+        UUID workoutId = UUID.randomUUID();
+        Workout workout = new Workout();
+        workout.setId(workoutId);
 
         WorkoutExerciseEntry workoutExerciseEntry = WorkoutExerciseEntry.builder()
                 .exerciseName("Pushing up")
@@ -90,15 +98,16 @@ public class LogControllerApiTest {
                 .build();
 
         ViewWorkoutResponse workoutResponse = ViewWorkoutResponse.builder()
-                .workoutId(workout.getId().toString())
+                .workoutId(workoutId.toString())
                 .dayOfWeek(DayOfWeek.MONDAY)
                 .approximateDuration(60)
                 .exercises(List.of(workoutExerciseEntry))
                 .additionalInfo("opa topa")
                 .build();
 
+        Exercise exercise = new Exercise();
+        exercise.setId(UUID.randomUUID());
 
-        Exercise exercise = randomExercise();
         List<LogExerciseResponse> responses = new ArrayList<>();
         LogExerciseResponse response = LogExerciseResponse.builder()
                 .exerciseId(exercise.getId().toString())
@@ -111,22 +120,28 @@ public class LogControllerApiTest {
         WorkoutLogRequest workoutLogRequest = new WorkoutLogRequest();
         workoutLogRequest.setLoggedExercises(responses);
 
+        AuthenticationMetadata authenticationMetadata = userMetadata();
+        User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
 
-        when(workoutService.getById(UUID.randomUUID())).thenReturn(workout);
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
+        when(workoutService.getById(workoutId.toString())).thenReturn(workout);
         when(workoutService.getViewWorkoutResponseByWorkout(any())).thenReturn(workoutResponse);
         when(workoutService.initializeWorkoutLogRequest(any())).thenReturn(workoutLogRequest);
 
-        MockHttpServletRequestBuilder request = get("/logs/{dayOfWeek}/{workoutId}", "Monday", workout.getId())
-                .with(user(userMetadata()));
+        MockHttpServletRequestBuilder request = get("/logs/{dayOfWeek}/{workoutId}", "Monday", workoutId.toString())
+                .with(user(authenticationMetadata));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/log-workout"))
                 .andExpect(model().attributeExists("workoutResponse"))
                 .andExpect(model().attributeExists("workoutLogRequest"))
-                .andExpect(model().attributeExists("dayOfWeek"));
+                .andExpect(model().attributeExists("dayOfWeek"))
+                .andExpect(model().attributeExists("user"));
 
-        verify(workoutService, times(1)).getById(UUID.randomUUID());
+        verify(userService, times(1)).getById(authenticationMetadata.getId());
+        verify(workoutService, times(1)).getById(workoutId.toString());
         verify(workoutService, times(1)).getViewWorkoutResponseByWorkout(any());
         verify(workoutService, times(1)).initializeWorkoutLogRequest(any());
     }
@@ -147,17 +162,21 @@ public class LogControllerApiTest {
 
         List<ViewLogResponse> logs = List.of(viewLogResponse);
 
-        when(userService.getById(UUID.randomUUID())).thenReturn(aRandomUser());
+        AuthenticationMetadata authenticationMetadata = userMetadata();
+        User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
+
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
         when(logService.getViewLogResponsesForUser(any())).thenReturn(logs);
 
         MockHttpServletRequestBuilder request = get("/logs")
-                .with(user(userMetadata()));
+                .with(user(authenticationMetadata));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/your-logs"))
-                .andExpect(model().attributeExists("logs"));
-
+                .andExpect(model().attributeExists("logs"))
+                .andExpect(model().attributeExists("user"));
         verify(logService, times(1)).getViewLogResponsesForUser(any());
     }
 

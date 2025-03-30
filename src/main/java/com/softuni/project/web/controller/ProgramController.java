@@ -46,19 +46,25 @@ public class ProgramController {
     }
 
     @PostMapping()
-    public String createProgram(
+    public ModelAndView createProgram(
             @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
-            @ModelAttribute @Valid ProgramFormRequest programFormRequest,
+            @Valid @ModelAttribute ProgramFormRequest programFormRequest,
             BindingResult bindingResult) {
 
+        User user = userService.getById(authenticationMetadata.getId());
+        ModelAndView modelAndView = new ModelAndView("user/submit-program");
+        modelAndView.addObject("user", user);
+
         if(bindingResult.hasErrors()) {
-            return "user/submit-program";
+            modelAndView.addObject("programFormRequest", programFormRequest);
+            modelAndView.addObject("user", user);
+            modelAndView.addObject("workouts", workoutService.getWorkoutsForUser(user));
+            return modelAndView;
         }
 
-        User user = userService.getById(authenticationMetadata.getId());
         programService.createProgram(user, programFormRequest);
 
-        return "redirect:/programs/personal";
+        return new ModelAndView("redirect:/programs/personal");
     }
 
     @GetMapping("/personal")

@@ -75,7 +75,7 @@
 .image-container {
     width: 250px;
     height: 250px;
-    margin: 0 auto 1.5rem;
+    margin: 2em auto 2rem;
     display: flex;
     align-items: center;
     justify-content: center;

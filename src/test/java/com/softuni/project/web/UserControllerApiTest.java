@@ -42,7 +42,7 @@ public class UserControllerApiTest {
         User user = aRandomUser();
         List<ViewProgramResponse> programs = List.of(new ViewProgramResponse());
 
-        when(userService.getById(UUID.randomUUID())).thenReturn(user);
+        when(userService.getById(user.getId())).thenReturn(user);
         when(programService.getAllSharedProgramsByUser(any())).thenReturn(programs);
 
         MockHttpServletRequestBuilder request = get("/users/{id}/profile", user.getId())
@@ -63,7 +63,7 @@ public class UserControllerApiTest {
     void getEditProfilePage_shouldReturnEditProfilePage() throws Exception {
         User user = aRandomUser();
 
-        when(userService.getById(UUID.randomUUID())).thenReturn(user);
+        when(userService.getById(user.getId())).thenReturn(user);
 
         MockHttpServletRequestBuilder request = get("/users/profile/edit")
                 .with(user(userMetadata()));

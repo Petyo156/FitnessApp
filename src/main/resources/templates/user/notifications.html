@@ -3,21 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/init.css">
+    <link rel="stylesheet" type="text/css" href="/css/notifications.css">
+    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Notifications</title>
 </head>
 <body>
-<th:block th:replace="~{fragments/home-button :: homeButton}"></th:block>
-<th:block th:replace="~{fragments/logout-button :: logoutButton}"></th:block>
 
-<h2>Notifications</h2>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-<div>
-    <ul th:each="notification : ${userNotifications}">
-        <li>
-            <strong th:text="${notification.message}"></strong> -
-            <span th:text="${notification.date}"></span>
-        </li>
-    </ul>
-</div>
+<main class="notifications-page">
+    <div class="notifications-header">
+        <h1>Notifications</h1>
+    </div>
+
+    <div class="notifications-list">
+        <div class="notification-card" th:each="notification : ${userNotifications}">
+            <div class="notification-badge"></div>
+            <div class="notification-content">
+                <p class="notification-message" th:text="${notification.message}"></p>
+                <span class="notification-date" th:text="${notification.date}"></span>
+            </div>
+        </div>
+
+        <div class="empty-state" th:if="${userNotifications.empty}">
+            <i class="far fa-bell-slash"></i>
+            <p>No notifications yet</p>
+        </div>
+    </div>
+</main>
 </body>
 </html>

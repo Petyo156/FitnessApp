@@ -2,6 +2,7 @@ package com.softuni.project.web;
 
 import com.softuni.project.like.service.LikeService;
 import com.softuni.project.like.service.NotificationService;
+import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.controller.LikeController;
@@ -41,10 +42,14 @@ public class LikeControllerApiTest {
 
     @Test
     void postLikeProgram_shouldRedirectToHome() throws Exception {
-        when(userService.getById(UUID.randomUUID())).thenReturn(aRandomUser());
+        AuthenticationMetadata authenticationMetadata = userMetadata();
+        User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
+
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
 
         MockHttpServletRequestBuilder request = post("/like/{programId}/{programOwnerId}", UUID.randomUUID(), UUID.randomUUID())
-                .with(user(userMetadata()))
+                .with(user(authenticationMetadata))
                 .with(csrf());
 
         mockMvc.perform(request)
@@ -57,12 +62,15 @@ public class LikeControllerApiTest {
 
     @Test
     void getLikedPrograms_shouldReturnLikedProgramsPage() throws Exception {
+        AuthenticationMetadata authenticationMetadata = userMetadata();
         User user = aRandomUser();
-        when(userService.getById(UUID.randomUUID())).thenReturn(user);
+        user.setId(authenticationMetadata.getId());
+
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
         when(likeService.getAllLikedPrograms(any())).thenReturn(List.of());
 
         MockHttpServletRequestBuilder request = get("/like/programs/{userId}", user.getId())
-                .with(user(userMetadata()));
+                .with(user(authenticationMetadata));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -75,12 +83,15 @@ public class LikeControllerApiTest {
 
     @Test
     void getLikeNotifications_shouldReturnNotificationsPage() throws Exception {
+        AuthenticationMetadata authenticationMetadata = userMetadata();
         User user = aRandomUser();
-        when(userService.getById(UUID.randomUUID())).thenReturn(user);
+        user.setId(authenticationMetadata.getId());
+
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
         when(notificationService.getAllNotificationsForUser(any(), any())).thenReturn(List.of());
 
         MockHttpServletRequestBuilder request = get("/like/notifications/{userId}", user.getId())
-                .with(user(userMetadata()));
+                .with(user(authenticationMetadata));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())

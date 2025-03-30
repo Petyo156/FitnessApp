@@ -3,6 +3,7 @@ package com.softuni.project.web;
 import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.security.AuthenticationMetadata;
+import com.softuni.project.user.model.User;
 import com.softuni.project.user.model.UserRole;
 import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.controller.ExerciseController;
@@ -42,8 +43,14 @@ public class ExerciseControllerApiTest {
     void getExercises_shouldReturnExercisesPageWithApprovedExercises() throws Exception {
         when(exerciseService.findAllApprovedExercises()).thenReturn(List.of(randomExercise()));
 
+        AuthenticationMetadata authenticationMetadata = userMetadata();
+        User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
+
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
+
         MockHttpServletRequestBuilder request = get("/exercises")
-                .with(user(userMetadata()));
+                .with(user(authenticationMetadata));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -53,25 +60,39 @@ public class ExerciseControllerApiTest {
 
     @Test
     void getExerciseById_shouldReturnExercisePageWithSelectedExercise() throws Exception {
+        AuthenticationMetadata authenticationMetadata = userMetadata();
+        User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
+
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
+
         UUID exerciseId = UUID.randomUUID();
         Exercise mockExercise = randomExercise();
         when(exerciseService.findAllApprovedExercises()).thenReturn(List.of(mockExercise));
-        when(exerciseService.getById(exerciseId)).thenReturn(mockExercise);
+        when(exerciseService.getById(exerciseId.toString())).thenReturn(mockExercise);
 
         MockHttpServletRequestBuilder request = get("/exercises/{id}", exerciseId)
-                .with(user(userMetadata()));
+                .with(user(authenticationMetadata));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/exercises"))
                 .andExpect(model().attributeExists("selectedExercise"))
-                .andExpect(model().attributeExists("exercises"));
+                .andExpect(model().attributeExists("exercises"))
+                .andExpect(model().attributeExists("user"));
     }
+
 
     @Test
     void getSubmitExerciseForm_shouldReturnSubmitExercisePage() throws Exception {
+        AuthenticationMetadata authenticationMetadata = userMetadata();
+        User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
+
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
+
         MockHttpServletRequestBuilder request = get("/exercises/new")
-                .with(user(userMetadata()));
+                .with(user(authenticationMetadata));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -81,15 +102,18 @@ public class ExerciseControllerApiTest {
 
     @Test
     void getUserExercises_shouldReturnUserExercisesPage() throws Exception {
-        UUID userId = UUID.randomUUID();
-        AuthenticationMetadata principal = new AuthenticationMetadata(userId, "User123", "123123", UserRole.USER, true);
+        AuthenticationMetadata authenticationMetadata = userMetadata();
+        User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
 
-        when(exerciseService.findAllApprovedExercisesByUserId(userId)).thenReturn(List.of(new Exercise()));
-        when(exerciseService.findAllPendingExercisesByUserId(userId)).thenReturn(List.of());
-        when(exerciseService.findAllRejectedExercisesByUserId(userId)).thenReturn(List.of());
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
+
+        when(exerciseService.findAllApprovedExercisesByUserId(user.getId())).thenReturn(List.of(new Exercise()));
+        when(exerciseService.findAllPendingExercisesByUserId(user.getId())).thenReturn(List.of());
+        when(exerciseService.findAllRejectedExercisesByUserId(user.getId())).thenReturn(List.of());
 
         MockHttpServletRequestBuilder request = get("/exercises/personal")
-                .with(user(principal));
+                .with(user(authenticationMetadata));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -119,12 +143,18 @@ public class ExerciseControllerApiTest {
 
     @Test
     void postSubmitExercise_withInvalidData_shouldReturnSubmitExercisePage() throws Exception {
+        AuthenticationMetadata authenticationMetadata = userMetadata();
+        User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
+
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
+
         MockHttpServletRequestBuilder request = post("/exercises")
                 .formField("name", "")
                 .formField("description", "Do push-ups for 30 seconds")
                 .formField("difficulty", "MEDIUM")
                 .formField("muscleGroups", "CHEST")
-                .with(user(userMetadata()))
+                .with(user(authenticationMetadata))
                 .with(csrf());
 
         mockMvc.perform(request)

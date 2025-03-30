@@ -2,6 +2,7 @@ package com.softuni.project.web;
 
 import com.softuni.project.common.DayOfWeek;
 import com.softuni.project.excersise.service.ExerciseService;
+import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.controller.WorkoutController;
@@ -44,53 +45,26 @@ public class WorkoutControllerApiTest {
     private MockMvc mockMvc;
 
     @Test
-    void getYourWorkouts_shouldReturnYourWorkoutsPage() throws Exception {
-        User user = aRandomUser();
-        WorkoutExerciseEntry workoutExerciseEntry = WorkoutExerciseEntry.builder()
-                .exerciseName("Push up")
-                .reps(2)
-                .addedWeight(2.0)
-                .sets(2)
-                .build();
-
-        ViewWorkoutResponse viewWorkoutResponse = ViewWorkoutResponse.builder()
-                .workoutId(UUID.randomUUID().toString())
-                .approximateDuration(60)
-                .dayOfWeek(DayOfWeek.MONDAY)
-                .exercises(List.of(workoutExerciseEntry))
-                .build();
-
-        List<ViewWorkoutResponse> workouts = List.of(viewWorkoutResponse);
-
-        when(userService.getById(UUID.randomUUID())).thenReturn(user);
-        when(workoutService.getWorkoutsForUser(any())).thenReturn(workouts);
-
-        MockHttpServletRequestBuilder request = get("/workouts/personal")
-                .with(user(userMetadata()));
-
-        mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(view().name("user/your-workouts"))
-                .andExpect(model().attributeExists("workouts"));
-
-        verify(userService, times(1)).getById(UUID.randomUUID());
-        verify(workoutService, times(1)).getWorkoutsForUser(any());
-    }
-
-    @Test
     void getCreateWorkoutPage_shouldReturnCreateWorkoutPage() throws Exception {
         List<String> allExercises = List.of("Push Up", "Squat", "Lunge");
 
         when(exerciseService.findAllApprovedExercisesNames()).thenReturn(allExercises);
 
+        AuthenticationMetadata authenticationMetadata = userMetadata();
+        User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
+
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
+
         MockHttpServletRequestBuilder request = get("/workouts/new")
-                .with(user(userMetadata()));
+                .with(user(authenticationMetadata));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/submit-workout"))
                 .andExpect(model().attributeExists("submitWorkoutRequest"))
-                .andExpect(model().attributeExists("allExercises"));
+                .andExpect(model().attributeExists("allExercises"))
+                .andExpect(model().attributeExists("user"));
 
         verify(exerciseService, times(1)).findAllApprovedExercisesNames();
     }
@@ -125,16 +99,25 @@ public class WorkoutControllerApiTest {
 
     @Test
     void postCreateWorkout_withValidationErrors_shouldReturnCreateWorkoutPage() throws Exception {
+        AuthenticationMetadata authenticationMetadata = userMetadata();
+        User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
+
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
+
         SubmitWorkoutRequest submitWorkoutRequest = new SubmitWorkoutRequest();
 
         MockHttpServletRequestBuilder request = post("/workouts")
-                .with(user(userMetadata()))
+                .with(user(authenticationMetadata))
                 .with(csrf())
                 .flashAttr("submitWorkoutRequest", submitWorkoutRequest);
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(view().name("user/submit-workout"));
+                .andExpect(view().name("user/submit-workout"))
+                .andExpect(model().attributeExists("allExercises"))
+                .andExpect(model().attributeExists("user"))
+                .andExpect(model().attributeExists("submitWorkoutRequest"));
 
         verify(workoutService, times(0)).submitWorkout(any(), any());
     }

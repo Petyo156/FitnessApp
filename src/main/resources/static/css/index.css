@@ -1,4 +1,3 @@
-/* General Body Styles */
 body.index-body {
     margin: 0;
     padding: 0;
@@ -12,9 +11,8 @@ body.index-body {
     overflow: hidden;
 }
 
-/* Index Container */
 .index-container {
-    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    background-color: rgba(255, 255, 255, 0.9);
     padding: 40px;
     border-radius: 15px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
@@ -24,7 +22,6 @@ body.index-body {
     animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Index Content */
 .index-content h1 {
     font-size: 36px;
     font-weight: 600;
@@ -33,7 +30,7 @@ body.index-body {
 }
 
 .index-content .logo {
-    color: #00CED1; /* Light blue/cyan for the logo */
+    color: #00CED1;
 }
 
 .index-content p {
@@ -42,7 +39,6 @@ body.index-body {
     margin-bottom: 20px;
 }
 
-/* Buttons */
 .index-buttons {
     display: flex;
     justify-content: center;
@@ -61,26 +57,25 @@ body.index-body {
 }
 
 .btn-primary {
-    background-color: #00CED1; /* Light blue/cyan */
+    background-color: #00CED1;
     color: #FFFFFF;
 }
 
 .btn-primary:hover {
-    background-color: #20B2AA; /* Slightly darker cyan */
+    background-color: #20B2AA;
     transform: translateY(-2px);
 }
 
 .btn-secondary {
-    background-color: #FFA500; /* Light orange */
+    background-color: #FFA500;
     color: #FFFFFF;
 }
 
 .btn-secondary:hover {
-    background-color: #FF8C00; /* Slightly darker orange */
+    background-color: #FF8C00;
     transform: translateY(-2px);
 }
 
-/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }

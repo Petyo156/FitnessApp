@@ -4,6 +4,7 @@ import com.softuni.project.common.DayOfWeek;
 import com.softuni.project.program.model.Difficulty;
 import com.softuni.project.program.model.Program;
 import com.softuni.project.program.service.ProgramService;
+import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.controller.ProgramController;
@@ -70,9 +71,11 @@ public class ProgramControllerApiTest {
 
     @Test
     void getUserPrograms_shouldReturnPersonalProgramsPage() throws Exception {
+        AuthenticationMetadata authenticationMetadata = userMetadata();
         User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
 
-        when(userService.getById(UUID.randomUUID())).thenReturn(user);
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
 
         WorkoutExerciseEntry exerciseEntry = WorkoutExerciseEntry.builder()
                 .exerciseId(UUID.randomUUID().toString())
@@ -102,7 +105,7 @@ public class ProgramControllerApiTest {
         when(programService.getAllProgramsByUser(any())).thenReturn(programsResponses);
 
         MockHttpServletRequestBuilder request = get("/programs/personal")
-                .with(user(userMetadata()));
+                .with(user(authenticationMetadata));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -115,14 +118,17 @@ public class ProgramControllerApiTest {
 
     @Test
     void browseSharedPrograms_shouldReturnBrowseProgramsPage() throws Exception {
+        AuthenticationMetadata authenticationMetadata = userMetadata();
         User user = aRandomUser();
-        List<ViewProgramResponse> programs = List.of(new ViewProgramResponse());
+        user.setId(authenticationMetadata.getId());
 
-        when(userService.getById(UUID.randomUUID())).thenReturn(user);
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
+
+        List<ViewProgramResponse> programs = List.of(new ViewProgramResponse());
         when(programService.getAllSharedProgramsByAllOtherUsers(any())).thenReturn(programs);
 
         MockHttpServletRequestBuilder request = get("/programs/browse")
-                .with(user(userMetadata()));
+                .with(user(authenticationMetadata));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())

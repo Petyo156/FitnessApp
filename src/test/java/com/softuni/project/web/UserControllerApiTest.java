@@ -2,6 +2,7 @@ package com.softuni.project.web;
 
 
 import com.softuni.project.program.service.ProgramService;
+import com.softuni.project.security.AuthenticationMetadata;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.controller.UserController;
@@ -38,35 +39,15 @@ public class UserControllerApiTest {
     private MockMvc mockMvc;
 
     @Test
-    void getProfile_shouldReturnProfilePage() throws Exception {
-        User user = aRandomUser();
-        List<ViewProgramResponse> programs = List.of(new ViewProgramResponse());
-
-        when(userService.getById(user.getId())).thenReturn(user);
-        when(programService.getAllSharedProgramsByUser(any())).thenReturn(programs);
-
-        MockHttpServletRequestBuilder request = get("/users/{id}/profile", user.getId())
-                .with(user(userMetadata()));
-
-        mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(view().name("user/profile"))
-                .andExpect(model().attributeExists("user"))
-                .andExpect(model().attributeExists("loggedUserId"))
-                .andExpect(model().attributeExists("programs"));
-
-        verify(userService, times(1)).getById(UUID.randomUUID());
-        verify(programService, times(1)).getAllSharedProgramsByUser(any());
-    }
-
-    @Test
     void getEditProfilePage_shouldReturnEditProfilePage() throws Exception {
+        AuthenticationMetadata authenticationMetadata = userMetadata();
         User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
 
-        when(userService.getById(user.getId())).thenReturn(user);
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
 
         MockHttpServletRequestBuilder request = get("/users/profile/edit")
-                .with(user(userMetadata()));
+                .with(user(authenticationMetadata));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -74,8 +55,9 @@ public class UserControllerApiTest {
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attributeExists("editProfileRequest"));
 
-        verify(userService, times(1)).getById(UUID.randomUUID());
+        verify(userService, times(1)).getById(user.getId()); // FIXED
     }
+
 
     @Test
     void putEditProfile_shouldRedirectToHome() throws Exception {

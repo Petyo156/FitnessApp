@@ -10,10 +10,9 @@ body.profile-body {
     pointer-events: none;
 }
 
-/* Profile Header */
 .profile-header {
     display: flex;
-    gap: 10em; /* Space between profile picture and details */
+    gap: 10em;
     background-color: #FFFFFF;
     padding: 20px;
     margin: 20px auto;
@@ -23,7 +22,6 @@ body.profile-body {
     justify-content: center;
 }
 
-/* Profile Picture Section */
 .profile-header .head {
     text-align: center;
 }
@@ -65,10 +63,9 @@ body.profile-body {
 }
 
 .details-card strong {
-    color: #00CED1; /* Highlight labels with theme color */
+    color: #00CED1;
 }
 
-/* Edit Profile Button */
 .edit-profile {
     text-align: center;
     margin-top: 2em;
@@ -92,7 +89,6 @@ body.profile-body {
     transform: translateY(-2px);
 }
 
-/* Shared Programs Section */
 .shared-programs {
     background-color: #FFFFFF;
     padding: 20px;
@@ -109,7 +105,6 @@ body.profile-body {
     margin-bottom: 20px;
 }
 
-/* Program Cards */
 .program-card {
     background-color: #F5F5F5;
     padding: 15px;
@@ -126,7 +121,7 @@ body.profile-body {
 .program-card h3 {
     font-size: 20px;
     font-weight: 600;
-    color: #00CED1; /* Theme color for program names */
+    color: #00CED1;
     margin-bottom: 10px;
 }
 
@@ -136,7 +131,6 @@ body.profile-body {
     margin-bottom: 5px;
 }
 
-/* Workouts Container */
 .workouts-container {
     margin-top: 10px;
     display: none;
@@ -174,7 +168,6 @@ body.profile-body {
     margin-bottom: 5px;
 }
 
-/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }

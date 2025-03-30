@@ -1,5 +1,7 @@
 package com.softuni.project.web;
 
+import com.softuni.project.security.AuthenticationMetadata;
+import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
 import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.web.controller.AdminController;
@@ -12,11 +14,9 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.UUID;
 
-import static com.softuni.project.web.TestBuilder.adminMetadata;
-import static com.softuni.project.web.TestBuilder.userMetadata;
+import static com.softuni.project.web.TestBuilder.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -47,9 +47,14 @@ public class AdminControllerApiTest {
 
     @Test
     void getAuthorizedRequestToUsersPage_shouldReturnUsersPage() throws Exception {
+        AuthenticationMetadata authenticationMetadata = adminMetadata();
+        User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
+
+        when(userService.getById(authenticationMetadata.getId())).thenReturn(user);
 
         MockHttpServletRequestBuilder request = get("/admin/users")
-                .with(user(adminMetadata()));
+                .with(user(authenticationMetadata));
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())

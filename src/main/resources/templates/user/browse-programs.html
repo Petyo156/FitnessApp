@@ -35,15 +35,14 @@
             </div>
             <div class="program-actions">
                 <form th:action="@{/programs/{programId}/activate(programId=${program.id})}" method="post"
-                      th:if="*{user.userRole.name() != 'ADMIN'}" onclick="event.stopPropagation()">
+                      th:if="*{user.userRole.name() != 'ADMIN'}">
                     <button type="submit" class="activate-btn">
                         <i class="fas fa-check-circle"></i> Make Active
                     </button>
                 </form>
                 <form th:action="@{/like/{programId}/{programOwnerId}(programId=${program.id}, programOwnerId=${program.addedById})}"
                       method="post"
-                      th:if="*{user.userRole.name() != 'ADMIN'}"
-                      onclick="event.stopPropagation()">
+                      th:if="*{user.userRole.name() != 'ADMIN'}">
                     <button type="submit" class="like-btn">
                         <i class="fas fa-thumbs-up"></i> Like
                     </button>

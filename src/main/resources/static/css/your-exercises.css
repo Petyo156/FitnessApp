@@ -1,4 +1,3 @@
-/* Your Exercises Page Styles */
 .exercises-container {
     max-width: 1200px;
     margin: 2rem auto;
@@ -26,7 +25,6 @@
     background: linear-gradient(90deg, #00CED1, #FFA500);
 }
 
-/* Exercise Sections */
 .exercise-section {
     background: white;
     border-radius: 12px;
@@ -60,7 +58,6 @@
     color: #F44336;
 }
 
-/* Tables */
 .exercise-table {
     width: 100%;
     border-collapse: collapse;
@@ -79,7 +76,6 @@
     vertical-align: middle;
 }
 
-/* Table Cells */
 .exercise-image-cell {
     width: 150px;
 }

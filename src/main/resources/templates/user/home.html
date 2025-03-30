@@ -14,9 +14,7 @@
 
 <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-<!-- Main Content -->
 <main>
-    <!-- Welcome Message -->
     <section class="welcome-section" th:if="${user.userRole.name() == 'USER'}">
         <div class="welcome-container">
             <h2 th:text="'Welcome, ' + ${user.username} + '!'"></h2>

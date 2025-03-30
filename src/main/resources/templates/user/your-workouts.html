@@ -14,9 +14,7 @@
 
 <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
-<!-- Main Content -->
 <main class="workouts-main">
-    <!-- Header Section -->
     <section class="workouts-header">
         <h2>My Workouts</h2>
         <a th:href="@{/workouts/new}" class="new-workout-btn">
@@ -24,7 +22,6 @@
         </a>
     </section>
 
-    <!-- Workouts List -->
     <div class="workouts-container">
         <div th:each="workout : ${workouts}" class="workout-card">
             <div class="workout-info">
@@ -75,7 +72,6 @@
         </div>
     </div>
 
-    <!-- Empty State -->
     <div th:if="${workouts.empty}" class="empty-state">
         <i class="fas fa-dumbbell"></i>
         <p>You haven't created any workouts yet.</p>

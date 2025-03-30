@@ -3,26 +3,26 @@
     justify-content: center;
     align-items: flex-start;
     min-height: calc(100vh - 120px);
-    padding: 1rem; /* Reduced padding */
+    padding: 1rem;
     background-color: #F5F5F5;
 }
 
 .profile-edit-card {
     width: 100%;
-    max-width: 600px; /* Slightly narrower */
+    max-width: 600px;
     background: #FFFFFF;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    padding: 1.5rem; /* Reduced padding */
+    padding: 1.5rem;
     animation: fadeInUp 0.5s ease-out;
 }
 
 .profile-edit-title {
     color: #00CED1;
     text-align: center;
-    margin-bottom: 1.5rem; /* Reduced margin */
+    margin-bottom: 1.5rem;
     font-weight: 600;
-    font-size: 1.75rem; /* Slightly smaller */
+    font-size: 1.75rem;
     position: relative;
     padding-bottom: 0.5rem;
 }
@@ -33,7 +33,7 @@
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 60px; /* Smaller underline */
+    width: 60px;
     height: 3px;
     background: linear-gradient(90deg, #00CED1, #FFA500);
 }
@@ -41,29 +41,29 @@
 .profile-edit-form {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem; /* Reduced gap */
+    gap: 1.25rem;
 }
 
 .profile-edit-form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem; /* Reduced gap */
+    gap: 0.4rem;
 }
 
 .profile-edit-label {
     font-weight: 500;
     color: #333;
-    font-size: 0.9rem; /* Slightly smaller */
+    font-size: 0.9rem;
     margin-left: 0.25rem;
 }
 
 .profile-edit-input,
 .profile-edit-select,
 .profile-edit-textarea {
-    padding: 0.6rem 0.9rem; /* More compact padding */
+    padding: 0.6rem 0.9rem;
     border: 1px solid #E0E0E0;
-    border-radius: 6px; /* Slightly rounder */
-    font-size: 0.9rem; /* Slightly smaller */
+    border-radius: 6px;
+    font-size: 0.9rem;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     background-color: #FAFAFA;
 }
@@ -76,23 +76,23 @@
 .profile-edit-actions {
     display: flex;
     justify-content: center;
-    margin-top: 1rem; /* Reduced margin */
+    margin-top: 1rem;
 }
 
 .profile-edit-submit {
-    padding: 0.6rem 1.5rem; /* More compact */
+    padding: 0.6rem 1.5rem;
     background: linear-gradient(135deg, #FFA500, #FF8C00);
     color: #FFFFFF;
     border: none;
     border-radius: 6px;
     font-weight: 500;
-    font-size: 0.95rem; /* Slightly smaller */
+    font-size: 0.95rem;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    box-shadow: 0 2px 6px rgba(255, 165, 0, 0.3); /* Softer shadow */
+    box-shadow: 0 2px 6px rgba(255, 165, 0, 0.3);
 }
 
 .profile-edit-error {

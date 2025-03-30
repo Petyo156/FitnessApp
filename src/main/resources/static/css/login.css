@@ -1,4 +1,3 @@
-/* Login Page Styles */
 body.login-body {
     margin: 0;
     padding: 0;
@@ -13,12 +12,12 @@ body.login-body {
 }
 
 .login-container {
-    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    background-color: rgba(255, 255, 255, 0.9);
     padding: 1em 1.5em 1em 1.5em;
     border-radius: 15px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     text-align: center;
-    max-width: 350px; /* Adjusted max-width for better fit */
+    max-width: 350px;
     width: 100%;
     animation: fadeIn 0.5s ease-in-out;
 }
@@ -31,7 +30,7 @@ body.login-body {
 }
 
 .login-content .logo {
-    color: #00CED1; /* Light blue/cyan for the logo */
+    color: #00CED1;
 }
 
 .form-group {
@@ -48,7 +47,7 @@ body.login-body {
 }
 
 .form-group input {
-    width: calc(100% - 20px); /* Adjusted width to fit better */
+    width: calc(100% - 20px);
     padding: 10px;
     border: 1px solid #DDDDDD;
     border-radius: 5px;
@@ -101,7 +100,6 @@ body.login-body {
     text-decoration: underline;
 }
 
-/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }

@@ -1,4 +1,3 @@
-/* Base Styles */
 .no-logs {
     text-align: center;
     opacity: 70%;
@@ -31,7 +30,6 @@
     margin-top: 1.6em;
 }
 
-/* Log Card Styles */
 .view-logs-card {
     background-color: white;
     border-radius: 10px;
@@ -56,7 +54,6 @@
     font-size: 1.3rem;
 }
 
-/* Table Styles */
 .log-exercises-table {
     width: 100%;
     border-collapse: collapse;

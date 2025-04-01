@@ -1,13 +1,10 @@
 package com.softuni.project.excersise.model;
 
-import com.softuni.project.log.model.Log;
 import com.softuni.project.user.model.User;
-import com.softuni.project.workout.model.Workout;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,8 +47,8 @@ public class Exercise {
     private User approvedBy;
 
     @Column(nullable = false)
-    private LocalDateTime createdOn = LocalDateTime.now();
+    private LocalDateTime createdOn;
 
     @Enumerated(EnumType.STRING)
-    private ExerciseStatus status = ExerciseStatus.PENDING;
+    private ExerciseStatus status;
 }

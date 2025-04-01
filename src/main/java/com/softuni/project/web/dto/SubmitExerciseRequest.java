@@ -18,11 +18,11 @@ import java.util.List;
 @AllArgsConstructor
 public class SubmitExerciseRequest {
     @NotEmpty(message = "Name must not be empty")
-    @Size(min = 2, message = "Name has to be least 2 symbols")
+    @Size(min = 2, max = 20, message= "Name has to be least 2 and maximum 20 symbols")
     private String name;
 
     @NotEmpty(message = "Description must not be empty")
-    @Size(min = 10, message = "Description has to be least 10 symbols")
+    @Size(min = 10, max = 50, message = "Description has to be least 10 and maximum 50 symbols")
     private String description;
 
     @NotNull(message = "Difficulty cannot be null")

@@ -2,7 +2,6 @@ package com.softuni.project.web.dto;
 
 import com.softuni.project.program.model.Difficulty;
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -30,7 +29,6 @@ public class ProgramFormRequest {
     @Nullable
     private String sundayWorkoutId;
 
-    @NotEmpty(message = "Program name cannot be empty")
     @Size(min = 3, max = 20, message = "Program name must be 3-20 chars length")
     private String name;
 

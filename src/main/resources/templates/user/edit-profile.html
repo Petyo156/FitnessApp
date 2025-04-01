@@ -24,11 +24,13 @@
             <div class="profile-edit-form-group">
                 <label class="profile-edit-label" for="firstName">First Name:</label>
                 <input class="profile-edit-input" type="text" id="firstName" th:field="*{firstName}" placeholder="First Name"/>
+                <p class="profile-edit-error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
             </div>
 
             <div class="profile-edit-form-group">
                 <label class="profile-edit-label" for="lastName">Last Name:</label>
                 <input class="profile-edit-input" type="text" id="lastName" th:field="*{lastName}" placeholder="Last Name"/>
+                <p class="profile-edit-error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
             </div>
 
             <div class="profile-edit-form-group">
@@ -46,6 +48,7 @@
                             th:text="${#strings.capitalize(#strings.toLowerCase(country))}">
                     </option>
                 </select>
+                <p class="profile-edit-error" th:if="${#fields.hasErrors('country')}" th:errors="*{country}"></p>
             </div>
 
             <div class="profile-edit-form-group">
@@ -56,13 +59,16 @@
                             th:value="${level}"
                             th:text="${#strings.capitalize(#strings.toLowerCase(level))}">
                     </option>
+                    <p class="profile-edit-error" th:if="${#fields.hasErrors('level')}" th:errors="*{level}"></p>
                 </select>
             </div>
 
             <div class="profile-edit-form-group">
                 <label class="profile-edit-label" for="bio">Bio:</label>
                 <textarea class="profile-edit-textarea" id="bio" th:field="*{bio}" placeholder="Tell us about yourself..." rows="4"></textarea>
+                <p class="profile-edit-error" th:if="${#fields.hasErrors('bio')}" th:errors="*{bio}"></p>
             </div>
+
 
             <div class="profile-edit-actions">
                 <button class="profile-edit-submit" type="submit">

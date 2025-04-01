@@ -3,19 +3,17 @@ package com.softuni.project.web;
 
 import com.softuni.project.program.service.ProgramService;
 import com.softuni.project.security.AuthenticationMetadata;
+import com.softuni.project.user.model.Country;
+import com.softuni.project.user.model.Level;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.controller.UserController;
-import com.softuni.project.web.dto.ViewProgramResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-
-import java.util.List;
-import java.util.UUID;
 
 import static com.softuni.project.web.TestBuilder.aRandomUser;
 import static com.softuni.project.web.TestBuilder.userMetadata;
@@ -61,12 +59,16 @@ public class UserControllerApiTest {
 
     @Test
     void putEditProfile_shouldRedirectToHome() throws Exception {
+        AuthenticationMetadata authenticationMetadata = userMetadata();
         User user = aRandomUser();
+        user.setId(authenticationMetadata.getId());
 
-        when(userService.getById(UUID.randomUUID())).thenReturn(user);
+        when(userService.getById(user.getId())).thenReturn(user);
 
         MockHttpServletRequestBuilder request = put("/users/profile/edit")
-                .with(user(userMetadata()))
+                .param("country", String.valueOf(Country.BULGARIA))
+                .param("level", String.valueOf(Level.EXPERT))
+                .with(user(authenticationMetadata))
                 .with(csrf());
 
         mockMvc.perform(request)

@@ -1,4 +1,4 @@
-# Fitness App
+# FitnessApp 🏅
 
 The goal of the app is to help fitness enthusiasts manage their workouts and programs, while also functioning as a social network where users can share their programs.
 
@@ -30,7 +30,7 @@ The goal of the app is to help fitness enthusiasts manage their workouts and pro
 ### 6. Sharing Programs 📢
 - Shared programs can be viewed via the **Community** tab or a user's profile.
 
-### 7. Liking Programs ❤️
+### 7. Liking Programs 👍
 - Users can like programs, which sends a notification to the owner.
 
 ### 8. Logging Workouts 🏃‍♂️
@@ -88,7 +88,7 @@ The goal of the app is to help fitness enthusiasts manage their workouts and pro
 ### 6. Споделяне на програми 📢
 - Споделените програми могат да се видят през таба **Community** или в профила на потребителя.
 
-### 7. Харесване на програми ❤️
+### 7. Харесване на програми 👍
 - Потребителите могат да харесват програми, което води до нотификация на собственика.
 
 ### 8. Логване на тренировки 🏃‍♂️

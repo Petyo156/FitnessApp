@@ -2,8 +2,6 @@
 
 The goal of the application is to help fitness enthusiasts manage their workouts and programs, while also functioning as a social network where users can share their programs.
 
----
-
 ## Key Features - English ⚙️
 
 ### 1. Registration and Login 📝
@@ -44,8 +42,6 @@ The goal of the application is to help fitness enthusiasts manage their workouts
     - Manage user profiles (disable accounts) 
     - Promote users to administrators 
     - Approve or reject added exercises 
-
----
 
 ## Project Structure 📂
 

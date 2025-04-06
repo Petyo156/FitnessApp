@@ -19,10 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -50,6 +47,10 @@ public class ProgramService {
 
         workoutScheduleService.createWorkoutSchedules(programFormRequest, program);
         log.info("New program created successfully");
+    }
+
+    public List<Program> getAllProgramsEntitiesByUser(User user){
+        return programRepository.findAllByUser_Id(user.getId());
     }
 
     public List<ViewProgramResponse> getAllProgramsByUser(User user) {
@@ -132,6 +133,10 @@ public class ProgramService {
                 .dayOfWeek(workoutSchedule.getDayOfWeek())
                 .exercises(workoutExerciseEntries)
                 .build();
+    }
+
+    public List<Program> findAllPrograms() {
+        return programRepository.findAll();
     }
 }
 

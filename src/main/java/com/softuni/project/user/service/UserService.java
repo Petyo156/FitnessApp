@@ -3,6 +3,8 @@ package com.softuni.project.user.service;
 import com.softuni.project.exception.*;
 import com.softuni.project.program.model.Program;
 import com.softuni.project.security.AuthenticationMetadata;
+import com.softuni.project.user.model.Country;
+import com.softuni.project.user.model.Level;
 import com.softuni.project.user.model.User;
 import com.softuni.project.user.model.UserRole;
 import com.softuni.project.user.properties.UserProperties;
@@ -43,7 +45,7 @@ public class UserService implements UserDetailsService {
         checkIfUsernameAlreadyExists(registerRequest);
         checkIfEmailAlreadyExists(registerRequest);
 
-        User user = initializeUser(registerRequest);
+        User user = initializeFirstBaseUser(registerRequest);
         User save = userRepository.save(user);
 
         log.info("Successfully registered user: {}", user.getUsername());
@@ -83,6 +85,13 @@ public class UserService implements UserDetailsService {
 
         log.info("Checking if user count is greater than zero: {}", hasUsers);
         return hasUsers;
+    }
+
+    public boolean onlyAdminIsAdded() {
+        boolean adminAddedOnly = userRepository.count() == 1;
+
+        log.info("Checking if only admin is added");
+        return adminAddedOnly;
     }
 
     public void updateUserStatus(UUID id) {
@@ -162,6 +171,62 @@ public class UserService implements UserDetailsService {
         log.info("Removed active program for logged user");
     }
 
+    public void insertFirstBaseUser() {
+        User user = initializeFirstBaseUser();
+        userRepository.save(user);
+
+        log.info("Inserted first base user successfully");
+    }
+
+    public void insertSecondBaseUser() {
+        User user = initializeSecondBaseUser();
+        userRepository.save(user);
+
+        log.info("Inserted second base user successfully");
+    }
+
+    public User getFirstBaseUser() {
+        return getByUsername("user1");
+    }
+
+    public User getSecondBaseUser() {
+        return getByUsername("user2");
+    }
+
+    private User initializeFirstBaseUser() {
+        return User.builder()
+                .userRole(UserRole.USER)
+                .username("user1")
+                .password(passwordEncoder.encode("user1"))
+                .email("user1@user1.com")
+                .level(Level.EXPERT)
+                .country(Country.BULGARIA)
+                .isActive(true)
+                .createdOn(LocalDateTime.now())
+                .updatedOn(LocalDateTime.now())
+                .firstName("Ivan")
+                .lastName("Ivanov")
+                .bio("I am just the first base user")
+                .build();
+    }
+
+    private User initializeSecondBaseUser() {
+        return User.builder()
+                .userRole(UserRole.USER)
+                .username("user2")
+                .password(passwordEncoder.encode("user2"))
+                .email("user2@user2.com")
+                .level(Level.PROFICIENT)
+                .country(Country.BULGARIA)
+                .isActive(true)
+                .createdOn(LocalDateTime.now())
+                .updatedOn(LocalDateTime.now())
+                .firstName("Georgi")
+                .lastName("Georgiev")
+                .bio("I am just the second base user")
+                .build();
+    }
+
     private void checkIfEmailAlreadyExists(RegisterRequest registerRequest) {
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             log.warn("Registration failed for user '{}': Email already exists", registerRequest.getEmail());
@@ -176,7 +241,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    private User initializeUser(RegisterRequest registerRequest) {
+    private User initializeFirstBaseUser(RegisterRequest registerRequest) {
         return User.builder()
                 .username(registerRequest.getUsername())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))

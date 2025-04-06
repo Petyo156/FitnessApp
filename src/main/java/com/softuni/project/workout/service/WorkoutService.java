@@ -5,7 +5,7 @@ import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.service.ExerciseService;
 import com.softuni.project.mapper.Mapper;
 import com.softuni.project.user.model.User;
-import com.softuni.project.user.service.AdminService;
+import com.softuni.project.user.service.UserService;
 import com.softuni.project.web.dto.*;
 import com.softuni.project.workout.model.Workout;
 import com.softuni.project.workout.repository.WorkoutRepository;
@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -31,15 +31,17 @@ public class WorkoutService {
     private final Mapper<SubmitWorkoutRequest, Workout> workoutMapper;
     private final Mapper<Workout, ViewWorkoutResponse> workoutResponseMapper;
     private final Mapper<WorkoutExercise, WorkoutExerciseEntry> workoutExerciseEntryMapper;
+    private final UserService userService;
 
     @Autowired
-    public WorkoutService(WorkoutRepository workoutRepository, WorkoutExerciseService workoutExerciseService, ExerciseService exerciseService, Mapper<SubmitWorkoutRequest, Workout> workoutMapper, Mapper<Workout, ViewWorkoutResponse> workoutResponseMapper, Mapper<WorkoutExercise, WorkoutExerciseEntry> workoutExerciseEntryMapper) {
+    public WorkoutService(WorkoutRepository workoutRepository, WorkoutExerciseService workoutExerciseService, ExerciseService exerciseService, Mapper<SubmitWorkoutRequest, Workout> workoutMapper, Mapper<Workout, ViewWorkoutResponse> workoutResponseMapper, Mapper<WorkoutExercise, WorkoutExerciseEntry> workoutExerciseEntryMapper, UserService userService) {
         this.workoutRepository = workoutRepository;
         this.workoutExerciseService = workoutExerciseService;
         this.exerciseService = exerciseService;
         this.workoutMapper = workoutMapper;
         this.workoutResponseMapper = workoutResponseMapper;
         this.workoutExerciseEntryMapper = workoutExerciseEntryMapper;
+        this.userService = userService;
     }
 
     @Transactional
@@ -121,22 +123,23 @@ public class WorkoutService {
         return workoutLogRequest;
     }
 
-//    public String getAdminPushWorkoutId() {
-//        return getAdminWorkoutId("Workout for pushing movements");
-//    }
-//
-//    public String getAdminPullWorkoutId() {
-//        return getAdminWorkoutId("Workout for pulling movements");
-//    }
-//
-//    public String getAdminLegsWorkoutId() {
-//        return getAdminWorkoutId("Workout for leg movements");
-//    }
-//
-//    private String getAdminWorkoutId(String workoutDescription) {
-//        return workoutRepository
-//                .getWorkoutByAddedBy_UsernameAndAdditionalInfo("admin", workoutDescription)
-//                .map(workout -> workout.getId().toString())
-//                .orElseThrow(() -> new WorkoutDoesntExistException(ExceptionMessages.WORKOUT_DOESNT_EXIST_ADMIN));
-//    }
+    public List<String> getWorkoutIdsByFirstBaseUser() {
+        return workoutRepository
+                .getWorkoutByAddedBy_UsernameOrderByDuration(userService.getFirstBaseUser().getUsername())
+                .stream()
+                .map(workout -> workout.getId().toString())
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getWorkoutIdsBySecondBaseUser() {
+        return workoutRepository
+                .getWorkoutByAddedBy_UsernameOrderByDuration(userService.getSecondBaseUser().getUsername())
+                .stream()
+                .map(workout -> workout.getId().toString())
+                .collect(Collectors.toList());
+    }
+
+    public List<Workout> findAllWorkouts() {
+        return workoutRepository.findAll();
+    }
 }

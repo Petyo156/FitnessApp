@@ -24,6 +24,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static com.softuni.project.config.InsertedUsersInfo.*;
+
 @Service
 @Slf4j
 public class UserService implements UserDetailsService {
@@ -186,18 +188,18 @@ public class UserService implements UserDetailsService {
     }
 
     public User getFirstBaseUser() {
-        return getByUsername("user1");
+        return getByUsername(BASE_USER_1_USERNAME);
     }
 
     public User getSecondBaseUser() {
-        return getByUsername("user2");
+        return getByUsername(BASE_USER_2_USERNAME);
     }
 
     private User initializeFirstBaseUser() {
         return User.builder()
                 .userRole(UserRole.USER)
-                .username("user1")
-                .password(passwordEncoder.encode("user1"))
+                .username(BASE_USER_1_USERNAME)
+                .password(passwordEncoder.encode(BASE_USER_1_PASSWORD))
                 .email("user1@user1.com")
                 .level(Level.EXPERT)
                 .country(Country.BULGARIA)
@@ -213,8 +215,8 @@ public class UserService implements UserDetailsService {
     private User initializeSecondBaseUser() {
         return User.builder()
                 .userRole(UserRole.USER)
-                .username("user2")
-                .password(passwordEncoder.encode("user2"))
+                .username(BASE_USER_2_USERNAME)
+                .password(passwordEncoder.encode(BASE_USER_2_PASSWORD))
                 .email("user2@user2.com")
                 .level(Level.PROFICIENT)
                 .country(Country.BULGARIA)

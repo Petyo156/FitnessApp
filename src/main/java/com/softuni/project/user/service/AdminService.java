@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import static com.softuni.project.config.InsertedUsersInfo.ADMIN_PASSWORD;
+import static com.softuni.project.config.InsertedUsersInfo.ADMIN_USERNAME;
+
 @Service
 @Slf4j
 public class AdminService {
@@ -40,8 +43,8 @@ public class AdminService {
     private User initializeAdmin() {
         return User.builder()
                 .userRole(UserRole.ADMIN)
-                .username("admin")
-                .password(passwordEncoder.encode("admin"))
+                .username(ADMIN_USERNAME)
+                .password(passwordEncoder.encode(ADMIN_PASSWORD))
                 .email("admin@adminov.com")
                 .level(Level.PREFER_NOT_TO_SAY)
                 .country(Country.USA)

@@ -143,5 +143,17 @@ public class ExerciseService {
     public List<Exercise> findAllExercises() {
         return exerciseRepository.findAll();
     }
+
+    @Transactional
+    public void approveAll() {
+        exerciseRepository.approveAllPendingExercises();
+        log.info("Approved all pending exercises via stored procedure.");
+    }
+
+    @Transactional
+    public void rejectAll() {
+        exerciseRepository.rejectAllPendingExercises();
+        log.info("Rejected all pending exercises via stored procedure.");
+    }
 }
 

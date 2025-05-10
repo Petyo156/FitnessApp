@@ -4,6 +4,7 @@ import com.softuni.project.excersise.model.Exercise;
 import com.softuni.project.excersise.model.ExerciseStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -24,4 +25,21 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
     List<String> findAllExercisesNamesByStatus(@Param("status") ExerciseStatus status);
 
     void deleteAllByStatus(ExerciseStatus exerciseStatus);
+
+    @Procedure(procedureName = "ApproveAllPendingExercises")
+    void approveAllPendingExercises();
+
+    @Procedure(procedureName = "RejectAllPendingExercises")
+    void rejectAllPendingExercises();
 }
+/*
+CREATE PROCEDURE ApproveAllPendingExercises()
+BEGIN
+    UPDATE exercises SET status = 'APPROVED' WHERE status = 'PENDING';
+END;
+
+CREATE PROCEDURE RejectAllPendingExercises()
+BEGIN
+    UPDATE exercises SET status = 'REJECTED' WHERE status = 'PENDING';
+END;
+ */

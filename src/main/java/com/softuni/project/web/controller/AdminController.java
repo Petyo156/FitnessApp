@@ -90,6 +90,22 @@ public class AdminController {
         return "redirect:/admin/exercises/moderation";
     }
 
+    @PostMapping("/exercises/approval")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String approveAllExercises() {
+        exerciseService.approveAll();
+
+        return "redirect:/admin/exercises/moderation";
+    }
+
+    @PostMapping("/exercises/rejection")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String rejectAllExercises() {
+        exerciseService.rejectAll();
+
+        return "redirect:/admin/exercises/moderation";
+    }
+
     @PostMapping("/exercises/{id}/revoke")
     @PreAuthorize("hasRole('ADMIN')")
     public String revokeExercise(@PathVariable UUID id) {
@@ -97,5 +113,4 @@ public class AdminController {
 
         return "redirect:/admin/exercises/moderation";
     }
-
 }

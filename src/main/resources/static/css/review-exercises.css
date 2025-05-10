@@ -136,3 +136,9 @@
     font-style: italic;
     padding: 1.5rem 0;
 }
+
+.options-admin {
+    display: flex;
+    padding-bottom: 1em;
+    justify-content: space-evenly;
+}

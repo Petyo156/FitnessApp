@@ -16,7 +16,18 @@
 
 <main class="review-container">
     <h1 class="review-title">Exercise Review</h1>
-
+    <div class="options-admin">
+        <form th:action="@{'/admin/exercises/approval'}" method="post">
+            <button type="submit" class="btn approve-btn">
+                <i class="fas fa-check"></i> Approve All Pending
+            </button>
+        </form>
+        <form th:action="@{'/admin/exercises/rejection'}" method="post">
+            <button type="submit" class="btn reject-btn">
+                <i class="fas fa-times"></i> Reject All Pending
+            </button>
+        </form>
+    </div>
     <!-- Pending Exercises -->
     <section class="review-section pending-section">
         <div class="section-header">
